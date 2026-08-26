@@ -102,6 +102,12 @@
                     <div class="line"></div>
                 </div>
             </div>
+        </div>
+        <!-- FIX: .sticky-frame was never closed, so every element after
+             the hero (the whole rest of the page) was technically nested
+             inside position:sticky; top:0; height:100vh — the only reason
+             it "worked" is that browsers auto-recover from unclosed divs,
+             but the DOM structure and CSS containment were wrong. -->
     </section>
     <header class="report-header" id="overview">
         <span class="report-eyebrow">A data story, infrastructure & warning</span>
@@ -147,10 +153,10 @@
             <figcaption class="source-caption">
                 <a href="https://wmo.int/" target="_blank" rel="noopener" class="source-link">World Meteorological Organization</a>. <span class="source-details">GBON baseline compliance diagnostic aggregates (2023).</span>
             </figcaption>
-            <a href="data:text/csv;charset=utf-8,Region,Current_Coverage,Required_Target%0ASIDS Surface Stations,9%25,100%25%0ASIDS Upper-Air,13%25,100%25%0AGlobal Average,68%25,100%25" download="GBON_Compliance_Data.csv" class="download-btn">
+            <button type="button" class="download-btn" data-download="compliance">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                Get CSV
-            </a>
+                Get JSON
+            </button>
         </div>
     </section>
     <div class="narrative-bridge reveal">
@@ -202,10 +208,16 @@
                 <figcaption class="source-caption">
                     <a href="https://stats.pacificdata.org/vis?lc=en&df[ds]=ds%3ASPC2&df[id]=DF_SDG_11&dq=A.VC_DSR_AFFCT" target="_blank" rel="noopener" class="source-link">Pacific Data Hub (SDG 11.5.1)</a> & EM-DAT. <span class="source-details">"Affected Persons" data sourced directly from official Pacific Data Hub baseline indicators. Damage estimates derived from International Disaster Database aggregates.</span>
                 </figcaption>
-                <a href="https://stats.pacificdata.org/vis?lc=en&df[ds]=ds%3ASPC2&df[id]=DF_SDG_11&dq=A.VC_DSR_AFFCT" target="_blank" rel="noopener" class="download-btn">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                    Source Data
-                </a>
+                <div class="caption-actions">
+                    <a href="https://stats.pacificdata.org/vis?lc=en&df[ds]=ds%3ASPC2&df[id]=DF_SDG_11&dq=A.VC_DSR_AFFCT" target="_blank" rel="noopener" class="download-btn">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        Source Data
+                    </a>
+                    <button type="button" class="download-btn" data-download="exposure">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        Get JSON
+                    </button>
+                </div>
             </div>
             <figcaption class="sr-only">Interactive bar chart showing disaster impacts.</figcaption>
         </figure>
@@ -429,10 +441,16 @@
                 <figcaption class="source-caption">
                     <a href="https://climateknowledgeportal.worldbank.org/" target="_blank" rel="noopener" class="source-link">World Bank Climate Change Knowledge Portal (CCKP)</a>. <span class="source-details">Sea level rise projections relative to the 1995-2014 reference period following Shared Socioeconomic Pathways (SSP).</span>
                 </figcaption>
-                <a href="https://climateknowledgeportal.worldbank.org/country/fiji/impacts-sea-level-rise" target="_blank" rel="noopener" class="download-btn">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                    Source Data
-                </a>
+                <div class="caption-actions">
+                    <a href="https://climateknowledgeportal.worldbank.org/country/fiji/impacts-sea-level-rise" target="_blank" rel="noopener" class="download-btn">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        Source Data
+                    </a>
+                    <button type="button" class="download-btn" data-download="projections">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        Get JSON
+                    </button>
+                </div>
             </div>
         </figure>
     </section>
@@ -462,10 +480,16 @@
                 <figcaption class="source-caption">
                     <a href="https://www.un-soff.org/" target="_blank" rel="noopener" class="source-link">UN SOFF Operations, Funding Pipeline</a>. <span class="source-details">Infrastructure funding sourced from the Systematic Observations Financing Facility. "Pending" status indicates bureaucratic delays in final disbursement.</span>
                 </figcaption>
-                <a href="https://www.un-soff.org/" target="_blank" rel="noopener" class="download-btn">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                    Source Hub
-                </a>
+                <div class="caption-actions">
+                    <a href="https://www.un-soff.org/" target="_blank" rel="noopener" class="download-btn">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        Source Hub
+                    </a>
+                    <button type="button" class="download-btn" data-download="funding">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        Get JSON
+                    </button>
+                </div>
             </div>
         </figure>
     </section>

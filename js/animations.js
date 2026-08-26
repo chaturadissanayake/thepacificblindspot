@@ -83,7 +83,10 @@ const Charts = {
         if (!container) return;
         container.innerHTML = '';
         const width = 960, height = 280; 
-        const margin = { top: 75, right: 60, bottom: 20, left: 200 }; 
+        // FIX: left/right margins were 200/60 — badly asymmetric, so the
+        // whole bar chart sat visibly off-center inside its frame. Equal
+        // margins center the 0–100% plot area within the 960-wide canvas.
+        const margin = { top: 75, right: 150, bottom: 20, left: 150 }; 
         const svg = d3.select(container).append('svg')
             .attr('viewBox', `0 0 ${width} ${height}`)
             .attr('preserveAspectRatio', 'xMidYMid meet');
@@ -180,7 +183,8 @@ const Charts = {
         if (!container) return;
         container.innerHTML = '';
         const width = 960, height = 400;
-        const margin = { top: 40, right: 40, bottom: 40, left: 70 }; 
+        // FIX: equalized margins so the bar band-scale is centered.
+        const margin = { top: 40, right: 60, bottom: 40, left: 60 }; 
         const svg = d3.select(container).append('svg')
             .attr('viewBox', `0 0 ${width} ${height}`)
             .attr('preserveAspectRatio', 'xMidYMid meet');
@@ -237,6 +241,16 @@ const Charts = {
             .on('mousemove', event => Utils.tooltip.move(event))
             .on('mouseleave', () => Utils.tooltip.hide());
             
+        // FIX: scope the color variable to this chart's own section
+        // instead of the document root. Writing it to :root meant
+        // switching a metric here also repainted the unrelated active
+        // toggle buttons in Chapter 01 and Chapter 05.
+        const stakesSection = document.getElementById('stakes');
+        if (stakesSection) {
+            stakesSection.style.setProperty('--exposure-color', this.coral);
+            stakesSection.style.setProperty('--exposure-text', '#ffffff');
+        }
+
         this.state.exposure.x = x;
         this.state.exposure.y = y;
         this.state.exposure.bars = bars;
@@ -260,6 +274,18 @@ const Charts = {
             return d.frequency;
         };
 
+        const activeColor = isDamage ? this.coral : (isAffected ? this.gold : this.teal);
+        const activeText = isAffected ? this.ink : '#ffffff';
+        
+        // FIX: sync UI control colors on the #stakes section only (see
+        // note in initExposure above) so the effect stays local to
+        // Chapter 02's controls.
+        const stakesSection = document.getElementById('stakes');
+        if (stakesSection) {
+            stakesSection.style.setProperty('--exposure-color', activeColor);
+            stakesSection.style.setProperty('--exposure-text', activeText);
+        }
+
         const maxY = d3.max(data, d => getValue(d));
         state.y.domain([0, Math.max(maxY * 1.15, 1)]); 
         
@@ -277,7 +303,7 @@ const Charts = {
         state.bars.data(data).transition().duration(this.dur(800)).ease(d3.easeCubicOut)
             .attr('y', d => state.y(getValue(d)))
             .attr('height', d => state.height - state.margin.bottom - state.y(getValue(d)))
-            .attr('fill', isDamage ? this.coral : (isAffected ? this.gold : this.teal)); 
+            .attr('fill', activeColor); 
             
         state.bars.on('mouseenter', (event, d) => Utils.tooltip.show(
             event, 
@@ -293,7 +319,8 @@ const Charts = {
         if (!container) return;
         container.innerHTML = '';
         const width = 960, height = 450;
-        const margin = { top: 55, right: 60, bottom: 40, left: 180 };
+        // FIX: equalized margins so the funding bars center in the frame.
+        const margin = { top: 55, right: 170, bottom: 40, left: 170 };
         const svg = d3.select(container).append('svg')
             .attr('viewBox', `0 0 ${width} ${height}`)
             .attr('preserveAspectRatio', 'xMidYMid meet');
@@ -706,6 +733,23 @@ function updateNavVisibility() {
 }
 
 function initUIElements() {
+    // Every chart's underlying dataset can be downloaded as JSON (never
+    // CSV/Excel) directly from AppData, so the download always matches
+    // exactly what's plotted on screen.
+    const downloadableDatasets = {
+        compliance: AppData.compliance,
+        exposure: AppData.exposure,
+        funding: AppData.funding,
+        projections: AppData.projections
+    };
+    Utils.selectAll('[data-download]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const key = btn.getAttribute('data-download');
+            const data = downloadableDatasets[key];
+            if (data) Utils.downloadJSON(`${key}_data.json`, data);
+        });
+    });
+
     Utils.selectAll('.chart-filter-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             Utils.selectAll('.chart-filter-btn').forEach(b => b.classList.remove('active'));

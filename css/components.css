@@ -255,20 +255,6 @@
     color: var(--ink);
     font-weight: 600;
 }
-.source-caption {
-    font-family: var(--font-mono);
-    font-size: 0.76rem;
-    color: var(--ink-faint);
-    letter-spacing: 0.01em;
-    text-align: left;
-    width: 100%;
-    max-width: 1000px;
-    padding-top: 1rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
-    border-top: 1px solid var(--line);
-    margin: 1rem auto 0 auto;
-}
 .bleed-caption-source {
     padding-left: 2rem;
     padding-right: 2rem;
@@ -566,12 +552,6 @@
     color: var(--accent-gold);
     text-decoration-color: var(--accent-gold);
 }
-.footer-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 1.1rem;
-}
 .footer-list li {
     display: flex;
     flex-direction: column;
@@ -786,7 +766,7 @@ svg text {
 .chart-filter-btn.active {
     background: transparent;
     color: var(--ink);
-    border-bottom-color: var(--accent-coral);
+    border-bottom-color: var(--exposure-color, var(--accent-coral)); /* UX FIX: Matches active metric color */
     box-shadow: none;
 }
 .d3-grid line {
@@ -800,6 +780,10 @@ svg text {
 }
 .d3-axis text {
     fill: var(--ink-soft);
+}
+/* UX FIX: Ensures axis titles (like Global Average) are readable against dark backgrounds */
+.on-dark .d3-axis text {
+    fill: rgba(255, 255, 255, 0.65);
 }
 .on-dark .d3-grid line {
     stroke: rgba(255, 255, 255, 0.1);
@@ -904,6 +888,19 @@ svg text {
     border-radius: 2px;
     transition: all 0.2s ease;
     white-space: nowrap;
+    cursor: pointer;
+}
+/* Some download-btn instances are now real <button> elements (JSON
+   downloads) rather than <a> tags; keep them visually identical. */
+button.download-btn {
+    font-family: var(--font-mono);
+    appearance: none;
+}
+.caption-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.6rem;
 }
 .download-btn:hover {
     color: var(--ink);
@@ -933,7 +930,11 @@ svg text {
     color: var(--accent-gold);
     text-decoration-color: var(--accent-gold);
 }
+/* FIX: consolidated a duplicate .footer-list rule that lived earlier in
+   this file (it was fully overridden anyway; merged the remaining
+   list-style reset in here). */
 .footer-list {
+    list-style: none;
     display: grid;
     grid-template-columns: 1fr;
     gap: 1.25rem;
@@ -941,12 +942,16 @@ svg text {
     padding-top: 1.25rem;
 }
 
+/* FIX: this rule used to be duplicated (with a conflicting font-mono
+   version) elsewhere in this file; consolidated into one definition. */
 .source-caption {
     display: block;
+    width: 100%;
     font-family: var(--font-sans);
     font-size: 0.75rem;
     color: var(--ink-faint);
     line-height: 1.6;
+    letter-spacing: 0.01em;
     padding-top: 1rem;
     max-width: 960px;
     text-align: left;
@@ -1007,6 +1012,16 @@ svg text {
 .metric-toggle-btn.active {
     background: var(--ink);
     color: var(--paper);
+}
+/* FIX: --exposure-color was previously set on the document root, so
+   clicking a metric toggle in Chapter 02 also silently repainted the
+   active toggle buttons in Chapter 01 and Chapter 05 (they share the
+   same .metric-toggle-btn class). The color variable is now written to
+   the #stakes section only (see animations.js), and this rule is scoped
+   to match, so each chart's controls stay visually independent. */
+#stakes .metric-toggle-btn.active {
+    background: var(--exposure-color, var(--ink));
+    color: var(--exposure-text, var(--paper));
 }
 
 .on-dark .chart-filter-btn { color: rgba(255,255,255,0.6); }

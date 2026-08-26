@@ -150,8 +150,11 @@
 </main>
 
 <script src="js/utils.js"></script>
-<script src="js/main.js"></script>
-<!-- Note: data.js and animations.js aren't strictly needed for this text page, 
-     so leaving them out saves bandwidth. -->
+<!-- FIX: this used to load "js/main.js", which doesn't exist anywhere in
+     this project (a 404 on every page load). The nav on this page is
+     forced visible via the inline <style> above, and there are no charts,
+     so no chart/animation script is needed here at all — only utils.js,
+     which just wires up the shared tooltip helper (safely a no-op on
+     this page since there's no chart to attach it to). -->
 </body>
 </html>

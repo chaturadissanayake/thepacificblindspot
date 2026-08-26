@@ -25,6 +25,24 @@ const Utils = {
     formatNumber(value, decimals = 1) {
         return Number(value).toFixed(decimals);
     },
+    // Triggers a browser download of `data` as a pretty-printed .json file.
+    // Used for every "Get data" button on the site so downloads are always
+    // JSON, never CSV or Excel.
+    downloadJSON(filename, data) {
+        try {
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        } catch (err) {
+            console.error('JSON download failed:', err);
+        }
+    },
     tooltip: {
         el: null,
         visible: false,

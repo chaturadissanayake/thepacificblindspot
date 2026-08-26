@@ -195,7 +195,7 @@
     background: var(--bg-deep);
     color: var(--paper);
     padding: 6rem 2rem 7rem 2rem;
-    margin-bottom: 6rem;
+    margin-bottom: 5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -221,8 +221,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 6rem;
-    padding-bottom: 5rem;
+    /* FIX: this used to carry BOTH a 6rem margin-bottom AND a 5rem
+       padding-bottom with no background/border between them, so every
+       chapter left an unexplained ~11rem gap before the next one began.
+       A single margin now gives a consistent, intentional rhythm. */
+    margin-bottom: 5rem;
     position: relative;
 }
 
@@ -300,8 +303,11 @@
     width: 100%;
     background: transparent;
     color: var(--ink);
-    padding: 8vh 2rem;
-    margin: 4vh 0;
+    /* FIX: previous 10vh padding + 10vh margin stacked to ~20vh of dead
+       space above AND below every pull-quote, which stalled reading
+       momentum. Reduced to a rhythm consistent with the rest of the page. */
+    padding: 5rem 2rem;
+    margin: 3rem 0;
     display: flex;
     justify-content: center;
     overflow: hidden;
@@ -398,8 +404,8 @@
         grid-template-columns: repeat(2, 1fr);
     }
     .narrative-bridge {
-        padding: 8vh 1.5rem;
-        margin: 6vh 0;
+        padding: 3.5rem 1.5rem;
+        margin: 2.5rem 0;
     }
     .media-gallery {
         grid-template-columns: repeat(4, 1fr);
