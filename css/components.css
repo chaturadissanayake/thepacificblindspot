@@ -357,7 +357,11 @@
     font-family: var(--font-mono);
     font-size: 1.5rem;
     font-weight: 600;
-    color: var(--accent-gold);
+    /* FIX: was --accent-gold, but every real card is either .guilty
+       (overridden to white) or .improving (overridden to teal) — this
+       base color never actually rendered. Set to the same white/teal
+       system used elsewhere instead of a third, unused color. */
+    color: var(--paper);
     margin-bottom: 1.25rem;
     text-transform: uppercase;
 }

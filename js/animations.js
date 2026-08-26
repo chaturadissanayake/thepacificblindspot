@@ -3,7 +3,18 @@ const Charts = {
     ink: '#0f172a',
     inkSoft: '#475569',
     gridLine: '#e2e8f0',
+    // COLOR SYSTEM — kept deliberately to 3 hues so color always carries
+    // the same meaning across every chart in the story:
+    //   teal  = adequate / present / good outcome (infrastructure exists,
+    //           funding approved, lower sea-level scenario)
+    //   coral = deficient / absent / bad outcome (in three shades so
+    //           Chapter 2's three "bad news" metrics read as one family
+    //           instead of three unrelated colors)
+    //   gold  = pending / caution, plus the editorial kicker/branding
+    //           accent — never used to encode a data value's severity
     coral: '#b26075',
+    coralLight: '#d38a9c',
+    coralDark: '#8c4a5f',
     teal: '#7eb2a8',
     gold: '#d4af37',
     dur(ms) { return Utils.prefersReducedMotion() ? 0 : ms; },
@@ -124,7 +135,7 @@ const Charts = {
             .attr('y', d => y(d.category))
             .attr('height', y.bandwidth())
             .attr('width', x(100) - x(0))
-            .attr('fill', 'rgba(255,255,255,0.06)')
+            .attr('fill', 'rgba(178, 96, 117, 0.14)') // FIX: was a neutral gray; tinted coral so the empty track itself reads as "the deficit," not just blank space
             .attr('rx', 2);
             
         row.append('rect')
@@ -134,7 +145,13 @@ const Charts = {
             .attr('height', y.bandwidth())
             .attr('width', 0)
             .attr('rx', 2)
-            .attr('fill', this.coral);
+            // FIX: this used to be coral — the same "danger" color used for
+            // Critical Gaps, damage, and worst-case scenarios everywhere
+            // else on the site — but here it colored the GOOD number
+            // (coverage that actually exists). Switched to teal so
+            // "teal = present/adequate, coral = missing/deficient" holds
+            // true across every chart in the story.
+            .attr('fill', this.teal);
             
         row.append('text')
             .attr('class', 'value-text')
@@ -146,9 +163,9 @@ const Charts = {
             
         // Positioned higher to avoid axis overlap
         const legend = svg.append('g').attr('transform', `translate(${margin.left}, 10)`);
-        legend.append('rect').attr('x', 0).attr('y', -5).attr('width', 10).attr('height', 10).attr('rx', 2).attr('fill', this.coral);
+        legend.append('rect').attr('x', 0).attr('y', -5).attr('width', 10).attr('height', 10).attr('rx', 2).attr('fill', this.teal);
         legend.append('text').attr('x', 18).attr('y', 4).text('Active Infrastructure').style('font-size', '11px').attr('fill', 'rgba(255,255,255,0.7)');
-        legend.append('rect').attr('x', 160).attr('y', -5).attr('width', 10).attr('height', 10).attr('rx', 2).attr('fill', 'rgba(255,255,255,0.06)');
+        legend.append('rect').attr('x', 160).attr('y', -5).attr('width', 10).attr('height', 10).attr('rx', 2).attr('fill', 'rgba(178, 96, 117, 0.35)');
         legend.append('text').attr('x', 178).attr('y', 4).text('Missing Data Gap').style('font-size', '11px').attr('fill', 'rgba(255,255,255,0.7)');
             
         this.state.compliance = { row, x };
@@ -167,7 +184,10 @@ const Charts = {
                 return barWidth > 35 ? x(d.value) - 8 : x(d.value) + 8;
             })
             .attr('text-anchor', d => (x(d.value) - x(0)) > 35 ? 'end' : 'start')
-            .attr('fill', '#ffffff') 
+            // FIX: text is now dark ink when it sits inside the teal bar
+            // (white-on-teal fails contrast) and white when it sits
+            // outside the bar on the dark background.
+            .attr('fill', d => (x(d.value) - x(0)) > 35 ? this.ink : '#ffffff')
             .attr('opacity', 1);
 
         if (filterType === 'sids') {
@@ -274,8 +294,13 @@ const Charts = {
             return d.frequency;
         };
 
-        const activeColor = isDamage ? this.coral : (isAffected ? this.gold : this.teal);
-        const activeText = isAffected ? this.ink : '#ffffff';
+        const activeColor = isDamage ? this.coral : (isAffected ? this.coralDark : this.coralLight);
+        // FIX: Event Frequency was teal and Affected Persons was gold —
+        // borrowing the "good outcome" and "caution" colors from other
+        // charts for what are, in this chart, three flavors of the same
+        // bad news. All three now live in one coral family (shades),
+        // matching the user's ask for the palette to track meaning.
+        const activeText = state.currentMetric === 'frequency' ? this.ink : '#ffffff';
         
         // FIX: sync UI control colors on the #stakes section only (see
         // note in initExposure above) so the effect stays local to
