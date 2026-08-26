@@ -3,8 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="A visual data story about how Pacific island nations are paying the highest price for a climate crisis they barely caused. Built for the Pacific Dataviz Challenge 2026.">
-<title>The Unfair Climate Price</title>
+<title>The Pacific Blind Spot | Missing Climate Data</title>
+<meta name="description" content="A data story about how the Pacific is the most climate-exposed region on Earth, yet remains one of the least monitored. Built for the Pacific Dataviz Challenge 2026.">
+<meta name="keywords" content="climate change, data visualization, Pacific Data Hub, WMO, early warning systems, GBON, data journalism">
+<meta name="author" content="Chatura Dissanayake">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://yourdomain.com/">
+<meta property="og:title" content="The Pacific Blind Spot | Missing Climate Data">
+<meta property="og:description" content="The world can't see the storm coming because nobody paid to watch. Explore the critical climate monitoring gap in the Pacific.">
+<meta property="og:image" content="https://yourdomain.com/assets/og-image.jpg">
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://yourdomain.com/">
+<meta property="twitter:title" content="The Pacific Blind Spot | Missing Climate Data">
+<meta property="twitter:description" content="The world can't see the storm coming because nobody paid to watch. Explore the critical climate monitoring gap in the Pacific.">
+<meta property="twitter:image" content="https://yourdomain.com/assets/og-image.jpg">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/favicons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicons/favicon-16x16.png">
+<link rel="manifest" href="assets/favicons/site.webmanifest">
+<link rel="mask-icon" href="assets/favicons/safari-pinned-tab.svg" color="#12796f">
+<meta name="msapplication-TileColor" content="#06181d">
+<meta name="theme-color" content="#06181d">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -14,7 +33,6 @@
 <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
-<!-- Mobile blocker removed for accessibility -->
 <a class="skip-link" href="#overview">Skip to the story</a>
 <div id="global-tooltip" class="data-tooltip" role="status" aria-live="polite"></div>
 <div class="progress-container" role="progressbar" aria-label="Reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
@@ -24,70 +42,71 @@
     <a href="index.html" class="lang-btn active" aria-label="English">EN</a>
     <a href="index-fr.html" class="lang-btn" aria-label="Français">FR</a>
 </div>
-
 <nav class="editorial-nav">
-    <a href="#kinetic-hero" class="nav-brand">Pacific Dataviz Challenge<span>2026</span></a>
+    <a href="index.html" class="nav-brand">
+        <img src="assets/pacific_icon.png" alt="Brand Icon" class="brand-icon" width="18" height="18">
+        Pacific Dataviz Challenge <span>2026</span>
+    </a>
     <div class="nav-links">
+        <a href="index.html" class="nav-link-secondary">Home</a>
         <a href="#overview" class="nav-link-primary">Story</a>
-        <a href="#methodology" class="nav-link-secondary">Sources</a>
-        <a href="#footer-sources" class="nav-link-secondary">Data</a>
+        <a href="#methodology" class="nav-link-secondary">Methodology</a>
+        <a href="#footer-sources" class="nav-link-secondary">Sources</a>
         <a href="privacy.html" class="nav-link-secondary">Privacy</a>
         <a href="https://medium.com/" target="_blank" rel="noopener" class="nav-link-secondary">Process</a>
     </div>
 </nav>
-
 <main class="immersive-canvas">
-
-    <!-- ============ HERO ============ -->
     <section id="kinetic-hero" class="scroll-runway hero-runway" aria-hidden="true">
         <div class="sticky-frame">
-            <div class="hero-tide" aria-hidden="true">
-                <svg class="tide-field" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMax slice">
+            <div class="hero-radar" aria-hidden="true">
+                <svg class="radar-field" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
                     <defs>
                         <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
                             <stop offset="0%" style="stop-color:var(--bg-deep-soft); stop-opacity:1" />
                             <stop offset="100%" style="stop-color:var(--bg-deep); stop-opacity:1" />
                         </linearGradient>
-                        <linearGradient id="waterGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" style="stop-color:var(--accent-teal); stop-opacity:0.5" />
-                            <stop offset="100%" style="stop-color:var(--accent-teal); stop-opacity:0.85" />
-                        </linearGradient>
+                        <radialGradient id="radarGlow" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" style="stop-color:var(--accent-teal); stop-opacity:0.4" />
+                            <stop offset="100%" style="stop-color:var(--accent-teal); stop-opacity:0" />
+                        </radialGradient>
                     </defs>
-                <rect width="1440" height="900" fill="url(#skyGrad)"></rect>
-                <g class="contour-set" id="hero-contours"></g>
-                <rect id="tide-water" class="tide-water" x="0" y="810" width="1440" height="150" fill="url(#waterGrad)"></rect>
-            </svg>
-                <div class="tide-readout">
-                    <span class="tide-readout-label">Sea level anomaly, illustrative</span>
-                    <span class="tide-readout-value" id="tide-readout-value">+0.00mm</span>
+                    <rect width="1440" height="900" fill="url(#skyGrad)"></rect>
+                    <g class="radar-grid" id="radar-grid-lines"></g>
+                    <!-- Removed the distracting radar pulse -->
+                    <g class="radar-nodes" id="hero-radar-nodes"></g>
+                </svg>
+                <div class="radar-readout">
+                    <span class="radar-readout-label" id="radar-readout-label">Regional Monitoring Coverage</span>
+                    <span class="radar-readout-value" id="radar-readout-value">01.2%</span>
                 </div>
             </div>
             <div class="hero-sequence" id="hero-frame-1">
                 <span class="hero-kicker">Pacific Dataviz Challenge 2026, Climate Change</span>
-                <p class="hero-title">The Unfair Climate Price</p>
+                <p class="hero-title">The Pacific Blind Spot</p>
                 <div class="scroll-indicator">
                     <span>Keep scrolling</span>
                     <div class="line"></div>
                 </div>
             </div>
             <div class="hero-sequence hidden-sequence" id="hero-frame-2">
-                <p class="hero-dek">Pacific island nations cause <strong>less than 1%</strong> of the pollution that's heating our planet.</p>
+                <p class="hero-dek">The Pacific is the most climate-exposed region on Earth.</p>
             </div>
             <div class="hero-sequence hidden-sequence" id="hero-frame-3">
-                <p class="hero-dek">But they're first in line to lose their coastlines, their reefs, and their homes because of it.</p>
+                <p class="hero-dek">But resilience requires an active, funded data system.</p>
+            </div>
+            <div class="hero-sequence hidden-sequence" id="hero-frame-4">
+                <p class="hero-dek">Right now, that infrastructure is dangerously sparse.</p>
                 <div class="scroll-indicator">
                     <span>Start the story</span>
                     <div class="line"></div>
                 </div>
             </div>
-        </div>
     </section>
-
-    <!-- ============ MASTHEAD ============ -->
     <header class="report-header" id="overview">
-        <span class="report-eyebrow">A data story, climate &amp; ocean</span>
-        <h1 class="report-main-title">The Unfair Climate Price</h1>
-        <p class="report-standfirst">Small Pacific island nations barely contribute to climate change. But six years of official data show they're losing the most land, money, and coastline because of it. Here's what that data actually looks like.</p>
+        <span class="report-eyebrow">A data story, infrastructure & warning</span>
+        <h1 class="report-main-title">The Pacific Blind Spot</h1>
+        <p class="report-standfirst">It is not just that the ocean is rising. It is that the mechanisms to measure it are largely broken, missing, or unfunded. Six years of official baseline data reveal a chronic lack of monitoring infrastructure in the very places that need early warnings the most.</p>
         <div class="meta-data-line">
             <span>By <a href="https://chaturadissanayake.vercel.app">Chatura Dissanayake</a></span>
             <span class="meta-divider"></span>
@@ -96,205 +115,362 @@
             <span>7 min read</span>
         </div>
     </header>
-
-    <!-- ============ CENTRAL FIGURE, reserved for the creative lead chart ============ -->
     <section class="central-figure" id="central-figure">
-        <div class="central-figure-head">
-            <span class="editorial-kicker">Chapter 01, The big picture</span>
-            <h2 class="editorial-subhead">The paradox, in one picture</h2>
-            <p>This is the one chart that ties the whole story together: how little these nations pollute, next to how much they're losing. Everything below breaks that picture apart, piece by piece.</p>
+        <div class="central-figure-head reveal" style="text-align: left; max-width: 680px; margin: 0 auto 1.5rem auto; padding: 0 2rem;">
+            <span class="editorial-kicker">Chapter 01, The Global Gap</span>
+            <h2 class="editorial-subhead">We are operating in the dark</h2>
+            <p>According to the <a href="https://wmo.int/" target="_blank" rel="noopener" class="source-link">World Meteorological Organization</a>, Least Developed Countries and Small Island Developing States meet only 9% of the surface weather stations required for <a href="https://wmo.int/activities/global-basic-observing-network-gbon" target="_blank" rel="noopener" class="source-link">basic global monitoring compliance</a>. This baseline distribution exposes exactly where the data goes quiet.</p>
+            <p style="margin-top: 1rem;">While satellite imagery provides a macro view of weather systems, ground-level radar and surface stations are the critical "ground truth." They detect sudden micro-changes in atmospheric pressure and temperature that turn regular storms into catastrophic cyclones. Without them, <a href="https://www.un.org/en/climatechange/early-warnings-for-all" target="_blank" rel="noopener" class="source-link">early warning systems</a> are effectively flying blind.</p>
         </div>
-        <div class="chart-canvas central-chart-canvas" id="central-chart-canvas" data-scene="central">
-            <div class="canvas-placeholder">
-                <img src="https://placehold.co/1400x800/0f2c34/f5faf8.webp?text=Preview+image" alt="" loading="lazy">
-                <div class="placeholder-copy">
-                    <span class="placeholder-title">Preview image</span>
-                    <span class="placeholder-sub">The interactive version of this chart is still being built. This is a stand-in until it's ready.</span>
+        
+        <!-- Removed redundant instruction badge; tabs speak for themselves -->
+        <div class="chart-controls-wrapper reveal on-dark">
+            <div class="metric-toggles">
+                <button class="metric-toggle-btn active" data-target="compliance" data-filter="all">Global Comparison</button>
+                <button class="metric-toggle-btn" data-target="compliance" data-filter="sids">Highlight SIDS & Pacific</button>
+            </div>
+        </div>
+
+        <div class="chart-canvas central-chart-canvas" id="compliance-canvas" data-scene="compliance" style="margin-bottom: 0;">
+            <div class="sr-only">
+                <table>
+                    <caption>Global Basic Observation Network Compliance Deficits</caption>
+                    <tr><th>Region</th><th>Current Coverage</th><th>Required Target</th></tr>
+                    <tr><td>SIDS Surface Stations</td><td>9%</td><td>100%</td></tr>
+                    <tr><td>SIDS Upper-Air</td><td>13%</td><td>100%</td></tr>
+                    <tr><td>Global Average</td><td>68%</td><td>100%</td></tr>
+                </table>
+            </div>
+        </div>
+        
+        <div class="caption-wrapper on-dark">
+            <figcaption class="source-caption">
+                <a href="https://wmo.int/" target="_blank" rel="noopener" class="source-link">World Meteorological Organization</a>. <span class="source-details">GBON baseline compliance diagnostic aggregates (2023).</span>
+            </figcaption>
+            <a href="data:text/csv;charset=utf-8,Region,Current_Coverage,Required_Target%0ASIDS Surface Stations,9%25,100%25%0ASIDS Upper-Air,13%25,100%25%0AGlobal Average,68%25,100%25" download="GBON_Compliance_Data.csv" class="download-btn">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Get CSV
+            </a>
+        </div>
+    </section>
+    <div class="narrative-bridge reveal">
+        <p>A missing data point is not just a blank cell in a spreadsheet. It is a missing warning siren when a cyclone forms over warm water.</p>
+    </div>
+    <section class="article-section" id="stakes">
+        <div class="article-copy reveal">
+            <span class="editorial-kicker">Chapter 02, The Stakes</span>
+            <h2 class="editorial-subhead">High exposure, low detection</h2>
+            <p>This chart tracks the frequency of natural disasters and their resulting economic damage. While the storms are intensifying, the local tracking hardware remains <a href="https://pacificdata.org/" target="_blank" rel="noopener" class="source-link">dangerously sparse across the Pacific region</a>.</p>
+            <p>Without constant, localized ground data, forecasting relies on broader satellite estimations. This severely reduces landfall accuracy, narrowing the crucial <a href="https://public.wmo.int/en/earlywarningsforall" target="_blank" rel="noopener" class="source-link">lead time for evacuations</a> from days to hours. When data infrastructure is treated as an afterthought, we pay for it in disaster recovery. The economic toll below isn't just an act of nature; it is a systemic failure to fund early detection.</p>
+        </div>
+        <figure class="article-graphic">
+            <!-- Removed redundant instruction badge -->
+            <div class="chart-controls-wrapper reveal">
+                <div class="chart-filters">
+                    <button class="chart-filter-btn active" data-country="Vanuatu">Vanuatu</button>
+                    <button class="chart-filter-btn" data-country="Fiji">Fiji</button>
+                    <button class="chart-filter-btn" data-country="Tonga">Tonga</button>
+                    <button class="chart-filter-btn" data-country="Samoa">Samoa</button>
+                    <button class="chart-filter-btn" data-country="Kiribati">Kiribati</button>
+                    <button class="chart-filter-btn" data-country="Solomon Islands">Solomon Is.</button>
+                    <button class="chart-filter-btn" data-country="Papua New Guinea">PNG</button>
+                    <button class="chart-filter-btn" data-country="Marshall Islands">Marshall Is.</button>
+                    <button class="chart-filter-btn" data-country="Tuvalu">Tuvalu</button>
+                    <button class="chart-filter-btn" data-country="Palau">Palau</button>
+                    <button class="chart-filter-btn" data-country="Naoero">Nauru</button>
+                    <button class="chart-filter-btn" data-country="New Caledonia">New Caledonia</button>
+                    <button class="chart-filter-btn" data-country="American Samoa">American Samoa</button>
+                </div>
+                
+            <div class="metric-toggles">
+                <button class="metric-toggle-btn active" data-metric="damage">Economic Damage</button>
+                <button class="metric-toggle-btn" data-metric="frequency">Event Frequency</button>
+                <button class="metric-toggle-btn" data-metric="affected">Affected Persons</button>
+            </div>
+        </div>
+        <div class="chart-canvas" id="exposure-canvas" data-scene="exposure">
+            <div class="sr-only">
+                <table>
+                    <caption>Economic Damage vs Disaster Frequency (2018-2023)</caption>
+                    <tr><th>Year</th><th>Events</th><th>Damage (Millions USD)</th></tr>
+                    <tr><td>2023</td><td>High</td><td>High</td></tr>
+                    <!-- Full data handled by interactive D3 view -->
+                </table>
+            </div>
+        </div>
+            <div class="caption-wrapper">
+                <figcaption class="source-caption">
+                    <a href="https://stats.pacificdata.org/vis?lc=en&df[ds]=ds%3ASPC2&df[id]=DF_SDG_11&dq=A.VC_DSR_AFFCT" target="_blank" rel="noopener" class="source-link">Pacific Data Hub (SDG 11.5.1)</a> & EM-DAT. <span class="source-details">"Affected Persons" data sourced directly from official Pacific Data Hub baseline indicators. Damage estimates derived from International Disaster Database aggregates.</span>
+                </figcaption>
+                <a href="https://stats.pacificdata.org/vis?lc=en&df[ds]=ds%3ASPC2&df[id]=DF_SDG_11&dq=A.VC_DSR_AFFCT" target="_blank" rel="noopener" class="download-btn">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    Source Data
+                </a>
+            </div>
+            <figcaption class="sr-only">Interactive bar chart showing disaster impacts.</figcaption>
+        </figure>
+    </section>
+    <div class="narrative-bridge reveal">
+        <p>You cannot adapt to what you cannot measure. This lack of fundamental infrastructure directly impacts global development goals.</p>
+    </div>
+    <section class="article-section" id="human-cost">
+        <div class="article-copy reveal">
+            <span class="editorial-kicker">Chapter 03, The Human Cost</span>
+            <h2 class="editorial-subhead">What a blind spot actually costs</h2>
+            <p>Country-level hydromet diagnostics reveal the localized realities of this monitoring gap. It is a structural failure that directly threatens two core Sustainable Development Goals: building resilient infrastructure and taking urgent climate action.</p>
+            <div class="sdg-container">
+                <span class="sdg-label">Impacted Global Goals</span>
+                <div class="sdg-icons">
+                    <img src="assets/E_GIF_09.gif" alt="SDG 9 Industry, Innovation and Infrastructure" width="80" height="80" class="sdg-badge">
+                    <img src="assets/E_GIF_13.gif" alt="SDG 13 Climate Action" width="80" height="80" class="sdg-badge">
                 </div>
             </div>
         </div>
-    </section>
 
-    <div class="narrative-bridge">
-        <p>Three data threads, each drawn from an official Pacific Data Hub series, make the case below, starting with the ocean itself.</p>
-    </div>
-
-    <!-- ============ SECTION 1, SEA LEVEL / SST (supporting chart) ============ -->
-    <section class="article-section" id="baseline">
-        <div class="article-copy">
-            <span class="editorial-kicker">Chapter 02, The rising water</span>
-            <h2 class="editorial-subhead">How much has the water already risen?</h2>
-            <p>This chart tracks how far sea levels and ocean temperatures have drifted since 1990 across sites around the Pacific. Think of it as a running tally of change from a fixed starting point.</p>
-            <p>Most sites show a slow, steady rise. But <strong>three places are moving much faster</strong>, Tuvalu Basin, Kiribati Coast, and Fiji Outer. Their numbers are climbing well ahead of everywhere else.</p>
+        <div class="editorial-instruction reveal">
+            <span class="instruction-badge">Interactive</span>
+            <span class="instruction-text">What is the operational monitoring status of these nations? Tap a card to reveal the ground truth.</span>
         </div>
 
-        <figure class="feature-media">
-            <div class="media-placeholder">
-                <img src="https://placehold.co/1600x900/0f2c34/f5faf8.webp?text=Photo+placeholder" alt="" loading="lazy">
-                <span class="media-label">Photo placeholder</span>
+<div class="flip-card-grid">
+    <div class="flip-card reveal" tabindex="0" role="button" aria-pressed="false">
+        <div class="flip-card-inner">
+            <div class="flip-card-front">
+                <span class="card-title">Kiribati</span>
+                <span class="card-question-mark">?</span>
+                <div class="card-action-hint">Tap to reveal</div>
             </div>
-            <figcaption class="feature-media-caption">Coastal erosion along a Pacific shoreline. Placeholder photo, final image coming soon.</figcaption>
-        </figure>
+            <div class="flip-card-back guilty">
+                <div class="card-score">
+                    <span class="score-value">4</span>
+                    <span class="score-label">Active Stations</span>
+                </div>
+                <span class="answer">Critical Gap</span>
+                <p>Vast oceanic territory with severely limited permanent observation infrastructure.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="flip-card reveal" tabindex="0" role="button" aria-pressed="false">
+        <div class="flip-card-inner">
+            <div class="flip-card-front">
+                <span class="card-title">Fiji</span>
+                <span class="card-question-mark">?</span>
+                <div class="card-action-hint">Tap to reveal</div>
+            </div>
+            <div class="flip-card-back improving">
+                <div class="card-score">
+                    <span class="score-value">8</span>
+                    <span class="score-label">Active Stations</span>
+                </div>
+                <span class="answer">Improving</span>
+                <p>Acting as a regional hub, but still requires upgrades to meet baseline global exchange requirements.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="flip-card reveal" tabindex="0" role="button" aria-pressed="false">
+        <div class="flip-card-inner">
+            <div class="flip-card-front">
+                <span class="card-title">Tuvalu</span>
+                <span class="card-question-mark">?</span>
+                <div class="card-action-hint">Tap to reveal</div>
+            </div>
+            <div class="flip-card-back guilty">
+                <div class="card-score">
+                    <span class="score-value">3</span>
+                    <span class="score-label">Active Stations</span>
+                </div>
+                <span class="answer">Critical Gap</span>
+                <p>Lacks the fundamental density of observation networks required for localized early warnings.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="flip-card reveal" tabindex="0" role="button" aria-pressed="false">
+        <div class="flip-card-inner">
+            <div class="flip-card-front">
+                <span class="card-title">Samoa</span>
+                <span class="card-question-mark">?</span>
+                <div class="card-action-hint">Tap to reveal</div>
+            </div>
+            <div class="flip-card-back guilty">
+                <div class="card-score">
+                    <span class="score-value">2</span>
+                    <span class="score-label">Active Stations</span>
+                </div>
+                <span class="answer">Critical Gap</span>
+                <p>Heavy reliance on external satellite data rather than sovereign ground-truth measurement.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="flip-card reveal" tabindex="0" role="button" aria-pressed="false">
+        <div class="flip-card-inner">
+            <div class="flip-card-front">
+                <span class="card-title">Tonga</span>
+                <span class="card-question-mark">?</span>
+                <div class="card-action-hint">Tap to reveal</div>
+            </div>
+            <div class="flip-card-back improving">
+                <div class="card-score">
+                    <span class="score-value">4</span>
+                    <span class="score-label">Active Stations</span>
+                </div>
+                <span class="answer">Improving</span>
+                <p>Actively rebuilding and upgrading monitoring capabilities following recent systemic shocks.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="flip-card reveal" tabindex="0" role="button" aria-pressed="false">
+        <div class="flip-card-inner">
+            <div class="flip-card-front">
+                <span class="card-title">Nauru</span>
+                <span class="card-question-mark">?</span>
+                <div class="card-action-hint">Tap to reveal</div>
+            </div>
+            <div class="flip-card-back guilty">
+                <div class="card-score">
+                    <span class="score-value">0</span>
+                    <span class="score-label">Active Stations</span>
+                </div>
+                <span class="answer">Critical Gap</span>
+                <p>Extreme reliance on international data networks due to a lack of sovereign hardware.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="flip-card reveal" tabindex="0" role="button" aria-pressed="false">
+        <div class="flip-card-inner">
+            <div class="flip-card-front">
+                <span class="card-title">Vanuatu</span>
+                <span class="card-question-mark">?</span>
+                <div class="card-action-hint">Tap to reveal</div>
+            </div>
+            <div class="flip-card-back guilty">
+                <div class="card-score">
+                    <span class="score-value">6</span>
+                    <span class="score-label">Active Stations</span>
+                </div>
+                <span class="answer">Critical Gap</span>
+                <p>High exposure to severe cyclones demands much denser surface and upper-air monitoring.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="flip-card reveal" tabindex="0" role="button" aria-pressed="false">
+        <div class="flip-card-inner">
+            <div class="flip-card-front">
+                <span class="card-title">Solomon Is.</span>
+                <span class="card-question-mark">?</span>
+                <div class="card-action-hint">Tap to reveal</div>
+            </div>
+            <div class="flip-card-back guilty">
+                <div class="card-score">
+                    <span class="score-value">3</span>
+                    <span class="score-label">Active Stations</span>
+                </div>
+                <span class="answer">Critical Gap</span>
+                <p>Severe geographical fragmentation hinders vital station maintenance and data transfer.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <div class="caption-wrapper" style="max-width: 1200px; padding: 1rem 2rem 0 2rem;">
+            <figcaption class="source-caption">
+                <a href="https://pacificdata.org/data/dataset/meteorological-monitoring-network-df-meteo-monitor-net" target="_blank" rel="noopener" class="source-link">Pacific Data Hub (SDG Indicator)</a>. <span class="source-details">Official baseline data for operational land meteorological monitoring networks across Pacific territories.</span>
+            </figcaption>
+            <a href="https://stats.pacificdata.org/vis?locale=en&dataflow[datasourceId]=SPC2&dataflow[agencyId]=SPC&dataflow[dataflowId]=DF_METEO_MONITOR_NET" target="_blank" rel="noopener" class="download-btn">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Source Data
+            </a>
+        </div>
+    </section>
+
+    <section class="article-section" id="projections">
+        <div class="article-copy reveal">
+            <span class="editorial-kicker">Chapter 04, The Horizon</span>
+            <h2 class="editorial-subhead">The cost of arriving late</h2>
+            <p>Climate models project severe environmental shifts for the Pacific. Without a dense, localized monitoring network, tracking these escalating changes relies on generalized global models rather than precise local early warnings.</p>
+            <p>The difference between a typical warming trajectory and a worst-case scenario isn't just a few degrees—it is the difference between manageable adaptation and catastrophic land loss. By 2100, the projected sea level rise alone threatens to fundamentally reshape the coastlines of nations like Fiji.</p>
+            <p style="font-size: 1.25rem; font-family: var(--font-display); margin-top: 2rem; color: var(--ink);">
+                Projected sea level anomaly by 2100: 
+            <strong id="dynamic-slr-text" class="slr-counter" aria-live="polite" style="color: var(--accent-teal); font-weight: 700; transition: color 0.4s ease;">+74.5 cm</strong>
+            </p>
+        </div>
 
         <figure class="article-graphic">
-            <div class="chart-canvas" id="sea-level-canvas" data-scene="sea-level"></div>
-            <figcaption class="source-caption">Source, Sea level anomalies &amp; Mean sea surface temperature anomalies (sample data), Pacific Data Hub</figcaption>
-            <figcaption class="sr-only">Line chart plotting sea surface anomalies in millimetres from 1990 to 2025.</figcaption>
+            <div class="projection-ruler-wrapper reveal">
+                <span class="ruler-title">Projection Range (Percentile)</span>
+                <div class="projection-ruler">
+                    <button class="ruler-step" data-filter="lower">
+                        <span class="step-name">Lower Rise</span>
+                        <div class="step-indicator"></div>
+                        <span class="step-value">17th</span>
+                    </button>
+                    <button class="ruler-step active" data-filter="typical">
+                        <span class="step-name">Typical</span>
+                        <div class="step-indicator"></div>
+                        <span class="step-value">50th</span>
+                    </button>
+                    <button class="ruler-step" data-filter="higher">
+                        <span class="step-name worst">Worst Case</span>
+                        <div class="step-indicator"></div>
+                        <span class="step-value">83rd</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="chart-canvas" id="projection-canvas" data-scene="projection" style="margin-bottom: 0;"></div>
+            
+            <div class="caption-wrapper">
+                <figcaption class="source-caption">
+                    <a href="https://climateknowledgeportal.worldbank.org/" target="_blank" rel="noopener" class="source-link">World Bank Climate Change Knowledge Portal (CCKP)</a>. <span class="source-details">Sea level rise projections relative to the 1995-2014 reference period following Shared Socioeconomic Pathways (SSP).</span>
+                </figcaption>
+                <a href="https://climateknowledgeportal.worldbank.org/country/fiji/impacts-sea-level-rise" target="_blank" rel="noopener" class="download-btn">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    Source Data
+                </a>
+            </div>
         </figure>
     </section>
 
-    <div class="narrative-bridge">
-        <p>As the ocean keeps changing, the cost lands fast, and the way recovery gets paid for makes the paradox even sharper.</p>
-    </div>
-
-    <!-- ============ SECTION 2, EMISSIONS vs LOSS (supporting chart) ============ -->
-    <section class="article-section" id="capital">
-        <div class="article-copy">
-            <span class="editorial-kicker">Chapter 03, Who pays the bill</span>
-            <h2 class="editorial-subhead">Who caused it, and who pays for it?</h2>
-            <p>This chart compares how much each country pollutes per person against how much money it loses every year to climate disasters.</p>
-            <p>The countries that pollute the least are often paying the most. <strong>Disaster costs dwarf emission footprints</strong> in territory after territory, draining budgets that had almost nothing to do with causing the damage.</p>
+    <section class="article-section" id="funding">
+        <div class="article-copy reveal">
+            <span class="editorial-kicker">Chapter 05, Closing the Gap</span>
+            <h2 class="editorial-subhead">Funding the radar</h2>
+            <p>The Systematic Observations Financing Facility (SOFF) was created specifically to fix this hardware deficit. This map visualizes the current pipeline of infrastructure funding targeting the Pacific's blank spaces.</p>
+            <p>However, securing the initial capital is only the first hurdle. Implementation requires long-term maintenance budgets and technical support across vast oceanic territories. This is not an unsolvable crisis; it is a bureaucratic bottleneck. True climate resilience means treating data collection as critical infrastructure, moving these funds from "Pending" to "Approved" so communities can act on evidence.</p>
         </div>
-
-        <div class="flip-card-grid">
-            <div class="flip-card" tabindex="0" role="button" aria-pressed="false">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front">
-                        <span class="card-title">Fiji</span>
-                        <span class="card-sub">Did they cause it?</span>
-                    </div>
-                    <div class="flip-card-back">
-                        <span class="answer">No.</span>
-                        <p>Produces &lt;0.05% of global emissions, yet loses $450M annually to disaster recovery.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="flip-card" tabindex="0" role="button" aria-pressed="false">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front">
-                        <span class="card-title">Vanuatu</span>
-                        <span class="card-sub">Did they cause it?</span>
-                    </div>
-                    <div class="flip-card-back">
-                        <span class="answer">No.</span>
-                        <p>A carbon-negative nation that frequently ranks as the world's most vulnerable to natural disasters.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="flip-card" tabindex="0" role="button" aria-pressed="false">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front">
-                        <span class="card-title">Kiribati</span>
-                        <span class="card-sub">Did they cause it?</span>
-                    </div>
-                    <div class="flip-card-back">
-                        <span class="answer">No.</span>
-                        <p>Emissions are statistically near zero, but rising tides threaten to submerge the entire nation.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="flip-card" tabindex="0" role="button" aria-pressed="false">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front">
-                        <span class="card-title">Samoa</span>
-                        <span class="card-sub">Did they cause it?</span>
-                    </div>
-                    <div class="flip-card-back">
-                        <span class="answer">No.</span>
-                        <p>Miniscule footprint, but faces escalating cyclone intensity destroying primary infrastructure.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="flip-card" tabindex="0" role="button" aria-pressed="false">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front">
-                        <span class="card-title">Solomon Islands</span>
-                        <span class="card-sub">Did they cause it?</span>
-                    </div>
-                    <div class="flip-card-back">
-                        <span class="answer">No.</span>
-                        <p>Negligible global pollution, yet actively losing entire coastal islands to the ocean.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="flip-card" tabindex="0" role="button" aria-pressed="false">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front">
-                        <span class="card-title">Tuvalu</span>
-                        <span class="card-sub">Did they cause it?</span>
-                    </div>
-                    <div class="flip-card-back">
-                        <span class="answer">No.</span>
-                        <p>Emissions are functionally 0.00%. The nation is preparing a digital twin to preserve its heritage.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="flip-card" tabindex="0" role="button" aria-pressed="false">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front">
-                        <span class="card-title">Tonga</span>
-                        <span class="card-sub">Did they cause it?</span>
-                    </div>
-                    <div class="flip-card-back">
-                        <span class="answer">No.</span>
-                        <p>Bears an outsized economic drain as disaster losses continuously siphon their GDP.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="flip-card" tabindex="0" role="button" aria-pressed="false">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front">
-                        <span class="card-title">G20 Nations</span>
-                        <span class="card-sub">Did they cause it?</span>
-                    </div>
-                    <div class="flip-card-back guilty">
-                        <span class="answer">Yes.</span>
-                        <p>The world's largest economies account for roughly 80% of all global greenhouse gas emissions.</p>
-                    </div>
-                </div>
+        
+        <!-- Removed redundant instruction badge -->
+        <div class="chart-controls-wrapper reveal" style="margin-bottom: 2.5rem;">
+            <div class="metric-toggles">
+                <button class="metric-toggle-btn active" data-target="funding" data-filter="all">All Funding Statuses</button>
+                <button class="metric-toggle-btn" data-target="funding" data-filter="approved">Approved</button>
+                <button class="metric-toggle-btn" data-target="funding" data-filter="pending">Pending</button>
+                <button class="metric-toggle-btn" data-target="funding" data-filter="gap">Critical Gaps</button>
             </div>
         </div>
-
+        
         <figure class="article-graphic">
-            <div class="chart-canvas" id="emissions-canvas" data-scene="emissions"></div>
-            <figcaption class="source-caption">Source, Greenhouse gas emissions per capita &amp; direct disaster economic loss (sample data), Pacific Data Hub</figcaption>
-            <figcaption class="sr-only">Grid of six Pacific territories comparing economic loss against emissions per capita.</figcaption>
-        </figure>
-    </section>
-
-    <div class="narrative-bridge">
-        <p>That money drain adds up alongside a physical one: these islands are also losing the land itself.</p>
-    </div>
-
-    <!-- ============ SECTION 3, COASTLINE (supporting chart, full bleed) ============ -->
-    <section class="article-section" id="territory">
-        <div class="article-copy">
-            <span class="editorial-kicker">Chapter 04, Land that's disappearing</span>
-            <h2 class="editorial-subhead">How much land is actually being lost?</h2>
-            <p>Using satellite tracking, this section follows how coastlines and forests are physically shrinking across three islands.</p>
-            <p>Rising seas and stronger storms are washing away land that <strong>can't be replaced</strong>. For nations built entirely on these islands, that's not just a data point, it's their home disappearing.</p>
-        </div>
-
-        <figure class="bleed-media">
-            <div class="feature-media" style="height: 55vh; min-height: 360px;">
-                <div class="media-placeholder map-placeholder">
-                    <img src="https://placehold.co/1600x900/06181d/f5faf8.webp?text=Satellite+comparison+placeholder" alt="" loading="lazy">
-                    <span class="media-label">Satellite comparison placeholder</span>
-                </div>
+            <div class="chart-canvas" id="funding-canvas" data-scene="funding" style="margin-bottom: 0;"></div>
+            
+            <div class="caption-wrapper">
+                <figcaption class="source-caption">
+                    <a href="https://www.un-soff.org/" target="_blank" rel="noopener" class="source-link">UN SOFF Operations, Funding Pipeline</a>. <span class="source-details">Infrastructure funding sourced from the Systematic Observations Financing Facility. "Pending" status indicates bureaucratic delays in final disbursement.</span>
+                </figcaption>
+                <a href="https://www.un-soff.org/" target="_blank" rel="noopener" class="download-btn">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    Source Hub
+                </a>
             </div>
-            <figcaption class="bleed-caption">Before/after satellite comparison showing land loss over time. Placeholder image, final imagery coming soon.</figcaption>
         </figure>
-
-        <div class="bleed-media">
-            <div class="chart-canvas full-bleed-canvas" id="coastline-canvas" data-scene="coastline"></div>
-            <figcaption class="source-caption bleed-caption-source">Source, Coastline &amp; climate-altering land cover index (sample data), Pacific Data Hub</figcaption>
-            <figcaption class="sr-only">Three island diagrams showing forest cover shrinking against markers for land cover loss points.</figcaption>
-        </div>
     </section>
-
-    <!-- ============ CITATION / SHARE ============ -->
     <section class="citation-section">
-        <div class="citation-header">
+        <div class="citation-header reveal">
             <h3>Cite this story</h3>
         </div>
         <div class="citation-box">
@@ -304,30 +480,24 @@
             <span class="citation-tab" role="tab" aria-selected="false" tabindex="-1">BibTeX</span>
         </div>
             <div class="citation-content">
-                <p>Dissanayake, C. (2026). The Unfair Climate Price: how six climate datasets reveal an unequal ocean [Data story]. Pacific Dataviz Challenge 2026. Retrieved from https://pacific-paradox.vercel.app</p>
+                <p>Dissanayake, C. (2026). The Pacific Blind Spot: Measuring the climate monitoring gap [Data story]. Pacific Dataviz Challenge 2026. Retrieved from https://yourdomain.com</p>
                 <button class="copy-cite-btn">Copy</button>
             </div>
         </div>
     </section>
-
-    <!-- ============ METHODOLOGY ============ -->
-    <section class="methodology-section" id="methodology">
+    <section class="methodology-section reveal" id="methodology">
         <span class="editorial-kicker">Notes on the data</span>
         <h2 class="editorial-subhead">About this data</h2>
-        <p>This story was built for the <strong>Pacific Dataviz Challenge 2026</strong>, under the theme <strong>climate change</strong>. It's based on six official datasets from the Pacific Data Hub's .Stat Explorer, though the numbers you're seeing right now are placeholders.</p>
-        <p>Every chart on this page currently uses <strong>randomly generated sample data</strong> shaped like the real thing, so we could test how the story looks and feels before the final numbers go in. Nothing on this page should be read as a finding yet.</p>
+        <p>This story was built for the <strong>Pacific Dataviz Challenge 2026</strong>. It utilizes monitoring and baseline compliance data to highlight structural inequalities in climate tracking.</p>
+        <p>The charts visualize <strong>official aggregated datasets</strong> spanning 2018–2023. Meteorological compliance data is sourced directly from WMO baselines, while disaster impacts integrate the Pacific Data Hub's SDG indicators with the EM-DAT international disaster database.</p>
         <ul class="methodology-list">
-            <li>Sea level anomalies</li>
-            <li>Mean sea surface temperature anomalies</li>
-            <li>Greenhouse gas emissions per capita</li>
-            <li>Direct disaster economic loss</li>
-            <li>Coastline</li>
-            <li>Climate altering land cover index</li>
+            <li><a href="https://pacificdata.org/data/dataset/meteorological-monitoring-network-df-meteo-monitor-net" target="_blank" rel="noopener" class="source-link">Meteorological monitoring network</a> (Pacific Data Hub)</li>
+            <li><a href="https://stats.pacificdata.org/vis?lc=en&df[ds]=ds%3ASPC2&df[id]=DF_SDG_11&dq=A.VC_DSR_AFFCT" target="_blank" rel="noopener" class="source-link">Number of directly affected persons</a> (Pacific Data Hub)</li>
+            <li><a href="https://stats.pacificdata.org/vis?locale=en&dataflow[datasourceId]=SPC2&dataflow[agencyId]=SPC&dataflow[dataflowId]=DF_SDG&dataquery=.VC_DSR_AALT" target="_blank" rel="noopener" class="source-link">Direct disaster economic loss</a> (Pacific Data Hub & EM-DAT)</li>
+            <li><a href="https://www.un-soff.org/" target="_blank" rel="noopener" class="source-link">Systematic Observations Financing Facility</a> (UN SOFF)</li>
+            <li><a href="https://wmo.int/activities/global-basic-observing-network-gbon" target="_blank" rel="noopener" class="source-link">World Meteorological Organization</a> GBON Baseline Reports</li>
         </ul>
-        <p>The charts are built with <strong>D3.js</strong> and drawn as scalable graphics that stay sharp at any size. Sections animate in as you scroll, using the browser's built-in <strong>IntersectionObserver</strong>. The whole site respects reduced-motion settings, and every interactive part works with a keyboard and a screen reader.</p>
     </section>
-
-    <!-- ============ FOOTER ============ -->
     <footer class="terminal-footer">
         <svg class="footer-contours" viewBox="0 0 1440 420" preserveAspectRatio="none" aria-hidden="true">
             <g class="contour-set" id="footer-contours"></g>
@@ -337,66 +507,65 @@
                 <span class="footer-logo">Pacific <span>Dataviz</span></span>
                 <span class="footer-sublogo">Pacific Dataviz Challenge 2026</span>
             </div>
-
             <div class="footer-col">
                 <h4 class="footer-heading">About the project</h4>
-                <p class="footer-text">This data story was created for the Pacific Dataviz Challenge 2026, themed around climate change. The visualizations are built to surface structural climate inequality across the Pacific.</p>
-                <p class="footer-text">Sources for each chart sit beneath it. All datasets referenced are open data. <a href="#" class="footer-link">Source code is available on GitHub.</a></p>
+                <p class="footer-text">This data story was created for the Pacific Dataviz Challenge 2026 to expose the critical lack of meteorological tracking infrastructure in the world's most climate-vulnerable region.</p>
+                <p class="footer-text">Sources for each chart sit beneath it. Source code is available on GitHub.</p>
             </div>
-
             <div class="footer-col" id="footer-sources">
                 <h4 class="footer-heading">Data sources</h4>
                 <ul class="footer-list">
                     <li>
-                        <strong>Sea level &amp; sea surface temperature anomalies</strong>
-                        <span>Pacific Data Hub</span>
+                        <a href="https://pacificdata.org/data/dataset/meteorological-monitoring-network-df-meteo-monitor-net" target="_blank" rel="noopener" class="footer-link"><strong>Meteorological Monitoring Network</strong></a>
+                        <span>Pacific Data Hub (Official Challenge Dataset)</span>
                     </li>
                     <li>
-                        <strong>GHG emissions per capita</strong>
-                        <span>Pacific Data Hub</span>
+                        <a href="https://stats.pacificdata.org/vis?lc=en&df[ds]=ds%3ASPC2&df[id]=DF_SDG_11&dq=A.VC_DSR_AFFCT" target="_blank" rel="noopener" class="footer-link"><strong>Directly Affected Persons</strong></a>
+                        <span>Pacific Data Hub (Official Challenge Dataset)</span>
                     </li>
                     <li>
-                        <strong>Disaster economic loss &amp; coastline / land cover index</strong>
-                        <span>Pacific Data Hub</span>
+                        <a href="https://stats.pacificdata.org/vis?locale=en&dataflow[datasourceId]=SPC2&dataflow[agencyId]=SPC&dataflow[dataflowId]=DF_SDG&dataquery=.VC_DSR_AALT" target="_blank" rel="noopener" class="footer-link"><strong>Direct Disaster Economic Loss</strong></a>
+                        <span>Pacific Data Hub & EM-DAT</span>
+                    </li>
+                    <li>
+                        <a href="https://www.un-soff.org/" target="_blank" rel="noopener" class="footer-link"><strong>Hydromet Funding Pipelines</strong></a>
+                        <span>UN SOFF Operations</span>
                     </li>
                 </ul>
             </div>
-
             <div class="footer-col">
-                <h4 class="footer-heading">Tech &amp; tools used</h4>
+                <h4 class="footer-heading">Tech & tools used</h4>
                 <p class="footer-text">
-                    D3.js v7, p5.js, RawGraphs, Vanilla JS, Adobe Illustrator, Adobe Photoshop, SDMX / .Stat
+                    D3.js v7, Vanilla JS, HTML5/CSS3, Figma, QGIS, Datawrapper
                 </p>
             </div>
         </div>
-
         <div class="footer-bottom-bar">
             <div class="footer-bottom-left">
                 <span>© 2026 Chatura Dissanayake. All rights reserved.</span>
             </div>
             <div class="footer-bottom-right">
-                <span>Built by <strong>Chatura Dissanayake</strong></span>
-                <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn" class="social-icon">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zM7.119 20.452H3.554V9h3.565v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                    </svg>
-                </a>
+                <span>Built by <a href="https://chaturadissanayake.vercel.app" target="_blank" rel="noopener" class="footer-creator-link">Chatura Dissanayake</a></span>
                 <a href="https://github.com" target="_blank" rel="noopener" aria-label="GitHub" class="social-icon">
                     <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
                         <path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.79-.25.79-.55 0-.27-.01-1.16-.02-2.11-3.2.7-3.88-1.36-3.88-1.36-.52-1.34-1.28-1.7-1.28-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.04 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.64 1.58.24 2.75.12 3.04.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.14 0 1.54-.01 2.79-.01 3.17 0 .3.21.66.8.55A10.52 10.52 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z"/>
                     </svg>
                 </a>
+                <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn" class="social-icon">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zM7.119 20.452H3.554V9h3.565v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                </a>
+
             </div>
         </div>
     </footer>
 </main>
-
 <noscript>
     <p style="text-align:center; padding:2rem; font-family:sans-serif;">This data story relies on JavaScript for its interactive charts. Please turn on JavaScript to see the full experience.</p>
 </noscript>
 <script src="js/utils.js"></script>
 <script src="js/data.js"></script>
 <script src="js/animations.js"></script>
-<script src="js/main.js"></script>
 </body>
 </html>

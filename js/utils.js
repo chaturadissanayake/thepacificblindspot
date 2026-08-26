@@ -1,21 +1,16 @@
 const Utils = {
     select: (s, ctx = document) => ctx.querySelector(s),
     selectAll: (s, ctx = document) => Array.from(ctx.querySelectorAll(s)),
-
     clamp: (value, min, max) => Math.max(min, Math.min(max, value)),
-
     lerp: (start, end, t) => start + (end - start) * t,
-
     getScrollFraction(el) {
         const rect = el.getBoundingClientRect();
         const progress = -rect.top / (rect.height - window.innerHeight);
         return this.clamp(progress, 0, 1);
     },
-
     prefersReducedMotion() {
         return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     },
-
     onRaf(callback) {
         let ticking = false;
         return (...args) => {
@@ -27,11 +22,9 @@ const Utils = {
             });
         };
     },
-
     formatNumber(value, decimals = 1) {
         return Number(value).toFixed(decimals);
     },
-
     tooltip: {
         el: null,
         visible: false,
@@ -79,7 +72,6 @@ const Utils = {
         }
     }
 };
-
 window.addEventListener('DOMContentLoaded', () => {
     Utils.tooltip.init();
 });

@@ -1,9 +1,3 @@
-/* ============================================================
-   LAYOUT — structure & rhythm
-   ============================================================ */
-
-/* Mobile blocker and restrictive media queries removed for accessibility */
-
 .progress-container {
     position: fixed;
     top: 0;
@@ -19,8 +13,6 @@
     width: 0%;
     transition: width 0.1s ease-out;
 }
-
-/* ---- Nav ---- */
 .editorial-nav {
     position: fixed;
     top: 0;
@@ -30,6 +22,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 0 3rem;
+    font-family: var(--font-sans);
     font-size: 0.78rem;
     font-weight: 600;
     letter-spacing: 0.04em;
@@ -53,15 +46,24 @@
     text-transform: uppercase;
     letter-spacing: 0.06em;
     color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
 }
 .nav-brand span {
     color: var(--accent-coral);
+}
+.brand-icon {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    border-radius: 2px;
 }
 .nav-links {
     display: flex;
     gap: 1.5rem;
     align-items: center;
-    padding-right: 120px; /* Prevents overlap with the fixed highlighted lang switch */
+    padding-right: 120px;
 }
 .nav-links a {
     padding: 0.4rem 0;
@@ -82,28 +84,25 @@
 .nav-link-primary[aria-current="true"] {
     color: var(--accent-coral);
 }
-
 .nav-divider {
     width: 1px;
     height: 14px;
     background-color: var(--line);
     margin: 0 0.5rem;
 }
-
 .global-lang-switch {
     position: fixed;
     top: 0;
     right: 3rem;
-    height: 64px; /* Matches exact nav bar height */
+    height: 64px;
     z-index: 1001;
     display: flex;
-    gap: 0.6rem; /* Tighter gap for the circles */
+    gap: 0.6rem;
     align-items: center;
     font-family: var(--font-sans);
     font-size: 0.75rem;
     letter-spacing: 0.03em;
 }
-
 .lang-btn {
     display: flex;
     align-items: center;
@@ -116,22 +115,18 @@
     font-weight: 500;
     transition: all 0.2s ease;
 }
-
 .lang-btn.active {
     background-color: var(--paper);
     color: var(--bg-deep);
     border-color: var(--paper);
     font-weight: 600;
 }
-
 .lang-btn:hover:not(.active) {
     border-color: var(--paper);
     color: var(--paper);
 }
-
-/* Light mode inversion when nav slides down */
 .global-lang-switch.in-nav-mode .lang-btn {
-    border-color: #cdd8d4; /* Slightly darker than standard line for visibility */
+    border-color: #cdd8d4;
     color: var(--ink-soft);
 }
 .global-lang-switch.in-nav-mode .lang-btn.active {
@@ -143,8 +138,6 @@
     border-color: var(--ink);
     color: var(--ink);
 }
-
-/* ---- Hero runway ---- */
 .scroll-runway {
     position: relative;
     width: 100%;
@@ -163,20 +156,20 @@
     justify-content: center;
     overflow: hidden;
 }
-.hero-tide {
+.hero-radar {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     z-index: 1;
 }
-.tide-field {
+.radar-field {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
 }
-.tide-readout {
+.radar-readout {
     position: absolute;
     left: 50%;
     bottom: 6vh;
@@ -187,8 +180,6 @@
     font-family: var(--font-mono);
     z-index: 2;
 }
-
-/* ---- Masthead ---- */
 .report-header {
     width: 100%;
     max-width: 780px;
@@ -199,8 +190,6 @@
     align-items: center;
     text-align: center;
 }
-
-/* ---- Central figure (main / creative chart placeholder) ---- */
 .central-figure {
     width: 100%;
     background: var(--bg-deep);
@@ -219,12 +208,14 @@
 }
 .central-chart-canvas {
     width: 100%;
-    max-width: 1100px;
-    height: 68vh;
-    min-height: 460px;
+    max-width: 960px;
+    height: auto;
+    padding: 0 2rem; /* Syncs chart boundary with caption wrapper */
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-
-/* ---- Article sections ---- */
 .article-section {
     width: 100%;
     display: flex;
@@ -234,16 +225,7 @@
     padding-bottom: 5rem;
     position: relative;
 }
-.article-section::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 2px;
-    background-color: var(--line);
-}
+
 .article-copy {
     width: 100%;
     max-width: 680px;
@@ -258,32 +240,31 @@
 }
 .chart-canvas {
     width: 100%;
-    max-width: 960px; /* Constrains chart on ultrawide monitors */
-    height: 60vh;
-    min-height: 500px;
+    max-width: 960px;
+    height: auto;
+    min-height: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto 1.5rem auto;
+    padding: 0 2rem; 
 }
 .chart-canvas.full-bleed-canvas {
-    max-width: none; /* Let the full bleed stretch normally */
+    max-width: none;
     width: 100%;
-    height: 80vh;
-    min-height: 600px;
+    height: auto;
+    min-height: 0;
     position: relative;
     background: var(--bg-paper-soft);
     padding: 3rem 0;
 }
 .chart-canvas svg {
     width: 100%;
-    height: 100%;
-    max-height: 100%; /* Prevents SVG from overflowing vertically */
+    height: auto;
+    max-height: none;
     display: block;
     overflow: visible;
 }
-
-/* ---- Media placeholders (photo / video / map) ---- */
 .bleed-media {
     width: 100%;
     position: relative;
@@ -314,8 +295,6 @@
 .media-gallery .media-tile:nth-child(3) { grid-column: span 2; grid-row: span 1; }
 .media-gallery .media-tile:nth-child(4) { grid-column: span 3; grid-row: span 1; }
 .media-gallery .media-tile:nth-child(5) { grid-column: span 3; grid-row: span 1; }
-
-/* ---- Narrative bridge ---- */
 .narrative-bridge {
     position: relative;
     width: 100%;
@@ -350,16 +329,12 @@
     font-size: clamp(1.5rem, 1.1rem + 1.2vw, 2.1rem);
     line-height: 1.55;
 }
-
-/* ---- Methodology ---- */
 .methodology-section {
     width: 100%;
     max-width: 780px;
     margin: 0 auto 6rem auto;
     padding: 0 2rem;
 }
-
-/* ---- Footer ---- */
 .terminal-footer {
     position: relative;
     width: 100%;
@@ -396,7 +371,6 @@
     align-items: center;
     gap: 0.9rem;
 }
-
 @media (max-width: 1024px) {
     .editorial-nav { padding: 0 1.5rem; }
     .global-lang-switch { right: 1.5rem; }
@@ -410,15 +384,18 @@
         grid-template-columns: 1fr 1fr;
     }
     .chart-canvas {
-        height: 45vh;
-        min-height: 400px;
+        height: auto;
+        min-height: 0;
     }
     .central-chart-canvas {
-        height: 50vh;
-        min-height: 380px;
+        height: auto;
+        min-height: 0;
     }
     .editorial-nav {
         padding: 1.1rem 1.5rem;
+    }
+    .flip-card-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
     .narrative-bridge {
         padding: 8vh 1.5rem;
@@ -434,7 +411,6 @@
     .media-gallery .media-tile:nth-child(4) { grid-column: span 2; }
     .media-gallery .media-tile:nth-child(5) { grid-column: span 2; }
 }
-
 @media (max-width: 560px) {
     .editorial-nav { height: 56px; padding: 0 1rem; }
     .global-lang-switch { top: 0; height: 56px; right: 1.25rem; font-size: 0.8rem; gap: 0.6rem; }
@@ -457,6 +433,20 @@
     .media-gallery {
         grid-template-columns: repeat(2, 1fr);
         grid-auto-rows: 32vw;
+    }
+    .flip-card-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    .flip-card {
+        height: 300px;
+    }
+    .citation-content {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .copy-cite-btn {
+        width: 100%;
     }
     .media-gallery .media-tile:nth-child(1),
     .media-gallery .media-tile:nth-child(2),
