@@ -1,0 +1,37 @@
+[
+  {
+    "category": "Global Average",
+    "value": 68,
+    "target": 100,
+    "label": "68%",
+    "group": "global"
+  },
+  {
+    "category": "LDCs Average",
+    "value": 14,
+    "target": 100,
+    "label": "14%",
+    "group": "ldc"
+  },
+  {
+    "category": "SIDS Upper-Air",
+    "value": 13,
+    "target": 100,
+    "label": "13%",
+    "group": "sids"
+  },
+  {
+    "category": "SIDS Surface",
+    "value": 9,
+    "target": 100,
+    "label": "9%",
+    "group": "sids"
+  },
+  {
+    "category": "Pacific SIDS",
+    "value": 6,
+    "target": 100,
+    "label": "6%",
+    "group": "pacific"
+  }
+]

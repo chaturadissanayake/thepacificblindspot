@@ -1,0 +1,496 @@
+{
+  "Fiji": [
+    {
+      "year": 2018,
+      "frequency": 3,
+      "damage": 45,
+      "affected": 155726
+    },
+    {
+      "year": 2019,
+      "frequency": 2,
+      "damage": 18,
+      "affected": 78045
+    },
+    {
+      "year": 2020,
+      "frequency": 4,
+      "damage": 250,
+      "affected": 235921
+    },
+    {
+      "year": 2021,
+      "frequency": 3,
+      "damage": 110,
+      "affected": 78030
+    },
+    {
+      "year": 2022,
+      "frequency": 2,
+      "damage": 30,
+      "affected": 1787
+    },
+    {
+      "year": 2023,
+      "frequency": 2,
+      "damage": 20,
+      "affected": 0
+    }
+  ],
+  "New Caledonia": [
+    {
+      "year": 2018,
+      "frequency": 0,
+      "damage": 1,
+      "affected": 0
+    },
+    {
+      "year": 2019,
+      "frequency": 3,
+      "damage": 0,
+      "affected": 1
+    },
+    {
+      "year": 2020,
+      "frequency": 2,
+      "damage": 0,
+      "affected": 2
+    },
+    {
+      "year": 2021,
+      "frequency": 0,
+      "damage": 1,
+      "affected": 0
+    },
+    {
+      "year": 2022,
+      "frequency": 0,
+      "damage": 1,
+      "affected": 0
+    },
+    {
+      "year": 2023,
+      "frequency": 1,
+      "damage": 3,
+      "affected": 0
+    }
+  ],
+  "Papua New Guinea": [
+    {
+      "year": 2018,
+      "frequency": 0,
+      "damage": 0,
+      "affected": 0
+    },
+    {
+      "year": 2019,
+      "frequency": 3,
+      "damage": 17,
+      "affected": 2100
+    },
+    {
+      "year": 2020,
+      "frequency": 3,
+      "damage": 20,
+      "affected": 3297
+    },
+    {
+      "year": 2021,
+      "frequency": 1,
+      "damage": 4,
+      "affected": 0
+    },
+    {
+      "year": 2022,
+      "frequency": 0,
+      "damage": 4,
+      "affected": 0
+    },
+    {
+      "year": 2023,
+      "frequency": 0,
+      "damage": 0,
+      "affected": 0
+    }
+  ],
+  "Solomon Islands": [
+    {
+      "year": 2018,
+      "frequency": 1,
+      "damage": 395,
+      "affected": 194155
+    },
+    {
+      "year": 2019,
+      "frequency": 3,
+      "damage": 4,
+      "affected": 1834
+    },
+    {
+      "year": 2020,
+      "frequency": 0,
+      "damage": 16,
+      "affected": 2339
+    },
+    {
+      "year": 2021,
+      "frequency": 2,
+      "damage": 9,
+      "affected": 240
+    },
+    {
+      "year": 2022,
+      "frequency": 2,
+      "damage": 55,
+      "affected": 20080
+    },
+    {
+      "year": 2023,
+      "frequency": 0,
+      "damage": 0,
+      "affected": 0
+    }
+  ],
+  "Vanuatu": [
+    {
+      "year": 2018,
+      "frequency": 2,
+      "damage": 15,
+      "affected": 23286
+    },
+    {
+      "year": 2019,
+      "frequency": 1,
+      "damage": 8,
+      "affected": 18
+    },
+    {
+      "year": 2020,
+      "frequency": 3,
+      "damage": 600,
+      "affected": 246802
+    },
+    {
+      "year": 2021,
+      "frequency": 2,
+      "damage": 25,
+      "affected": 1400
+    },
+    {
+      "year": 2022,
+      "frequency": 1,
+      "damage": 12,
+      "affected": 0
+    },
+    {
+      "year": 2023,
+      "frequency": 4,
+      "damage": 145,
+      "affected": 0
+    }
+  ],
+  "Kiribati": [
+    {
+      "year": 2018,
+      "frequency": 1,
+      "damage": 5,
+      "affected": 0
+    },
+    {
+      "year": 2019,
+      "frequency": 1,
+      "damage": 2,
+      "affected": 3
+    },
+    {
+      "year": 2020,
+      "frequency": 2,
+      "damage": 12,
+      "affected": 15
+    },
+    {
+      "year": 2021,
+      "frequency": 1,
+      "damage": 18,
+      "affected": 333
+    },
+    {
+      "year": 2022,
+      "frequency": 1,
+      "damage": 25,
+      "affected": 0
+    },
+    {
+      "year": 2023,
+      "frequency": 1,
+      "damage": 8,
+      "affected": 0
+    }
+  ],
+  "Marshall Islands": [
+    {
+      "year": 2018,
+      "frequency": 1,
+      "damage": 0,
+      "affected": 0
+    },
+    {
+      "year": 2019,
+      "frequency": 3,
+      "damage": 78,
+      "affected": 35844
+    },
+    {
+      "year": 2020,
+      "frequency": 1,
+      "damage": 131,
+      "affected": 56718
+    },
+    {
+      "year": 2021,
+      "frequency": 0,
+      "damage": 0,
+      "affected": 0
+    },
+    {
+      "year": 2022,
+      "frequency": 1,
+      "damage": 120,
+      "affected": 52914
+    },
+    {
+      "year": 2023,
+      "frequency": 0,
+      "damage": 3,
+      "affected": 0
+    }
+  ],
+  "Nauru": [
+    {
+      "year": 2018,
+      "frequency": 1,
+      "damage": 1,
+      "affected": 0
+    },
+    {
+      "year": 2019,
+      "frequency": 1,
+      "damage": 4,
+      "affected": 63
+    },
+    {
+      "year": 2020,
+      "frequency": 1,
+      "damage": 2,
+      "affected": 1133
+    },
+    {
+      "year": 2021,
+      "frequency": 0,
+      "damage": 3,
+      "affected": 4
+    },
+    {
+      "year": 2022,
+      "frequency": 2,
+      "damage": 22,
+      "affected": 5393
+    },
+    {
+      "year": 2023,
+      "frequency": 0,
+      "damage": 2,
+      "affected": 0
+    }
+  ],
+  "Palau": [
+    {
+      "year": 2018,
+      "frequency": 0,
+      "damage": 5,
+      "affected": 0
+    },
+    {
+      "year": 2019,
+      "frequency": 0,
+      "damage": 2,
+      "affected": 0
+    },
+    {
+      "year": 2020,
+      "frequency": 0,
+      "damage": 0,
+      "affected": 0
+    },
+    {
+      "year": 2021,
+      "frequency": 2,
+      "damage": 58,
+      "affected": 24220
+    },
+    {
+      "year": 2022,
+      "frequency": 0,
+      "damage": 16,
+      "affected": 780
+    },
+    {
+      "year": 2023,
+      "frequency": 1,
+      "damage": 4,
+      "affected": 0
+    }
+  ],
+  "American Samoa": [
+    {
+      "year": 2018,
+      "frequency": 3,
+      "damage": 17,
+      "affected": 3800
+    },
+    {
+      "year": 2019,
+      "frequency": 0,
+      "damage": 2,
+      "affected": 12
+    },
+    {
+      "year": 2020,
+      "frequency": 2,
+      "damage": 14,
+      "affected": 232
+    },
+    {
+      "year": 2021,
+      "frequency": 1,
+      "damage": 0,
+      "affected": 0
+    },
+    {
+      "year": 2022,
+      "frequency": 0,
+      "damage": 3,
+      "affected": 0
+    },
+    {
+      "year": 2023,
+      "frequency": 0,
+      "damage": 2,
+      "affected": 0
+    }
+  ],
+  "Samoa": [
+    {
+      "year": 2018,
+      "frequency": 2,
+      "damage": 40,
+      "affected": 383
+    },
+    {
+      "year": 2019,
+      "frequency": 1,
+      "damage": 10,
+      "affected": 5700
+    },
+    {
+      "year": 2020,
+      "frequency": 2,
+      "damage": 65,
+      "affected": 195
+    },
+    {
+      "year": 2021,
+      "frequency": 1,
+      "damage": 15,
+      "affected": 15
+    },
+    {
+      "year": 2022,
+      "frequency": 1,
+      "damage": 8,
+      "affected": 16607
+    },
+    {
+      "year": 2023,
+      "frequency": 2,
+      "damage": 45,
+      "affected": 138
+    }
+  ],
+  "Tonga": [
+    {
+      "year": 2018,
+      "frequency": 1,
+      "damage": 120,
+      "affected": 84311
+    },
+    {
+      "year": 2019,
+      "frequency": 1,
+      "damage": 5,
+      "affected": 640
+    },
+    {
+      "year": 2020,
+      "frequency": 2,
+      "damage": 20,
+      "affected": 68
+    },
+    {
+      "year": 2021,
+      "frequency": 1,
+      "damage": 0,
+      "affected": 0
+    },
+    {
+      "year": 2022,
+      "frequency": 2,
+      "damage": 900,
+      "affected": 0
+    },
+    {
+      "year": 2023,
+      "frequency": 1,
+      "damage": 15,
+      "affected": 0
+    }
+  ],
+  "Tuvalu": [
+    {
+      "year": 2018,
+      "frequency": 0,
+      "damage": 3,
+      "affected": 0
+    },
+    {
+      "year": 2019,
+      "frequency": 1,
+      "damage": 5,
+      "affected": 0
+    },
+    {
+      "year": 2020,
+      "frequency": 3,
+      "damage": 14,
+      "affected": 2266
+    },
+    {
+      "year": 2021,
+      "frequency": 0,
+      "damage": 2,
+      "affected": 6
+    },
+    {
+      "year": 2022,
+      "frequency": 1,
+      "damage": 30,
+      "affected": 7748
+    },
+    {
+      "year": 2023,
+      "frequency": 0,
+      "damage": 3,
+      "affected": 0
+    }
+  ]
+}
