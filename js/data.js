@@ -173,8 +173,8 @@ const AppData = {
     // Chapter 05: UN SOFF Financial Pipeline (Simulated allocations for Pacific)
     funding: [
         { country: 'Fiji', x: 45, y: 60, status: 'Approved', amount: 12.5, radius: 24 },
-        { country: 'Vanuatu', x: 30, y: 55, status: 'Provisional', amount: 8.2, radius: 18 },
-        { country: 'Solomon Islands', x: 20, y: 45, status: 'Provisional', amount: 9.1, radius: 20 },
+        { country: 'Vanuatu', x: 30, y: 55, status: 'Pending', amount: 8.2, radius: 18 },
+        { country: 'Solomon Islands', x: 20, y: 45, status: 'Pending', amount: 9.1, radius: 20 },
         { country: 'Kiribati', x: 65, y: 35, status: 'Gap', amount: 0, radius: 8 },
         { country: 'Samoa', x: 75, y: 50, status: 'Approved', amount: 6.4, radius: 15 },
         { country: 'Tonga', x: 60, y: 70, status: 'Pending', amount: 4.5, radius: 12 },
