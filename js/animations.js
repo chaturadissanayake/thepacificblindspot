@@ -3,15 +3,6 @@ const Charts = {
     ink: '#0f172a',
     inkSoft: '#475569',
     gridLine: '#e2e8f0',
-    // COLOR SYSTEM — kept deliberately to 3 hues so color always carries
-    // the same meaning across every chart in the story:
-    //   teal  = adequate / present / good outcome (infrastructure exists,
-    //           funding approved, lower sea-level scenario)
-    //   coral = deficient / absent / bad outcome (in three shades so
-    //           Chapter 2's three "bad news" metrics read as one family
-    //           instead of three unrelated colors)
-    //   gold  = pending / caution, plus the editorial kicker/branding
-    //           accent — never used to encode a data value's severity
     coral: '#b26075',
     coralLight: '#d38a9c',
     coralDark: '#8c4a5f',
@@ -19,7 +10,6 @@ const Charts = {
     gold: '#d4af37',
     dur(ms) { return Utils.prefersReducedMotion() ? 0 : ms; },
 
-    // Digit-by-digit counting helper (counts up or down depending on from/to).
     countText(el, from, to, opts = {}) {
         if (!el) return;
         const decimals = opts.decimals ?? 1;
@@ -94,16 +84,12 @@ const Charts = {
         if (!container) return;
         container.innerHTML = '';
         const width = 960, height = 280; 
-        // FIX: left/right margins were 200/60 — badly asymmetric, so the
-        // whole bar chart sat visibly off-center inside its frame. Equal
-        // margins center the 0–100% plot area within the 960-wide canvas.
         const margin = { top: 75, right: 150, bottom: 20, left: 150 }; 
         const svg = d3.select(container).append('svg')
             .attr('viewBox', `0 0 ${width} ${height}`)
             .attr('preserveAspectRatio', 'xMidYMid meet');
             
         const x = d3.scaleLinear().domain([0, 100]).range([margin.left, width - margin.right]);
-        // UX FIX: Reduced padding from 0.2 to 0.12 to make bars thicker
         const y = d3.scaleBand().domain(AppData.compliance.map(d => d.category)).range([margin.top, height - margin.bottom]).padding(0.12); 
         
         const xAxis = svg.append('g').attr('class', 'd3-axis')
@@ -119,7 +105,28 @@ const Charts = {
             .call(d3.axisLeft(y).tickSize(0));
             
         yAxis.select('.domain').remove();
-        yAxis.selectAll('text').attr('fill', '#f0f4f4').style('font-size', '14px').style('font-weight', '600').attr('dx', '-1.5em'); 
+        yAxis.selectAll('text')
+            .attr('fill', '#f0f4f4')
+            .style('font-size', '14px')
+            .style('font-weight', '600')
+            .attr('dx', '-1.5em')
+            .style('cursor', d => (d.includes('SIDS') || d.includes('LDCs')) ? 'help' : 'default')
+            .each(function(d) {
+                // Attach a clean editorial asterisk if it's an acronym
+                if (d.includes('SIDS') || d.includes('LDCs')) {
+                    d3.select(this).append('tspan')
+                      .text(' *')
+                      .style('fill', 'var(--accent-coral)')
+                      .style('font-size', '16px')
+                      .style('baseline-shift', 'super');
+                }
+            })
+            .on('mouseenter', (event, d) => {
+                if (d.includes('SIDS')) Utils.tooltip.show(event, 'Small Island Developing States', 'A distinct group of developing countries facing specific social, economic, and environmental vulnerabilities.');
+                if (d.includes('LDCs')) Utils.tooltip.show(event, 'Least Developed Countries', 'Low-income countries confronting severe structural impediments to sustainable development.');
+            })
+            .on('mousemove', event => Utils.tooltip.move(event))
+            .on('mouseleave', () => Utils.tooltip.hide()); 
             
         const row = svg.selectAll('.row')
             .data(AppData.compliance).enter().append('g').attr('class', 'row')
@@ -128,14 +135,13 @@ const Charts = {
             .on('mousemove', event => Utils.tooltip.move(event))
             .on('mouseleave', () => Utils.tooltip.hide());
             
-        // UX FIX: Use dynamic bandwidth for thick, proportional bars
         row.append('rect')
             .attr('class', 'deficit-bar')
             .attr('x', x(0))
             .attr('y', d => y(d.category))
             .attr('height', y.bandwidth())
             .attr('width', x(100) - x(0))
-            .attr('fill', 'rgba(178, 96, 117, 0.14)') // FIX: was a neutral gray; tinted coral so the empty track itself reads as "the deficit," not just blank space
+            .attr('fill', 'rgba(178, 96, 117, 0.14)') 
             .attr('rx', 2);
             
         row.append('rect')
@@ -145,12 +151,6 @@ const Charts = {
             .attr('height', y.bandwidth())
             .attr('width', 0)
             .attr('rx', 2)
-            // FIX: this used to be coral — the same "danger" color used for
-            // Critical Gaps, damage, and worst-case scenarios everywhere
-            // else on the site — but here it colored the GOOD number
-            // (coverage that actually exists). Switched to teal so
-            // "teal = present/adequate, coral = missing/deficient" holds
-            // true across every chart in the story.
             .attr('fill', this.teal);
             
         row.append('text')
@@ -161,7 +161,6 @@ const Charts = {
             .style('font-size', '12px').style('font-weight', '700').style('font-family', 'var(--font-mono)')
             .attr('opacity', 0);
             
-        // Positioned higher to avoid axis overlap
         const legend = svg.append('g').attr('transform', `translate(${margin.left}, 10)`);
         legend.append('rect').attr('x', 0).attr('y', -5).attr('width', 10).attr('height', 10).attr('rx', 2).attr('fill', this.teal);
         legend.append('text').attr('x', 18).attr('y', 4).text('Active Infrastructure').style('font-size', '11px').attr('fill', 'rgba(255,255,255,0.7)');
@@ -184,9 +183,6 @@ const Charts = {
                 return barWidth > 35 ? x(d.value) - 8 : x(d.value) + 8;
             })
             .attr('text-anchor', d => (x(d.value) - x(0)) > 35 ? 'end' : 'start')
-            // FIX: text is now dark ink when it sits inside the teal bar
-            // (white-on-teal fails contrast) and white when it sits
-            // outside the bar on the dark background.
             .attr('fill', d => (x(d.value) - x(0)) > 35 ? this.ink : '#ffffff')
             .attr('opacity', 1);
 
@@ -203,7 +199,6 @@ const Charts = {
         if (!container) return;
         container.innerHTML = '';
         const width = 960, height = 400;
-        // FIX: equalized margins so the bar band-scale is centered.
         const margin = { top: 40, right: 60, bottom: 40, left: 60 }; 
         const svg = d3.select(container).append('svg')
             .attr('viewBox', `0 0 ${width} ${height}`)
@@ -216,7 +211,6 @@ const Charts = {
             currentMetric: "damage" 
         };
         
-        // Restore standard padding for axis spacing
         const x = d3.scaleBand().domain(data.map(d => d.year)).range([margin.left, width - margin.right]).padding(0.4);
         const y = d3.scaleLinear().domain([0, d3.max(data, d => d.damage) * 1.15]).range([height - margin.bottom, margin.top]);
         
@@ -241,7 +235,6 @@ const Charts = {
             .style('font-size', '12px')
             .attr('dy', '1em');
             
-        // UX FIX: Hardcode exact 38px width to match horizontal bar thickness across the dashboard
         const bars = svg.selectAll('.bar').data(data).enter().append('rect')
             .attr('class', 'bar')
             .attr('x', d => x(d.year) + x.bandwidth() / 2 - 19)
@@ -261,10 +254,6 @@ const Charts = {
             .on('mousemove', event => Utils.tooltip.move(event))
             .on('mouseleave', () => Utils.tooltip.hide());
             
-        // FIX: scope the color variable to this chart's own section
-        // instead of the document root. Writing it to :root meant
-        // switching a metric here also repainted the unrelated active
-        // toggle buttons in Chapter 01 and Chapter 05.
         const stakesSection = document.getElementById('stakes');
         if (stakesSection) {
             stakesSection.style.setProperty('--exposure-color', this.coral);
@@ -295,16 +284,8 @@ const Charts = {
         };
 
         const activeColor = isDamage ? this.coral : (isAffected ? this.coralDark : this.coralLight);
-        // FIX: Event Frequency was teal and Affected Persons was gold —
-        // borrowing the "good outcome" and "caution" colors from other
-        // charts for what are, in this chart, three flavors of the same
-        // bad news. All three now live in one coral family (shades),
-        // matching the user's ask for the palette to track meaning.
         const activeText = state.currentMetric === 'frequency' ? this.ink : '#ffffff';
         
-        // FIX: sync UI control colors on the #stakes section only (see
-        // note in initExposure above) so the effect stays local to
-        // Chapter 02's controls.
         const stakesSection = document.getElementById('stakes');
         if (stakesSection) {
             stakesSection.style.setProperty('--exposure-color', activeColor);
@@ -338,13 +319,221 @@ const Charts = {
             d.affected ? `Affected Population: ${Utils.formatNumber(d.affected, 0)}` : ''
         ));
     },
+
+    initFlooding() {
+        const container = Utils.select('#flooding-canvas');
+        if (!container) return; 
+        container.innerHTML = '';
+        const width = 960, height = 240;
+        const margin = { top: 30, right: 100, bottom: 30, left: 100 };
+        const svg = d3.select(container).append('svg')
+            .attr('viewBox', `0 0 ${width} ${height}`)
+            .attr('preserveAspectRatio', 'xMidYMid meet');
+            
+        const data = AppData.historicalFlooding;
+        const x = d3.scaleBand().domain(data.map(d => d.year)).range([margin.left, width - margin.right]).padding(0.2);
+        const y = d3.scaleLinear().domain([0, d3.max(data, d => d.days) || 10]).range([height - margin.bottom, margin.top]);
+        
+        const xAxisGroup = svg.append('g').attr('class', 'd3-axis')
+            .attr('transform', `translate(0,${height - margin.bottom})`)
+            .call(d3.axisBottom(x).tickValues([1980, 1990, 2000, 2010, 2015]).tickSize(0));
+        xAxisGroup.select('.domain').remove();
+        xAxisGroup.selectAll('text').attr('fill', this.inkSoft).style('font-family', 'var(--font-mono)').attr('dy', '1em');
+        
+        const yAxisGroup = svg.append('g').attr('class', 'd3-grid')
+            .attr('transform', `translate(${margin.left},0)`)
+            .call(d3.axisLeft(y).ticks(3).tickSize(-(width - margin.left - margin.right)));
+        yAxisGroup.select('.domain').remove();
+        yAxisGroup.selectAll('line').attr('stroke', '#e2e8f0');
+        yAxisGroup.selectAll('text').attr('fill', this.inkSoft).style('font-family', 'var(--font-mono)').attr('x', -15);
+        
+        svg.append('text').attr('x', margin.left - 15).attr('y', margin.top - 15).text('High Tide Floods (Days per Yr)').attr('fill', this.inkSoft).style('font-family', 'var(--font-sans)').style('font-size', '12px');
+        
+        const bars = svg.selectAll('.flood-bar').data(data).enter().append('rect')
+            .attr('class', 'flood-bar')
+            .attr('x', d => x(d.year))
+            .attr('y', height - margin.bottom)
+            .attr('width', x.bandwidth())
+            .attr('height', 0)
+            .attr('rx', 1)
+            .attr('fill', d => d.year >= 2005 ? this.coral : this.teal)
+            .style('cursor', 'pointer')
+            .on('mouseenter', (event, d) => Utils.tooltip.show(event, `Year: ${d.year}`, `Floods: ${d.days} days`))
+            .on('mousemove', event => Utils.tooltip.move(event))
+            .on('mouseleave', () => Utils.tooltip.hide());
+            
+        this.state.flooding = { svg, bars, x, y, height, margin };
+    },
     
+    updateFlooding() {
+        if (!this.state.flooding) return;
+        const { bars, y, height, margin } = this.state.flooding;
+        bars.transition().duration(this.dur(1000)).ease(d3.easeCubicOut).delay((d,i) => i * 15)
+            .attr('y', d => y(d.days))
+            .attr('height', d => height - margin.bottom - y(d.days));
+    },
+
+    initProjection() {
+        const container = Utils.select('#projection-canvas');
+        if (!container) return;
+        container.innerHTML = '';
+        const width = 960, height = 450; 
+        const margin = { top: 40, right: 100, bottom: 40, left: 100 }; 
+        const svg = d3.select(container).append('svg')
+            .attr('viewBox', `0 0 ${width} ${height}`)
+            .attr('preserveAspectRatio', 'xMidYMid meet');
+            
+        const data = AppData.projections.typical;
+        const histData = AppData.historicalSeaLevel;
+        
+        // Expanded Domain to include historical observations
+        const x = d3.scaleLinear().domain([1990, 2100]).range([margin.left, width - margin.right]);
+        const y = d3.scaleLinear().domain([0, 120]).range([height - margin.bottom, margin.top]);
+        
+        const yAxisGroup = svg.append('g').attr('class', 'd3-grid').attr('transform', `translate(${margin.left},0)`);
+        yAxisGroup.call(d3.axisLeft(y).tickValues([0, 30, 60, 90, 120]).tickSize(-(width - margin.left - margin.right)));
+        yAxisGroup.select('.domain').remove();
+        yAxisGroup.selectAll('line').attr('stroke', '#e2e8f0'); 
+        yAxisGroup.selectAll('text').attr('fill', '#475569').style('font-family', 'var(--font-sans)').attr('x', -15).attr('dy', '-0.3em');
+        
+        svg.append('text').attr('x', margin.left - 15).attr('y', y(120) - 15).text('cm').attr('fill', '#475569').style('font-family', 'var(--font-sans)').style('font-size', '12px');
+
+        const xAxis = svg.append('g').attr('class', 'd3-axis').attr('transform', `translate(0,${height - margin.bottom})`)
+            .call(d3.axisBottom(x).tickValues([1993, 2020, 2050, 2100]).tickFormat(d3.format("d")).tickSize(0));
+        xAxis.select('.domain').remove();
+        xAxis.selectAll('text').attr('fill', '#0f172a').style('font-family', 'var(--font-sans)').style('font-size', '14px').style('font-weight', '600').attr('dy', '1.5em');
+
+        // Draw Historical Observation Line
+        const histLine = d3.line()
+            .x(d => x(d.year))
+            .y(d => y(d.val / 10)) // Converted from raw mm to cm for the chart
+            .curve(d3.curveMonotoneX);
+
+        const histPath = svg.append('path')
+            .datum(histData)
+            .attr('class', 'historical-line')
+            .attr('fill', 'none')
+            .attr('stroke', this.inkSoft)
+            .attr('stroke-width', 2)
+            .attr('stroke-dasharray', '4 4')
+            .attr('d', histLine)
+            .attr('opacity', 0);
+
+        const histLabel = svg.append('text')
+            .attr('class', 'hist-label')
+            .attr('x', x(2005))
+            .attr('y', y(40) - 10)
+            .attr('text-anchor', 'middle')
+            .attr('fill', this.inkSoft)
+            .style('font-family', 'var(--font-mono)')
+            .style('font-size', '11px')
+            .text('Observed History')
+            .attr('opacity', 0);
+
+        // Draw the filled area
+        const area = d3.area()
+            .x(d => x(d.year))
+            .y0(y(0))
+            .y1(d => y(d.val))
+            .curve(d3.curveMonotoneX);
+
+        const areaPath = svg.append('path')
+            .datum(data)
+            .attr('class', 'projection-area')
+            .attr('fill', 'rgba(126, 178, 168, 0.2)') 
+            .attr('d', area);
+
+        // Draw the line
+        const line = d3.line()
+            .x(d => x(d.year))
+            .y(d => y(d.val))
+            .curve(d3.curveMonotoneX);
+
+        const linePath = svg.append('path')
+            .datum(data)
+            .attr('class', 'projection-line')
+            .attr('fill', 'none')
+            .attr('stroke', '#0f172a')
+            .attr('stroke-width', 3)
+            .attr('d', line);
+
+        // Draw the data points
+        const points = svg.selectAll('.projection-point').data(data).enter().append('circle')
+            .attr('class', 'projection-point')
+            .attr('cx', d => x(d.year))
+            .attr('cy', d => y(d.val))
+            .attr('r', 6)
+            .attr('fill', '#ffffff')
+            .attr('stroke', '#0f172a')
+            .attr('stroke-width', 2);
+
+        // Draw the value labels
+        const labels = svg.selectAll('.projection-label').data(data).enter().append('text')
+            .attr('class', 'projection-label')
+            .attr('x', d => x(d.year))
+            .attr('y', d => y(d.val) - 20)
+            .attr('text-anchor', 'middle')
+            .attr('fill', '#0f172a')
+            .style('font-family', 'var(--font-mono)')
+            .style('font-weight', '600')
+            .style('font-size', '13px')
+            .text(d => `+${d.val.toFixed(1)}`);
+
+        this.state.projection = { svg, areaPath, linePath, points, labels, histPath, histLabel, x, y, area, line };
+    },
+    
+    updateProjection(scenario) {
+        if (!this.state.projection) return;
+        const { areaPath, linePath, points, labels, histPath, histLabel, x, y, area, line } = this.state.projection;
+        const data = AppData.projections[scenario];
+        
+        let strokeColor = '#0f172a'; 
+        let areaColor = 'rgba(15, 23, 42, 0.08)'; 
+        
+        if (scenario === 'lower') {
+            strokeColor = '#7eb2a8'; 
+            areaColor = 'rgba(126, 178, 168, 0.2)';
+        } else if (scenario === 'higher') {
+            strokeColor = '#b26075'; 
+            areaColor = 'rgba(178, 96, 117, 0.15)';
+        }
+
+        if (histPath) histPath.transition().duration(this.dur(1000)).ease(d3.easeCubicOut).attr('opacity', 1);
+        if (histLabel) histLabel.transition().duration(this.dur(1000)).ease(d3.easeCubicOut).attr('opacity', 1);
+        
+        areaPath.datum(data).transition().duration(this.dur(1000)).ease(d3.easeCubicOut)
+            .attr('fill', areaColor)
+            .attr('d', area);
+
+        linePath.datum(data).transition().duration(this.dur(1000)).ease(d3.easeCubicOut)
+            .attr('stroke', strokeColor)
+            .attr('d', line);
+
+        points.data(data).transition().duration(this.dur(1000)).ease(d3.easeCubicOut)
+            .attr('cx', d => x(d.year))
+            .attr('cy', d => y(d.val))
+            .attr('stroke', strokeColor);
+
+        labels.data(data).transition().duration(this.dur(1000)).ease(d3.easeCubicOut)
+            .attr('x', d => x(d.year))
+            .attr('y', d => y(d.val) - 20)
+            .attr('fill', strokeColor)
+            .tween('text', function(d) {
+                const rawText = this.textContent || "0";
+                const cleanText = rawText.replace(/[^0-9.]/g, ''); 
+                const currentVal = parseFloat(cleanText) || 0;
+                const i = d3.interpolate(currentVal, d.val);
+                return function(t) {
+                    this.textContent = `+${i(t).toFixed(1)}`;
+                };
+            });
+    },
+
     initFunding() {
         const container = Utils.select('#funding-canvas');
         if (!container) return;
         container.innerHTML = '';
         const width = 960, height = 450;
-        // FIX: equalized margins so the funding bars center in the frame.
         const margin = { top: 55, right: 170, bottom: 40, left: 170 };
         const svg = d3.select(container).append('svg')
             .attr('viewBox', `0 0 ${width} ${height}`)
@@ -353,7 +542,6 @@ const Charts = {
         const data = [...AppData.funding].sort((a,b) => b.amount - a.amount);
         
         const x = d3.scaleLinear().domain([0, 15]).range([margin.left, width - margin.right]);
-        // UX FIX: Reduced padding from 0.2 to 0.12 to make bars thicker
         const y = d3.scaleBand().domain(data.map(d => d.country)).range([margin.top, height - margin.bottom]).padding(0.12);
         
         const xAxisGroup = svg.append('g').attr('class', 'd3-grid')
@@ -377,7 +565,6 @@ const Charts = {
         
         const bars = svg.selectAll('.fund-bar').data(data).enter().append('g').attr('class', 'fund-bar');
         
-        // UX FIX: Use dynamic bandwidth for thick, proportional bars
         bars.append('rect')
             .attr('x', margin.left)
             .attr('y', d => y(d.country))
@@ -390,7 +577,6 @@ const Charts = {
             .on('mousemove', event => Utils.tooltip.move(event))
             .on('mouseleave', () => Utils.tooltip.hide());
 
-        // Zero-value marker centered identically
         bars.append('line')
             .attr('class', 'zero-tick')
             .attr('x1', margin.left).attr('x2', margin.left)
@@ -439,131 +625,6 @@ const Charts = {
         } else {
             bars.transition().duration(this.dur(400)).ease(d3.easeCubicOut).style('opacity', 1);        
         }
-    },
-
-    initProjection() {
-        const container = Utils.select('#projection-canvas');
-        if (!container) return;
-        container.innerHTML = '';
-        const width = 960, height = 450; 
-        const margin = { top: 40, right: 100, bottom: 40, left: 100 }; 
-        const svg = d3.select(container).append('svg')
-            .attr('viewBox', `0 0 ${width} ${height}`)
-            .attr('preserveAspectRatio', 'xMidYMid meet');
-            
-        const data = AppData.projections.typical;
-        
-        // Use a continuous linear scale for true proportional time gaps (30 years vs 50 years)
-        const x = d3.scaleLinear().domain([2020, 2100]).range([margin.left, width - margin.right]);
-        const y = d3.scaleLinear().domain([0, 120]).range([height - margin.bottom, margin.top]);
-        
-        const yAxisGroup = svg.append('g').attr('class', 'd3-grid').attr('transform', `translate(${margin.left},0)`);
-        yAxisGroup.call(d3.axisLeft(y).tickValues([0, 30, 60, 90, 120]).tickSize(-(width - margin.left - margin.right)));
-        yAxisGroup.select('.domain').remove();
-        yAxisGroup.selectAll('line').attr('stroke', '#e2e8f0'); 
-        yAxisGroup.selectAll('text').attr('fill', '#475569').style('font-family', 'var(--font-sans)').attr('x', -15).attr('dy', '-0.3em');
-        
-        svg.append('text').attr('x', margin.left - 15).attr('y', y(120) - 15).text('cm').attr('fill', '#475569').style('font-family', 'var(--font-sans)').style('font-size', '12px');
-
-        const xAxis = svg.append('g').attr('class', 'd3-axis').attr('transform', `translate(0,${height - margin.bottom})`)
-            .call(d3.axisBottom(x).tickValues([2020, 2050, 2100]).tickFormat(d3.format("d")).tickSize(0));
-        xAxis.select('.domain').remove();
-        xAxis.selectAll('text').attr('fill', '#0f172a').style('font-family', 'var(--font-sans)').style('font-size', '14px').style('font-weight', '600').attr('dy', '1.5em');
-
-        // Draw the filled area
-        const area = d3.area()
-            .x(d => x(d.year))
-            .y0(y(0))
-            .y1(d => y(d.val))
-            .curve(d3.curveMonotoneX);
-
-        const areaPath = svg.append('path')
-            .datum(data)
-            .attr('class', 'projection-area')
-            .attr('fill', 'rgba(126, 178, 168, 0.2)') // Teal soft
-            .attr('d', area);
-
-        // Draw the line
-        const line = d3.line()
-            .x(d => x(d.year))
-            .y(d => y(d.val))
-            .curve(d3.curveMonotoneX);
-
-        const linePath = svg.append('path')
-            .datum(data)
-            .attr('class', 'projection-line')
-            .attr('fill', 'none')
-            .attr('stroke', '#0f172a')
-            .attr('stroke-width', 3)
-            .attr('d', line);
-
-        // Draw the data points
-        const points = svg.selectAll('.projection-point').data(data).enter().append('circle')
-            .attr('class', 'projection-point')
-            .attr('cx', d => x(d.year))
-            .attr('cy', d => y(d.val))
-            .attr('r', 6)
-            .attr('fill', '#ffffff')
-            .attr('stroke', '#0f172a')
-            .attr('stroke-width', 2);
-
-        // Draw the value labels
-        const labels = svg.selectAll('.projection-label').data(data).enter().append('text')
-            .attr('class', 'projection-label')
-            .attr('x', d => x(d.year))
-            .attr('y', d => y(d.val) - 20)
-            .attr('text-anchor', 'middle')
-            .attr('fill', '#0f172a')
-            .style('font-family', 'var(--font-mono)')
-            .style('font-weight', '600')
-            .style('font-size', '13px')
-            .text(d => `+${d.val.toFixed(1)}`);
-
-        this.state.projection = { svg, areaPath, linePath, points, labels, x, y, area, line };
-    },
-    
-    updateProjection(scenario) {
-        if (!this.state.projection) return;
-        const { areaPath, linePath, points, labels, x, y, area, line } = this.state.projection;
-        const data = AppData.projections[scenario];
-        
-        let strokeColor = '#0f172a'; // Default to Ink (Typical)
-        let areaColor = 'rgba(15, 23, 42, 0.08)'; // Default to Ink soft
-        
-        if (scenario === 'lower') {
-            strokeColor = '#7eb2a8'; // Teal
-            areaColor = 'rgba(126, 178, 168, 0.2)';
-        } else if (scenario === 'higher') {
-            strokeColor = '#b26075'; // Coral
-            areaColor = 'rgba(178, 96, 117, 0.15)';
-        }
-        
-        areaPath.datum(data).transition().duration(this.dur(1000)).ease(d3.easeCubicOut)
-            .attr('fill', areaColor)
-            .attr('d', area);
-
-        linePath.datum(data).transition().duration(this.dur(1000)).ease(d3.easeCubicOut)
-            .attr('stroke', strokeColor)
-            .attr('d', line);
-
-        points.data(data).transition().duration(this.dur(1000)).ease(d3.easeCubicOut)
-            .attr('cx', d => x(d.year))
-            .attr('cy', d => y(d.val))
-            .attr('stroke', strokeColor);
-
-        labels.data(data).transition().duration(this.dur(1000)).ease(d3.easeCubicOut)
-            .attr('x', d => x(d.year))
-            .attr('y', d => y(d.val) - 20)
-            .attr('fill', strokeColor)
-            .tween('text', function(d) {
-                const rawText = this.textContent || "0";
-                const cleanText = rawText.replace(/[^0-9.]/g, ''); 
-                const currentVal = parseFloat(cleanText) || 0;
-                const i = d3.interpolate(currentVal, d.val);
-                return function(t) {
-                    this.textContent = `+${i(t).toFixed(1)}`;
-                };
-            });
     }
 };
 
@@ -575,6 +636,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderCharts = () => {
         Charts.initCompliance();
         Charts.initExposure();
+        Charts.initFlooding(); 
         Charts.initProjection();
         Charts.initFunding();
         Charts.initRadarGrid('#radar-grid-lines');
@@ -594,7 +656,22 @@ document.addEventListener('DOMContentLoaded', () => {
     initScrollytellingObserver();
     initNavObserver();
     initRevealObserver();
+    initToastObserver();
     initUIElements();
+    // FIX: every chart tooltip only listens for mouseenter/mousemove/
+    // mouseleave. Touch browsers synthesize a mouseenter on tap (so
+    // tooltips do show up on mobile), but they never fire mouseleave --
+    // there's no pointer to "leave" -- so on touch devices the tooltip
+    // just stayed pinned over the chart with no way to dismiss it. Hide
+    // it as soon as the user taps anywhere else, or scrolls away.
+    document.addEventListener('touchstart', (e) => {
+        if (Utils.tooltip.visible && !e.target.closest('svg')) {
+            Utils.tooltip.hide();
+        }
+    }, { passive: true });
+    window.addEventListener('scroll', Utils.onRaf(() => {
+        if (Utils.tooltip.visible) Utils.tooltip.hide();
+    }), { passive: true });
     window.addEventListener('scroll', Utils.onRaf(() => {
         updateProgressBar();
         updateHeroTarget();
@@ -730,10 +807,27 @@ function initRevealObserver() {
     targets.forEach((target) => observer.observe(target));
 }
 
+function initToastObserver() {
+    const toast = Utils.select('#mobile-toast');
+    const firstChart = document.getElementById('compliance-canvas');
+    if (!toast || !firstChart) return;
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            if (toast.dataset.dismissed !== 'true') {
+                toast.classList.add('is-visible');
+            }
+            observer.disconnect();
+        });
+    }, { root: null, rootMargin: '0px', threshold: 0.3 });
+    observer.observe(firstChart);
+}
+
 function triggerChartUpdate(canvas) {
     const scene = canvas.getAttribute('data-scene');
     if (scene === 'compliance') Charts.updateCompliance();
     if (scene === 'exposure') Charts.updateExposure();
+    if (scene === 'flooding') Charts.updateFlooding();
     if (scene === 'projection') Charts.updateProjection('typical');
     if (scene === 'funding') Charts.updateFunding();
 }
@@ -758,9 +852,59 @@ function updateNavVisibility() {
 }
 
 function initUIElements() {
-    // Every chart's underlying dataset can be downloaded as JSON (never
-    // CSV/Excel) directly from AppData, so the download always matches
-    // exactly what's plotted on screen.
+    // Mobile Toast: only appears once the first chart scrolls into view
+    // (see the IntersectionObserver set up in DOMContentLoaded below),
+    // and stays dismissed for the rest of the session once closed.
+    const toast = Utils.select('#mobile-toast');
+    const toastClose = Utils.select('#toast-close');
+    if (toast && toastClose) {
+        toastClose.addEventListener('click', () => {
+            toast.classList.remove('is-visible');
+            toast.dataset.dismissed = 'true';
+        });
+    }
+
+    // Mobile Menu Toggle
+    const menuToggle = Utils.select('.mobile-menu-toggle');
+    const navLinks = Utils.select('.nav-links');
+    const closeMobileMenu = ({ restoreFocus = false } = {}) => {
+        navLinks.classList.remove('nav-open');
+        document.body.style.overflow = '';
+        if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
+        if (restoreFocus && menuToggle) menuToggle.focus();
+    };
+    if (menuToggle && navLinks) {
+        menuToggle.setAttribute('aria-expanded', 'false');
+        menuToggle.addEventListener('click', () => {
+            const isOpen = navLinks.classList.toggle('nav-open');
+            document.body.style.overflow = isOpen ? 'hidden' : ''; // Prevent scrolling when menu is open
+            menuToggle.setAttribute('aria-expanded', String(isOpen));
+            // FIX: opening a full-screen drawer without moving focus into
+            // it leaves keyboard and screen-reader users still "inside"
+            // whatever was behind it -- tabbing or swiping continues
+            // through invisible page content instead of the menu that's
+            // actually on screen. Send focus to the first link on open.
+            if (isOpen) {
+                const firstLink = navLinks.querySelector('a');
+                if (firstLink) firstLink.focus();
+            }
+        });
+        // FIX: tapping a nav link (in-page anchor or otherwise) previously
+        // left the drawer open and body scroll locked, since nothing ever
+        // removed 'nav-open'. For same-page anchors this made the menu
+        // look broken -- the page scrolled behind the still-open drawer.
+        navLinks.querySelectorAll('a').forEach((link) => {
+            link.addEventListener('click', () => closeMobileMenu());
+        });
+        // Close on Escape, and return focus to the toggle button so
+        // keyboard users land back where they started.
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && navLinks.classList.contains('nav-open')) {
+                closeMobileMenu({ restoreFocus: true });
+            }
+        });
+    }
+
     const downloadableDatasets = {
         compliance: AppData.compliance,
         exposure: AppData.exposure,
@@ -786,13 +930,11 @@ function initUIElements() {
     Utils.selectAll('.metric-toggle-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const targetChart = e.target.getAttribute('data-target');
-            
             const parent = e.target.closest('.metric-toggles');
             if (parent) {
                 parent.querySelectorAll('.metric-toggle-btn').forEach(b => b.classList.remove('active'));
                 e.target.classList.add('active');
             }
-            
             if (targetChart === 'compliance') {
                 Charts.updateCompliance(e.target.getAttribute('data-filter'));
             } else if (targetChart === 'funding') {
@@ -817,7 +959,6 @@ function initUIElements() {
             if(dynamicText) {
                 const finalVals = { 'lower': 45.2, 'typical': 74.47, 'higher': 104.6 };
                 const targetVal = finalVals[scenario];
-                // UX FIX: Get current numeric value directly from text to smoothly animate up or down
                 const currentVal = parseFloat(dynamicText.textContent.replace(/[^0-9.]/g, '')) || 0;
                 
                 let textColor = 'var(--ink)';
@@ -836,54 +977,115 @@ function initUIElements() {
     });
 
     Utils.selectAll('.flip-card').forEach(card => {
-        const toggleCard = () => {
-            const isFlipped = card.classList.toggle('flipped');
-            card.setAttribute('aria-pressed', isFlipped);
+        const btns = card.querySelectorAll('.quiz-btn');
+        const feedback = card.querySelector('.quiz-feedback');
+        
+        const triggerChartUpdate = () => {
+            const countryTitle = card.querySelector('.card-title').innerText.trim();
+            const filterBtns = Array.from(document.querySelectorAll('.chart-filter-btn'));
+            const matchingBtn = filterBtns.find(b => b.getAttribute('data-country').toUpperCase() === countryTitle.toUpperCase() || b.getAttribute('data-country').includes(countryTitle.replace('.', '')));
             
-            if (isFlipped) {
-                const countryTitle = card.querySelector('.card-title').innerText.trim();
-                const filterBtns = Array.from(document.querySelectorAll('.chart-filter-btn'));
-                const matchingBtn = filterBtns.find(b => b.getAttribute('data-country').toUpperCase() === countryTitle.toUpperCase() || b.getAttribute('data-country').includes(countryTitle.replace('.', '')));
-                
-                if (matchingBtn) {
-                    filterBtns.forEach(b => b.classList.remove('active'));
-                    matchingBtn.classList.add('active');
-                    Charts.updateExposure(matchingBtn.getAttribute('data-country'), null);
-                }
+            if (matchingBtn) {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                matchingBtn.classList.add('active');
+                Charts.updateExposure(matchingBtn.getAttribute('data-country'), null);
             }
         };
-        card.addEventListener('click', toggleCard);
+
+        const executeFlip = (isFlipped) => {
+            card.classList.toggle('flipped', isFlipped);
+            card.setAttribute('aria-pressed', isFlipped);
+            if (isFlipped) triggerChartUpdate();
+        };
+
+        // Handle button quiz guesses
+        btns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevents normal card click
+                
+                if (card.classList.contains('flipped')) {
+                    // Reset if clicked again
+                    card.classList.remove('result-correct', 'result-wrong', 'result-skipped');
+                    executeFlip(false);
+                    return;
+                }
+
+                const isCorrect = btn.getAttribute('data-correct') === 'true';
+                card.classList.remove('result-correct', 'result-wrong', 'result-skipped');
+                
+                if (isCorrect) {
+                    card.classList.add('result-correct');
+                    if (feedback) feedback.textContent = 'Correct!';
+                } else {
+                    card.classList.add('result-wrong');
+                    if (feedback) feedback.textContent = 'Incorrect';
+                }
+                
+                executeFlip(true);
+            });
+        });
+
+        // Handle clicking the card without guessing (skip logic)
+        card.addEventListener('click', () => {
+            if (!card.classList.contains('flipped')) {
+                card.classList.add('result-skipped');
+                if (feedback) feedback.textContent = 'Skipped';
+                executeFlip(true);
+            } else {
+                card.classList.remove('result-correct', 'result-wrong', 'result-skipped');
+                executeFlip(false);
+            }
+        });
+
         card.addEventListener('keydown', e => {
-            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCard(); }
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.click(); }
         });
     });
     
+// Fully Restored Citation Tabs & Copy Logic
     const tabs = Utils.selectAll('.citation-tab');
-    const citeText = Utils.select('.citation-content p');
+    const citeText = Utils.select('#cite-text');
     const citations = {
-        'APA': 'Dissanayake, C. (2026). The Pacific Blind Spot: Measuring the climate monitoring gap [Data story]. Pacific Dataviz Challenge 2026. Retrieved from https://yourdomain.com',
-        'Journalistic': 'Chatura Dissanayake, "The Pacific Blind Spot," Pacific Dataviz Challenge 2026, July 3, 2026, https://yourdomain.com.',
-        'BibTeX': '@misc{dissanayake2026blindspot,\n  author = {Dissanayake, Chatura},\n  title = {The Pacific Blind Spot},\n  year = {2026},\n  url = {https://yourdomain.com}\n}'
+        'APA': 'Dissanayake, C. (2026). The Pacific Blind Spot: Measuring the climate monitoring gap [Data Story]. Updated July 3, 2026. Retrieved from https://chaturadissanayake.vercel.app',
+        'Journalistic': 'Chatura Dissanayake. (2026). The Pacific Blind Spot: Measuring the climate monitoring gap. Retrieved from https://chaturadissanayake.vercel.app',
+        'BibTeX': '@article{dissanayake-pacific-blind-spot-2026,\n  title  = {The Pacific Blind Spot: Measuring the climate monitoring gap},\n  author = {Dissanayake, Chatura},\n  year   = {2026},\n  journal = {Data Story},\n  url    = {https://chaturadissanayake.vercel.app}\n}'
     };
     
+    // Set initial text automatically on load
+    if (citeText) citeText.textContent = citations['APA'];
+
     tabs.forEach(tab => {
         const selectTab = () => {
-            tabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); t.setAttribute('tabindex', '-1'); });
-            tab.classList.add('active'); tab.setAttribute('aria-selected', 'true'); tab.setAttribute('tabindex', '0');
-            if (citeText && citations[tab.innerText]) citeText.innerText = citations[tab.innerText];
+            tabs.forEach(t => { 
+                t.classList.remove('active'); 
+                t.setAttribute('aria-selected', 'false'); 
+                t.setAttribute('tabindex', '-1'); 
+            });
+            tab.classList.add('active'); 
+            tab.setAttribute('aria-selected', 'true'); 
+            tab.setAttribute('tabindex', '0');
+            
+            const key = tab.getAttribute('data-cite');
+            if (citeText && citations[key]) {
+                citeText.style.opacity = 0;
+                setTimeout(() => {
+                    citeText.textContent = citations[key];
+                    citeText.style.opacity = 1;
+                }, 150);
+            }
         };
         tab.addEventListener('click', selectTab);
         tab.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectTab(); } });
     });
     
     const copyCiteBtn = Utils.select('.copy-cite-btn');
-    if (copyCiteBtn) {
+    if (copyCiteBtn && citeText) {
         copyCiteBtn.addEventListener('click', () => {
-            if (citeText && navigator.clipboard) {
-                navigator.clipboard.writeText(citeText.innerText).then(() => {
-                    const originalText = copyCiteBtn.innerText;
-                    copyCiteBtn.innerText = 'Copied!';
-                    setTimeout(() => copyCiteBtn.innerText = originalText, 2000);
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(citeText.textContent).then(() => {
+                    const originalText = copyCiteBtn.textContent;
+                    copyCiteBtn.textContent = 'COPIED!';
+                    setTimeout(() => copyCiteBtn.textContent = originalText, 2000);
                 });
             }
         });
