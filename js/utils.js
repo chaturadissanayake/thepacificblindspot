@@ -25,6 +25,33 @@ const Utils = {
     formatNumber(value, decimals = 1) {
         return Number(value).toFixed(decimals);
     },
+    // Zero-pads a decimal value to a fixed integer-digit width, e.g.
+    // padPercent(9, 1, 2) -> "09.0". Used for the hero readout so the
+    // digit count never visibly reflows as the number counts up.
+    padPercent(value, decimals = 1, intDigits = 2) {
+        const fixed = Number(value).toFixed(decimals);
+        const [intPart, decPart] = fixed.split('.');
+        return intPart.padStart(intDigits, '0') + (decPart !== undefined ? '.' + decPart : '');
+    },
+    // Content images (maps, illustrations, photos) ship as placeholders
+    // until real artwork replaces them. Rather than let a 404'd <img>
+    // collapse to a tiny broken-image glyph (which is what actually causes
+    // "wrong size" placeholders), this swaps failed loads over to a sized,
+    // labeled placeholder driven by CSS (see .img-placeholder-holder in
+    // components.css) so layout and spacing stay correct either way.
+    wireImageFallbacks(root = document) {
+        this.selectAll('img[data-fallback-label]', root).forEach((img) => {
+            const holder = img.closest('[data-img-holder]') || img.parentElement;
+            const markFallback = () => { if (holder) holder.classList.add('img-fallback-active'); };
+            const markLoaded = () => { if (holder) holder.classList.add('img-fallback-loaded'); };
+            if (img.complete) {
+                if (img.naturalWidth === 0) markFallback(); else markLoaded();
+            } else {
+                img.addEventListener('error', markFallback, { once: true });
+                img.addEventListener('load', markLoaded, { once: true });
+            }
+        });
+    },
     // Triggers a browser download of `data` as a pretty-printed .json file.
     // Used for every "Get data" button on the site so downloads are always
     // JSON, never CSV or Excel.

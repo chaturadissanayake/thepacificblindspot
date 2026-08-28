@@ -59,6 +59,19 @@
     line-height: 1;
     margin-top: 0.25rem;
 }
+.radar-readout-footnote {
+    font-family: var(--font-sans);
+    font-size: 0.75rem; /* Enhanced legibility */
+    letter-spacing: 0.02em;
+    color: rgba(255, 255, 255, 0.75); /* Brighter contrast */
+    max-width: 28rem;
+    text-align: center;
+    margin-top: 0.75rem;
+    line-height: 1.5;
+}
+@media (max-width: 560px) {
+    .radar-readout-footnote { display: none; }
+}
 .hero-sequence {
     position: absolute;
     inset: 0;
@@ -113,9 +126,15 @@
     margin-bottom: 1.25rem;
 }
 .report-main-title {
-    font-size: clamp(2.4rem, 1.7rem + 2.6vw, 3.6rem);
+    font-size: clamp(2rem, 1.4rem + 2.2vw, 3.6rem);
     color: var(--ink);
     margin-bottom: 1.25rem;
+}
+@media (max-width: 560px) {
+    .report-main-title {
+        font-size: 1.9rem; /* FIX: Compact enough to stay on a single line on small viewports */
+        white-space: nowrap;
+    }
 }
 .report-standfirst {
     font-family: var(--font-display);
@@ -194,7 +213,7 @@
     margin: 0 auto 5rem auto;
     padding: 0 2rem;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
 }
 .flip-card-grid .flip-card:nth-child(1).reveal { transition-delay: 0s; }
@@ -204,7 +223,7 @@
 
 .flip-card {
     background-color: transparent;
-    height: 360px;
+    height: 380px;
     perspective: 1000px;
     cursor: pointer;
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -239,8 +258,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* FIX: Forces elements to stack uniformly from the top down */
-    padding: 3rem 1.5rem 2.5rem 1.5rem; 
+    padding: 2.5rem 1.5rem; 
     border-radius: 6px; 
     border: 1px solid var(--line);
     box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
@@ -248,6 +266,12 @@
 .flip-card-front {
     background-color: var(--bg-paper-soft);
     color: var(--ink);
+    overflow: hidden; /* FIX: Clips the background image to the card's rounded corners */
+    justify-content: center; /* FIX: Centers the wording vertically over the background */
+}
+.flip-card-front > *:not(.card-map-thumb) {
+    position: relative;
+    z-index: 1; /* FIX: Brings the wording and buttons strictly to the front */
 }
 .flip-card-front .card-title {
     font-family: var(--font-display);
@@ -272,6 +296,12 @@
     font-size: 1.05rem;
     line-height: 1.6;
     color: var(--paper-soft);
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 0;
+    padding: 1rem 0;
 }
 
 /* Quiz Buttons & Layout */
@@ -322,10 +352,10 @@
 
 /* Interactive Green (Correct) / Red (Wrong) Backgrounds */
 .flip-card.result-correct .flip-card-back {
-    background-color: var(--accent-teal);
+    background-color: var(--accent-success); /* Psychological Green */
 }
 .flip-card.result-wrong .flip-card-back {
-    background-color: var(--accent-coral);
+    background-color: var(--accent-danger); /* Psychological Red */
 }
 .flip-card.result-skipped .flip-card-back {
     background-color: var(--bg-deep-soft);
@@ -471,32 +501,36 @@
 }
 
 .source-link {
-    color: var(--ink);
+    color: var(--ink-soft); /* Softer than subtitles */
     font-weight: 500;
     text-decoration: underline;
-    text-decoration-color: var(--accent-coral-soft);
+    text-decoration-color: var(--ink-faint); 
     text-underline-offset: 3px;
-    text-decoration-thickness: 2px;
+    text-decoration-thickness: 1px;
     transition: all 0.2s ease;
-    border-radius: 2px;
+    border-radius: 4px;
+    padding: 0 0.25rem;
+    margin: 0 -0.25rem;
 }
 .source-link:hover, .source-link:focus-visible {
-    color: var(--accent-coral);
-    text-decoration-color: var(--accent-coral);
-    background-color: rgba(178, 96, 117, 0.05); 
+    color: var(--accent-ocean);
+    text-decoration-color: var(--accent-ocean);
+    text-decoration-thickness: 2px;
+    background-color: var(--accent-ocean-soft); /* Missing shade restored */
 }
 .on-dark .source-link {
-    color: var(--paper);
-    text-decoration-color: var(--accent-teal-soft);
+    color: var(--paper-soft);
+    text-decoration-color: rgba(255, 255, 255, 0.3);
 }
 .on-dark .source-link:hover, .central-figure .source-link:hover {
-    color: var(--accent-teal);
-    text-decoration-color: var(--accent-teal);
-    background-color: rgba(126, 178, 168, 0.1);
+    color: var(--paper);
+    text-decoration-color: var(--paper);
+    text-decoration-thickness: 2px;
+    background-color: rgba(255, 255, 255, 0.1); /* Missing shade restored for dark mode */
 }
 .central-figure .source-link {
     color: var(--paper);
-    text-decoration-color: var(--accent-teal-soft);
+    text-decoration-color: rgba(255, 255, 255, 0.5);
 }
 
 .on-dark .metric-toggles {
@@ -674,19 +708,23 @@ svg text {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    font-family: var(--font-mono);
+    font-family: var(--font-sans);
     font-size: 0.7rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--ink-soft);
-    background: var(--bg-paper-soft);
-    border: 1px solid var(--line);
+    background: transparent;
+    border: 1px solid var(--line); /* FIX: Soft ash border */
     padding: 0.4rem 0.8rem;
-    border-radius: 2px;
+    border-radius: 4px;
     transition: all 0.2s ease;
     white-space: nowrap;
     cursor: pointer;
+}
+.download-btn:hover {
+    color: var(--paper);
+    background: var(--ink);
 }
 /* Some download-btn instances are now real <button> elements (JSON
    downloads) rather than <a> tags; keep them visually identical. */
@@ -708,7 +746,7 @@ button.download-btn {
 .on-dark .download-btn {
     color: var(--paper-soft);
     background: rgba(255,255,255,0.05);
-    border-color: rgba(255,255,255,0.2);
+    border-color: rgba(255,255,255,0.15);
 }
 .on-dark .download-btn:hover {
     color: var(--paper);
@@ -757,14 +795,52 @@ button.download-btn {
 .source-details {
     color: var(--ink-soft);
 }
-.radar-readout {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+.chart-footnote {
     width: 100%;
-    z-index: 10;
-    pointer-events: none;
+    max-width: 680px; /* Aligns identically with .article-copy width */
+    margin: 0 auto 3rem auto; 
+    padding: 0 1.5rem;
+    font-family: var(--font-sans);
+    font-size: 0.85rem; 
+    line-height: 1.6;
+    color: var(--ink-soft);
+    font-style: normal;
+    text-align: center; /* Beautifully anchors beneath the chart */
+}
+@media (max-width: 560px) {
+    .chart-footnote { padding: 0 1.5rem; font-size: 0.78rem; text-align: left; }
+}
+
+.dynamic-stat-callout {
+    width: 100%;
+    max-width: 680px; 
+    margin: 0 auto 2.5rem auto; 
+    padding: 0 2rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 1rem + 1vw, 1.4rem);
+    color: var(--ink);
+    text-align: center;
+    line-height: 1.5;
+}
+@media (max-width: 560px) {
+    .dynamic-stat-callout { 
+        padding: 0 1.5rem; 
+        text-align: left; 
+    }
+}
+.radar-readout {
+    position: absolute;
+    left: 50%;
+    bottom: 20vh;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column; /* FIX: Stacks the label, percentage, and footnote vertically */
+    align-items: center; /* FIX: Centers the stack perfectly */
+    gap: 0;
+    font-family: var(--font-sans);
+    z-index: 2;
+    width: 100%;
+    padding-bottom: 2rem;
 }
 .chart-controls-wrapper {
     display: flex;
@@ -832,8 +908,12 @@ button.download-btn {
     font-size: 0.95rem;
     line-height: 1.5;
     color: var(--ink-soft);
-    margin: 1rem 0 1.5rem 0;
-    padding: 0 0.5rem;
+    flex-grow: 1; /* Automatically absorbs remaining space to push buttons to the bottom */
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 0;
+    padding: 1rem 0.5rem;
     transition: color 0.3s ease;
 }
 .quiz-type {
@@ -1010,9 +1090,7 @@ button.download-btn {
     color: var(--accent-coral);
 }
 .help-abbr {
-    text-decoration: underline dotted;
-    text-decoration-color: currentColor;
-    text-underline-offset: 3px;
+    text-decoration: none; /* FIX: Removes the distracting dotted line */
     cursor: help;
 }
 /* --- Methodology Dashboard Updates --- */
@@ -1042,11 +1120,12 @@ button.download-btn {
 .btn-primary {
     background-color: transparent;
     color: var(--ink);
-    border: 1px solid var(--ink);
+    border: 1px solid var(--line); /* FIX: Soft ash border */
 }
 .btn-primary:hover {
     background-color: var(--ink);
     color: var(--paper);
+    border-color: var(--ink);
 }
 .btn-secondary {
     background-color: transparent;
@@ -1063,48 +1142,52 @@ button.download-btn {
     color: var(--paper);
 }
 
-/* 2-Column Source List */
+/* 1-Column Inline Source List (Matches Screenshot) */
 .source-list-title {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-family: var(--font-sans); 
+    font-size: 1.05rem;
     font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
     color: var(--accent-coral);
     margin-bottom: 1.5rem;
+    text-transform: none; /* Removed uppercase to match image */
 }
 .clean-source-list {
     list-style: none;
     padding: 0;
     margin: 0 0 3.5rem 0;
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem 2rem;
+    grid-template-columns: 1fr; /* Single column */
+    gap: 1.5rem; 
 }
 .clean-source-list li {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+    display: block; /* Flow naturally inline */
+    line-height: 1.5;
 }
 .clean-source-list li a {
     font-family: var(--font-sans);
     font-size: 0.95rem;
-    font-weight: 500;
-    color: var(--ink);
-    text-decoration: underline;
-    text-decoration-color: var(--accent-coral-soft);
+    font-weight: 600; /* Bold link */
+    color: var(--ink-soft);
+    text-decoration: underline; 
+    text-decoration-color: var(--ink-faint);
+    text-decoration-thickness: 1px;
     text-underline-offset: 3px;
-    text-decoration-thickness: 2px;
-    display: inline-block;
+    display: inline; /* Keep on same line */
+    transition: color 0.2s ease;
 }
 .clean-source-list li a:hover {
-    color: var(--accent-coral);
-    text-decoration-color: var(--accent-coral);
+    color: var(--accent-ocean);
+    background-color: transparent;
 }
 .source-org {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--ink-faint);
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    color: var(--ink-soft); 
+    display: inline; /* Keep on same line */
+    margin-left: 0.25rem;
+    text-decoration: underline; 
+    text-decoration-color: var(--ink-faint);
+    text-underline-offset: 3px;
 }
 
 /* Citation Box Layout (Polished Editorial Style) */
@@ -1187,7 +1270,7 @@ button.download-btn {
 .copy-cite-btn {
     background: transparent;
     color: var(--ink);
-    border: 1px solid var(--ink);
+    border: 1px solid var(--line); /* FIX: Soft ash border */
     padding: 0.6rem 1.25rem;
     font-family: var(--font-mono);
     font-size: 0.75rem;

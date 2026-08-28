@@ -26,11 +26,95 @@
 <meta name="theme-color" content="#06181d">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/main.css">
 <link rel="stylesheet" href="css/layout.css">
 <link rel="stylesheet" href="css/components.css">
 <script src="https://d3js.org/d3.v7.min.js"></script>
+
+<style>
+  /* --- Helper styles for visual placeholders & maps --- */
+  .editorial-img-container {
+    position: relative;
+    width: 100%;
+    margin: 2rem 0;
+    background: var(--bg-paper-soft, #f7f9fa);
+    border: 1px solid var(--line, #e2e8f0);
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .editorial-img-container.aspect-16-9 {
+    aspect-ratio: 16 / 9;
+  }
+  .editorial-img-container.aspect-wide {
+    aspect-ratio: 164 / 70; /* FIX: Mathematically matches 1640x700 to prevent cropping */
+  }
+  .editorial-img-container img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.3s ease;
+  }
+  .img-fallback-active {
+    background: var(--bg-paper-soft);
+    min-height: 220px;
+  }
+  .img-fallback-active::after {
+    content: attr(data-placeholder-label);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .hero-bg-map-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .regional-locator-map {
+    max-width: 1080px; /* FIX: Greatly increased from 820px */
+    width: 100%;
+    margin: 2rem auto 3rem auto;
+  }
+  .card-map-thumb {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    z-index: 0;
+    background: transparent;
+    pointer-events: none;
+  }
+  .card-map-thumb img {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    object-fit: cover; /* FIX: Scales the 590x737 image perfectly to fill the whole card */
+    opacity: 0.12; /* FIX: Editorial wash so the dark text remains easily readable on top */
+    filter: none;
+  }
+  .scrolly-map-container {
+    position: relative; 
+    height: 60vh; 
+    background: #e0e0e0; 
+    margin: 3rem 0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+</style>
 </head>
 <body>
 <a class="skip-link" href="#overview">Skip to the story</a>
@@ -60,6 +144,17 @@
     <div class="nav-links">
         <a href="index.html" class="nav-link-secondary">Home</a>
         <a href="#overview" class="nav-link-primary">Story</a>
+        
+        <!-- Mobile Chapter Links -->
+        <div class="mobile-only mobile-chapter-menu">
+            <a href="#central-figure" class="sub-nav-link">Chapter 01: The Global Gap</a>
+            <a href="#stakes" class="sub-nav-link">Chapter 02: The Stakes</a>
+            <a href="#human-cost" class="sub-nav-link">Chapter 03: Country by Country</a>
+            <a href="#projections" class="sub-nav-link">Chapter 04: The Horizon</a>
+            <a href="#funding" class="sub-nav-link">Chapter 05: Closing the Gap</a>
+            <a href="#conclusion" class="sub-nav-link">Chapter 06: Conclusion</a>
+        </div>
+
         <a href="#methodology" class="nav-link-secondary">Methodology</a>
         <a href="privacy.html" class="nav-link-secondary">Privacy</a>
         <a href="https://github.com/chaturadissanayake/theunfairclimateprice" target="_blank" rel="noopener" class="nav-link-secondary">Process</a>
@@ -68,28 +163,43 @@
 <main class="immersive-canvas">
     <section id="kinetic-hero" class="scroll-runway hero-runway" aria-hidden="true">
         <div class="sticky-frame">
+            <img src="assets/maps/pacific-bathymetry-dark.png" alt="Pacific Ocean Basemap" class="hero-bg-map-layer">
+
+            <div class="hero-image-sequence" aria-hidden="true">
+                <div class="hero-image-layer img-placeholder-holder" id="hero-image-1" data-placeholder-label="Image 1 — wide Pacific / regional establishing shot">
+                    <img src="assets/photos/hero-1-pacific-wide.jpg" alt="" data-fallback-label="true">
+                </div>
+                <div class="hero-image-layer img-placeholder-holder" id="hero-image-2" data-placeholder-label="Image 2 — monitoring station or coastline detail">
+                    <img src="assets/photos/hero-2-station-detail.jpg" alt="" data-fallback-label="true">
+                </div>
+                <div class="hero-image-layer img-placeholder-holder" id="hero-image-3" data-placeholder-label="Image 3 — community / human scale">
+                    <img src="assets/photos/hero-3-community.jpg" alt="" data-fallback-label="true">
+                </div>
+            </div>
+
             <div class="hero-radar" aria-hidden="true">
-                <svg class="radar-field" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+                <svg class="radar-field" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" style="position: relative; z-index: 1;">
                     <defs>
                         <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" style="stop-color:var(--bg-deep-soft); stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:var(--bg-deep); stop-opacity:1" />
+                            <stop offset="0%" style="stop-color:var(--bg-deep-soft); stop-opacity:0.85" />
+                            <stop offset="100%" style="stop-color:var(--bg-deep); stop-opacity:0.95" />
                         </linearGradient>
                         <radialGradient id="radarGlow" cx="50%" cy="50%" r="50%">
-                            <stop offset="0%" style="stop-color:var(--accent-teal); stop-opacity:0.4" />
-                            <stop offset="100%" style="stop-color:var(--accent-teal); stop-opacity:0" />
+                            <stop offset="0%" style="stop-color:var(--accent-ocean); stop-opacity:0.4" />
+                            <stop offset="100%" style="stop-color:var(--accent-ocean); stop-opacity:0" />
                         </radialGradient>
                     </defs>
                     <rect width="1440" height="900" fill="url(#skyGrad)"></rect>
                     <g class="radar-grid" id="radar-grid-lines"></g>
                     <g class="radar-nodes" id="hero-radar-nodes"></g>
                 </svg>
-                <div class="radar-readout">
+                <div class="radar-readout" style="position: relative; z-index: 1;">
                     <span class="radar-readout-label" id="radar-readout-label">Regional Monitoring Coverage</span>
-                    <span class="radar-readout-value" id="radar-readout-value">01.2%</span>
+                    <span class="radar-readout-value" id="radar-readout-value">00.0%</span>
+                    <span class="radar-readout-footnote">LDCs &amp; SIDS surface stations, WMO GBON Baseline 2023 &mdash; illustrative field, not literal station positions</span>
                 </div>
             </div>
-            <div class="hero-sequence" id="hero-frame-1">
+            <div class="hero-sequence" id="hero-frame-1" style="z-index: 2;">
                 <span class="hero-kicker" style="white-space: nowrap;">Pacific Dataviz Challenge 2026, Climate Change</span>
                 <p class="hero-title">The Pacific Blind Spot</p>
                 <div class="scroll-indicator">
@@ -97,14 +207,14 @@
                     <div class="line"></div>
                 </div>
             </div>
-            <div class="hero-sequence hidden-sequence" id="hero-frame-2">
-                <p class="hero-dek">The Pacific is the most climate-exposed region on Earth.</p>
+            <div class="hero-sequence hidden-sequence" id="hero-frame-2" style="z-index: 2;">
+                <p class="hero-dek">The Pacific is the region with the highest climate risk.</p>
             </div>
-            <div class="hero-sequence hidden-sequence" id="hero-frame-3">
-                <p class="hero-dek">But resilience requires an active, funded data system.</p>
+            <div class="hero-sequence hidden-sequence" id="hero-frame-3" style="z-index: 2;">
+                <p class="hero-dek">Monitoring relies on active and well-funded data infrastructure.</p>
             </div>
-            <div class="hero-sequence hidden-sequence" id="hero-frame-4">
-                <p class="hero-dek">Right now, that infrastructure is dangerously sparse.</p>
+            <div class="hero-sequence hidden-sequence" id="hero-frame-4" style="z-index: 2;">
+                <p class="hero-dek">The current data infrastructure is dangerously inadequate.</p>
                 <div class="scroll-indicator">
                     <span>Start the story</span>
                     <div class="line"></div>
@@ -112,10 +222,21 @@
             </div>
         </div>
     </section>
+    
     <header class="report-header" id="overview">
         <span class="report-eyebrow">A data story, infrastructure & warning</span>
         <h1 class="report-main-title">The Pacific Blind Spot</h1>
-        <p class="report-standfirst">It is not just that the ocean is rising. It is that the mechanisms to measure it are largely broken, missing, or unfunded. Six years of official baseline data reveal a chronic lack of monitoring infrastructure in the very places that need early warnings the most.</p>
+        
+        <div class="regional-locator-map">
+            <div class="editorial-img-container aspect-wide" data-img-holder data-placeholder-label="Regional Map (164:70)" style="margin: 0 0 0.75rem 0; background: transparent; border: none;">
+                <img src="assets/maps/pacific-regional-locator.webp" alt="Map of the Pacific Island Nations highlighting the monitoring gap area" width="1640" height="700" data-fallback-label="true">
+            </div>
+            <p class="source-caption" style="margin: 0; padding: 0; text-align: center;">
+                <strong style="color: var(--ink);">Figure 1.0:</strong> Pacific Small Island Developing States (SIDS) territory covering 30+ million km² of ocean.
+            </p>
+        </div>
+
+        <p class="report-standfirst">It is not just that the ocean is rising. The sovereign mechanisms to measure atmospheric pressure, heat waves, droughts, and storm surges are largely broken, missing, or unfunded. Six years of baseline data reveal a chronic lack of monitoring infrastructure in the very places that need early warnings the most.</p>
         <div class="meta-data-line">
             <span>By <a href="https://chaturadissanayake.vercel.app">Chatura Dissanayake</a></span>
             <span class="meta-divider"></span>
@@ -124,18 +245,31 @@
             <span>7 min read</span>
         </div>
     </header>
+    
     <section class="central-figure" id="central-figure">
+        <!-- Soft background image layer for the dark section -->
+        <img src="assets/maps/pacificoceanfloor.webp" alt="" class="central-bg-map-layer" aria-hidden="true">
+        
         <div class="central-figure-head reveal" style="text-align: left; max-width: 680px; margin: 0 auto 1.5rem auto; padding: 0 2rem;">
             <span class="editorial-kicker">Chapter 01, The Global Gap</span>
             <h2 class="editorial-subhead">We are operating in the dark</h2>
-            <p>According to the <a href="https://wmo.int/" target="_blank" rel="noopener" class="source-link">World Meteorological Organization</a>, Least Developed Countries (LDCs) and Small Island Developing States (SIDS) meet only 9% of the surface weather stations required for <a href="https://wmo.int/activities/global-basic-observing-network-gbon" target="_blank" rel="noopener" class="source-link">basic global monitoring compliance</a>. This baseline distribution exposes exactly where the data goes quiet.</p>
-            <p style="margin-top: 1rem;">While satellite imagery provides a macro view of weather systems, ground-level radar and surface stations are the critical "ground truth." They detect sudden micro-changes in atmospheric pressure and temperature that turn regular storms into catastrophic cyclones. Without them, <a href="https://www.un.org/en/climatechange/early-warnings-for-all" target="_blank" rel="noopener" class="source-link">early warning systems</a> are effectively flying blind.</p>
+            <p>According to the <a href="https://wmo.int/" target="_blank" rel="noopener" class="source-link">World Meteorological Organisation (WMO)</a>, Lower-Middle Income Countries (LMICs) currently meet only 6% of the required baseline for surface weather stations. For Least Developed Countries and Small Island Developing States (LDCs & SIDS) combined, surface compliance sits at just 9%, while upper-air monitoring reaches only 13%. This contrasts sharply with Upper-Middle Income Countries (UMICs), which average 39% compliance.</p>
+            
+            <figure class="editorial-img-container aspect-16-9" data-img-holder data-placeholder-label="Buoy Diagram (16:9)" style="background: #f4f4f4; padding: 2rem;">
+                <img src="assets/illustrations/buoy-isometric-cutaway.png" alt="Isometric cutaway of a deep ocean DART buoy" data-fallback-label="true">
+                <div style="position: absolute; top: 10%; right: 10%; max-width: 200px; font-family: var(--font-mono); font-size: 0.8rem;">
+                    <span style="display:inline-block; width:10px; height:10px; background:#FFC107; margin-right:5px;"></span>
+                    <strong>Satellite Telemetry Unit:</strong> The most expensive component. Without ongoing funding for satellite bandwidth, the station collects data locally but cannot transmit warnings to regional forecasting hubs.
+                </div>
+            </figure>
+
+            <p style="margin-top: 1rem;">While satellite imagery provides a macro view of regional cloud cover, ground-level radar and surface stations provide essential "ground truth." They detect rapid micro-changes in atmospheric pressure, temperature, and localised humidity that transform ordinary squalls into catastrophic cyclones and trigger flash droughts. Without them, <a href="https://www.un.org/en/climatechange/early-warnings-for-all" target="_blank" rel="noopener" class="source-link">early warning systems</a> operate with massive margins of error.</p>
         </div>
         
         <div class="chart-controls-wrapper reveal on-dark">
             <div class="metric-toggles">
                 <button class="metric-toggle-btn active" data-target="compliance" data-filter="all">Global Comparison</button>
-                <button class="metric-toggle-btn" data-target="compliance" data-filter="sids">Highlight <abbr title="Small Island Developing States" class="help-abbr">SIDS</abbr> & Pacific</button>
+                <button class="metric-toggle-btn" data-target="compliance" data-filter="sids">Highlight <abbr title="Least Developed Countries & Small Island Developing States" class="help-abbr">LDCs & SIDS</abbr> Deficit</button>
             </div>
         </div>
 
@@ -143,18 +277,19 @@
         <div class="chart-canvas central-chart-canvas" id="compliance-canvas" data-scene="compliance" style="margin-bottom: 0;">
             <div class="sr-only">
                 <table>
-                    <caption>Global Basic Observation Network Compliance Deficits</caption>
-                    <tr><th>Region</th><th>Current Coverage</th><th>Required Target</th></tr>
-                    <tr><td>SIDS Surface Stations</td><td>9%</td><td>100%</td></tr>
-                    <tr><td>SIDS Upper-Air</td><td>13%</td><td>100%</td></tr>
-                    <tr><td>Global Average</td><td>68%</td><td>100%</td></tr>
+                    <caption>Global Basic Observing Network Compliance Deficits (WMO GBON Baseline 2023)</caption>
+                    <tr><th>Region / Category</th><th>Current Coverage</th><th>Required Target</th></tr>
+                    <tr><td>Upper-Middle Income Countries Average</td><td>39%</td><td>100%</td></tr>
+                    <tr><td>LDCs & SIDS Upper-Air Stations</td><td>13%</td><td>100%</td></tr>
+                    <tr><td>LDCs & SIDS Surface Stations</td><td>9%</td><td>100%</td></tr>
+                    <tr><td>Lower-Middle Income Countries Average</td><td>6%</td><td>100%</td></tr>
                 </table>
             </div>
         </div>
         
         <div class="caption-wrapper on-dark">
             <figcaption class="source-caption">
-                <a href="https://wmo.int/" target="_blank" rel="noopener" class="source-link">World Meteorological Organization</a>. <span class="source-details">GBON baseline compliance diagnostic aggregates (2023).</span>
+                <a href="https://www.un-soff.org/document/inf-6-2-wmo-gbon-baseline-2023/" target="_blank" rel="noopener" class="source-link">WMO & UN SOFF</a>. <span class="source-details">INF 6.2 GBON Global Baseline Diagnostic Aggregates (2023).</span>
             </figcaption>
             <div class="caption-actions">
                 <button type="button" class="download-btn" data-download="compliance">
@@ -164,16 +299,22 @@
             </div>
         </div>
     </section>
-    <div class="narrative-bridge reveal">
-        <p>A missing data point is not just a blank cell in a spreadsheet. It is a missing warning siren when a cyclone forms over warm water.</p>
-    </div>
+    
     <section class="article-section" id="stakes">
         <div class="article-copy reveal">
             <span class="editorial-kicker">Chapter 02, The Stakes</span>
             <h2 class="editorial-subhead">High exposure, low detection</h2>
-            <p>This chart tracks the frequency of natural disasters and their resulting economic damage. While the storms are intensifying, the local tracking hardware remains <a href="https://pacificdata.org/" target="_blank" rel="noopener" class="source-link">dangerously sparse across the Pacific region</a>.</p>
-            <p>Without constant, localized ground data, forecasting relies on broader satellite estimations. This severely reduces landfall accuracy, narrowing the crucial <a href="https://public.wmo.int/en/earlywarningsforall" target="_blank" rel="noopener" class="source-link">lead time for evacuations</a> from days to hours. When data infrastructure is treated as an afterthought, we pay for it in disaster recovery. Sparse monitoring can increase the uncerternity surrounding local forecasts making already dangerous disasters harder to anticipate and prepare for.</p>
+            <p>This chart tracks the number of people directly affected by disasters each year, and the average annual economic loss disasters inflict, across Pacific Island Countries. While disasters are intensifying, local tracking hardware remains <a href="https://pacificdata.org/" target="_blank" rel="noopener" class="source-link">dangerously sparse across the Pacific region</a>.</p>
+            <p>Without localised ground-truth data, forecasting relies heavily on coarse satellite estimates. This severely reduces landfall accuracy, narrowing the crucial <a href="https://public.wmo.int/en/earlywarningsforall" target="_blank" rel="noopener" class="source-link">lead time for evacuations</a> from days to hours. When data infrastructure is neglected, communities pay for it in disaster recovery and unmanaged vulnerability.</p>
+            
+            <figure class="editorial-img-container aspect-16-9" data-img-holder data-placeholder-label="Broken Station Photo (16:9)" style="margin: 2rem 0; border: none; background: #000;">
+                <img src="assets/photos/broken-weather-station.jpg" alt="A destroyed surface weather station covered in sand and rust" style="opacity: 0.85;" data-fallback-label="true">
+                <figcaption class="source-caption" style="color: #888; padding: 0.75rem 0;">
+                    <strong>Ground Truth:</strong> Marine salt corrosion and category-5 cyclones frequently destroy the few surface stations that do exist, requiring dedicated, sustained funding for operational maintenance.
+                </figcaption>
+            </figure>
         </div>
+        
         <figure class="article-graphic">
             <div class="chart-controls-wrapper reveal">
                 <div class="swipe-hint mobile-only">Swipe chart to explore</div>
@@ -194,29 +335,29 @@
                 </div>
                 
             <div class="metric-toggles">
-                <button class="metric-toggle-btn active" data-metric="damage">Economic Damage</button>
-                <button class="metric-toggle-btn" data-metric="frequency">Event Frequency</button>
-                <button class="metric-toggle-btn" data-metric="affected">Affected Persons</button>
+                <button class="metric-toggle-btn active" data-metric="affected">Affected Persons, by Year (SDG 11.5.1)</button>
+                <button class="metric-toggle-btn" data-metric="avgAnnualLoss">Average Annual Economic Loss (SDG 11.5.2)</button>
             </div>
         </div>
         <div class="chart-canvas" id="exposure-canvas" data-scene="exposure">
             <div class="sr-only">
                 <table>
-                    <caption>Vanuatu: Disaster Frequency, Economic Damage & Affected Persons (2018-2023)</caption>
-                    <tr><th>Year</th><th>Events</th><th>Damage (Millions USD)</th><th>Affected Persons</th></tr>
-                    <tr><td>2018</td><td>2</td><td>15</td><td>23,286</td></tr>
-                    <tr><td>2019</td><td>1</td><td>8</td><td>18</td></tr>
-                    <tr><td>2020</td><td>3</td><td>600</td><td>246,802</td></tr>
-                    <tr><td>2021</td><td>2</td><td>25</td><td>1,400</td></tr>
-                    <tr><td>2022</td><td>1</td><td>12</td><td>0</td></tr>
-                    <tr><td>2023</td><td>4</td><td>145</td><td>0</td></tr>
+                    <caption>Vanuatu: Directly Affected Persons by Disaster (2018-2023)</caption>
+                    <tr><th>Year</th><th>Affected Persons</th></tr>
+                    <tr><td>2018</td><td>920</td></tr>
+                    <tr><td>2019</td><td>23,286</td></tr>
+                    <tr><td>2020</td><td>18</td></tr>
+                    <tr><td>2021</td><td>246,802</td></tr>
+                    <tr><td>2022</td><td>1,400</td></tr>
+                    <tr><td>2023</td><td>Data Unavailable</td></tr>
                 </table>
-                <p>Chart defaults to Vanuatu; select another country above to see its figures (full 13-country dataset in data.js).</p>
+                <p>Vanuatu's average annual economic loss to disasters: US$64,500,000 (2018 reference year, Pacific Data Hub SDG 11.5.2).</p>
+                <p>Chart defaults to Vanuatu; select another country above to see its figures (full country dataset in data.js).</p>
             </div>
         </div>
             <div class="caption-wrapper">
                 <figcaption class="source-caption">
-                    <a href="https://stats.pacificdata.org/vis?lc=en&df[ds]=ds%3ASPC2&df[id]=DF_SDG_11&dq=A.VC_DSR_AFFCT" target="_blank" rel="noopener" class="source-link">Pacific Data Hub (SDG 11.5.1)</a> & EM-DAT. <span class="source-details">"Affected Persons" data sourced directly from official Pacific Data Hub baseline indicators. Damage estimates derived from International Disaster Database aggregates.</span>
+                    <a href="https://stats.pacificdata.org/vis?lc=en&df[ds]=ds%3ASPC2&df[id]=DF_SDG_11&dq=A.VC_DSR_AFFCT" target="_blank" rel="noopener" class="source-link">Pacific Data Hub (SDG 11.5.1 / 11.5.2)</a>. <span class="source-details">"Affected Persons" is a year-by-year series (2018-2023) from the official Pacific Community (SPC) SDG 11.5.1 indicator. "Average Annual Economic Loss" is a single figure per country from SPC's SDG 11.5.2 indicator, reported at that country's own reference year, not a yearly series.</span>
                 </figcaption>
                 <div class="caption-actions">
                     <a href="https://stats.pacificdata.org/vis?lc=en&df[ds]=ds%3ASPC2&df[id]=DF_SDG_11&dq=A.VC_DSR_AFFCT" target="_blank" rel="noopener" class="download-btn">
@@ -229,17 +370,15 @@
                     </button>
                 </div>
             </div>
-            <figcaption class="sr-only">Interactive bar chart showing disaster impacts.</figcaption>
+            <figcaption class="sr-only">Interactive bar chart showing disaster impacts across Pacific territories.</figcaption>
         </figure>
     </section>
-    <div class="narrative-bridge reveal">
-        <p>You cannot adapt to what you cannot measure &mdash; and the "68% global average" from Chapter 01 is hiding some brutal outliers.</p>
-    </div>
+    
     <section class="article-section" id="human-cost">
         <div class="article-copy reveal">
             <span class="editorial-kicker">Chapter 03, Country by Country</span>
-            <h2 class="editorial-subhead">Guess the station count</h2>
-            <p>The averages in Chapter 01 hide how uneven this gap really is. Some Pacific nations run on a literal handful of working stations - see if your instincts match the ground truth. This isn't just a knowledge gap; it's a structural failure that threatens two core Sustainable Development Goals: resilient infrastructure and urgent climate action.</p>
+            <h2 class="editorial-subhead">Guess the sovereign station count</h2>
+            <p>Regional averages obscure how uneven the monitoring gap is in practice. Entire island nations operate on a literal handful of fixed meteorological stations. This structural infrastructure deficit directly impedes progress toward <strong>SDG 9 (Resilient Infrastructure)</strong> and <strong>SDG 13 (Climate Action)</strong>.</p>
             <div class="sdg-container">
                 <span class="sdg-label">Impacted Global Goals</span>
                 <div class="sdg-icons">
@@ -251,16 +390,19 @@
 
         <div class="editorial-instruction reveal">
             <span class="instruction-badge">Quiz</span>
-            <span class="instruction-text">Eight countries, eight true-or-false calls. Tap a card, make your guess, then flip it to see the real station count.</span>
+            <span class="instruction-text">Tap a card, make your guess, then flip it to inspect the official active station count.</span>
         </div>
 
 <div class="flip-card-grid">
     <div class="flip-card reveal" tabindex="0" role="button" aria-pressed="false">
         <div class="flip-card-inner">
             <div class="flip-card-front">
+                <div class="card-map-thumb">
+                    <img src="assets/maps/terrain/Kiribati.webp" alt="Kiribati map outline">
+                </div>
                 <span class="card-title" style="white-space: nowrap;">Kiribati</span>
                 <span class="quiz-type">True or False</span>
-                <p class="card-question">Kiribati has a dense ground network to monitor its 3.5 million km² of ocean territory.</p>
+                <p class="card-question">Kiribati operates a dense ground network across its 3.6 million km² exclusive economic zone.</p>
                 <div class="quiz-options">
                     <button class="quiz-btn" data-correct="false">True</button>
                     <button class="quiz-btn" data-correct="true">False</button>
@@ -270,10 +412,10 @@
                 <div class="quiz-feedback"></div>
                 <div class="card-score">
                     <span class="score-value">4</span>
-                    <span class="score-label">Active Stations</span>
+                    <span class="score-label">Active Fixed Stations</span>
                 </div>
                 <span class="answer">False</span>
-                <p>Vast oceanic territory with severely limited permanent observation infrastructure.</p>
+                <p>Over 3.6 million km² of ocean territory is monitored by just 4 permanent fixed land stations.</p>
             </div>
         </div>
     </div>
@@ -281,9 +423,12 @@
     <div class="flip-card reveal" tabindex="0" role="button" aria-pressed="false">
         <div class="flip-card-inner">
             <div class="flip-card-front">
+                <div class="card-map-thumb">
+                    <img src="assets/maps/terrain/Fiji.webp" alt="Fiji map outline">
+                </div>
                 <span class="card-title" style="white-space: nowrap;">Fiji</span>
                 <span class="quiz-type">True or False</span>
-                <p class="card-question">Because Fiji is the main regional forecasting hub, it has over 20 active ground stations.</p>
+                <p class="card-question">Because Fiji is the primary regional forecasting hub, it operates over 20 active GBON ground stations.</p>
                 <div class="quiz-options">
                     <button class="quiz-btn" data-correct="false">True</button>
                     <button class="quiz-btn" data-correct="true">False</button>
@@ -293,10 +438,10 @@
                 <div class="quiz-feedback"></div>
                 <div class="card-score">
                     <span class="score-value">8</span>
-                    <span class="score-label">Active Stations</span>
+                    <span class="score-label">Active Fixed Stations</span>
                 </div>
                 <span class="answer">False</span>
-                <p>Acting as a regional hub, but still requires upgrades to meet baseline global exchange requirements.</p>
+                <p>Despite serving as a regional meteorological hub, Fiji operates only 8 active fixed stations.</p>
             </div>
         </div>
     </div>
@@ -304,9 +449,12 @@
     <div class="flip-card reveal" tabindex="0" role="button" aria-pressed="false">
         <div class="flip-card-inner">
             <div class="flip-card-front">
+                <div class="card-map-thumb">
+                    <img src="assets/maps/terrain/Tuvalu.webp" alt="Tuvalu map outline">
+                </div>
                 <span class="card-title" style="white-space: nowrap;">Tuvalu</span>
                 <span class="quiz-type">True or False</span>
-                <p class="card-question">Tuvalu's extreme vulnerability to sea-level rise is matched by a dense early warning network.</p>
+                <p class="card-question">A dense early warning sensor grid matches Tuvalu's extreme vulnerability to sea-level rise.</p>
                 <div class="quiz-options">
                     <button class="quiz-btn" data-correct="false">True</button>
                     <button class="quiz-btn" data-correct="true">False</button>
@@ -316,10 +464,10 @@
                 <div class="quiz-feedback"></div>
                 <div class="card-score">
                     <span class="score-value">3</span>
-                    <span class="score-label">Active Stations</span>
+                    <span class="score-label">Active Fixed Stations</span>
                 </div>
                 <span class="answer">False</span>
-                <p>Lacks the fundamental density of observation networks required for localized early warnings.</p>
+                <p>Tuvalu's entire 9-atoll nation relies on just 3 permanent land stations for localising.</p>
             </div>
         </div>
     </div>
@@ -327,9 +475,12 @@
     <div class="flip-card reveal" tabindex="0" role="button" aria-pressed="false">
         <div class="flip-card-inner">
             <div class="flip-card-front">
+                <div class="card-map-thumb">
+                    <img src="assets/maps/terrain/Samoa.webp" alt="Samoa map outline">
+                </div>
                 <span class="card-title" style="white-space: nowrap;">Samoa</span>
                 <span class="quiz-type">True or False</span>
-                <p class="card-question">Samoa relies more heavily on external global satellites than on its own sovereign sensors.</p>
+                <p class="card-question">Samoa relies primarily on external satellite feeds rather than sovereign ground observation.</p>
                 <div class="quiz-options">
                     <button class="quiz-btn" data-correct="true">True</button>
                     <button class="quiz-btn" data-correct="false">False</button>
@@ -339,10 +490,10 @@
                 <div class="quiz-feedback"></div>
                 <div class="card-score">
                     <span class="score-value">2</span>
-                    <span class="score-label">Active Stations</span>
+                    <span class="score-label">Active Fixed Stations</span>
                 </div>
                 <span class="answer">True</span>
-                <p>Heavy reliance on international satellite data rather than sovereign ground-truth measurement.</p>
+                <p>With only 2 fixed stations reporting baseline data, reliance on external satellite feeds is acute.</p>
             </div>
         </div>
     </div>
@@ -350,9 +501,12 @@
     <div class="flip-card reveal" tabindex="0" role="button" aria-pressed="false">
         <div class="flip-card-inner">
             <div class="flip-card-front">
+                <div class="card-map-thumb">
+                    <img src="assets/maps/terrain/Tonga.webp" alt="Tonga map outline">
+                </div>
                 <span class="card-title" style="white-space: nowrap;">Tonga</span>
                 <span class="quiz-type">True or False</span>
-                <p class="card-question">Since the year 2000, Tonga has rapidly expanded its permanent weather station network.</p>
+                <p class="card-question">Following recent volcanic and tsunami shocks, Tonga operates more than 10 permanent monitoring stations.</p>
                 <div class="quiz-options">
                     <button class="quiz-btn" data-correct="false">True</button>
                     <button class="quiz-btn" data-correct="true">False</button>
@@ -362,10 +516,10 @@
                 <div class="quiz-feedback"></div>
                 <div class="card-score">
                     <span class="score-value">4</span>
-                    <span class="score-label">Active Stations</span>
+                    <span class="score-label">Active Fixed Stations</span>
                 </div>
                 <span class="answer">False</span>
-                <p>Actively trying to rebuild following recent systemic shocks, but hardware counts remain flat.</p>
+                <p>Tonga's active network remains flat at 4 stations across its four main island clusters.</p>
             </div>
         </div>
     </div>
@@ -373,9 +527,12 @@
     <div class="flip-card reveal" tabindex="0" role="button" aria-pressed="false">
         <div class="flip-card-inner">
             <div class="flip-card-front">
+                <div class="card-map-thumb">
+                    <img src="assets/maps/terrain/Nauru.webp" alt="Nauru map outline">
+                </div>
                 <span class="card-title" style="white-space: nowrap;">Nauru</span>
                 <span class="quiz-type">True or False</span>
-                <p class="card-question">There are exactly zero permanent, sovereign land weather stations currently operating in Nauru.</p>
+                <p class="card-question">There are exactly zero permanent, sovereign fixed land weather stations reporting baseline data in Nauru.</p>
                 <div class="quiz-options">
                     <button class="quiz-btn" data-correct="true">True</button>
                     <button class="quiz-btn" data-correct="false">False</button>
@@ -385,10 +542,10 @@
                 <div class="quiz-feedback"></div>
                 <div class="card-score">
                     <span class="score-value">0</span>
-                    <span class="score-label">Active Stations</span>
+                    <span class="score-label">Active Fixed Stations</span>
                 </div>
                 <span class="answer">True</span>
-                <p>Extreme reliance on international data networks due to a total lack of sovereign hardware.</p>
+                <p>Nauru (Naoero) has zero operational sovereign fixed land stations reported in regional baselines.</p>
             </div>
         </div>
     </div>
@@ -396,9 +553,12 @@
     <div class="flip-card reveal" tabindex="0" role="button" aria-pressed="false">
         <div class="flip-card-inner">
             <div class="flip-card-front">
+                <div class="card-map-thumb">
+                    <img src="assets/maps/terrain/Vanuatu.webp" alt="Vanuatu map outline">
+                </div>
                 <span class="card-title" style="white-space: nowrap;">Vanuatu</span>
                 <span class="quiz-type">True or False</span>
-                <p class="card-question">As one of the most disaster-prone nations on earth, Vanuatu operates over 20 surface stations.</p>
+                <p class="card-question">As one of the world's most disaster-prone archipelagos, Vanuatu maintains over 20 surface stations.</p>
                 <div class="quiz-options">
                     <button class="quiz-btn" data-correct="false">True</button>
                     <button class="quiz-btn" data-correct="true">False</button>
@@ -408,10 +568,10 @@
                 <div class="quiz-feedback"></div>
                 <div class="card-score">
                     <span class="score-value">6</span>
-                    <span class="score-label">Active Stations</span>
+                    <span class="score-label">Active Fixed Stations</span>
                 </div>
                 <span class="answer">False</span>
-                <p>High exposure to severe cyclones demands much denser surface and upper-air monitoring.</p>
+                <p>Just 6 permanent fixed meteorological stations monitor Vanuatu's 80+ inhabited islands.</p>
             </div>
         </div>
     </div>
@@ -419,9 +579,12 @@
     <div class="flip-card reveal" tabindex="0" role="button" aria-pressed="false">
         <div class="flip-card-inner">
             <div class="flip-card-front">
-<span class="card-title" style="white-space: nowrap;"><abbr title="Solomon Islands" class="help-abbr" style="border-bottom: none;">Solomon Is.</abbr></span>
+                <div class="card-map-thumb">
+                    <img src="assets/maps/terrain/Solomon Is.webp" alt="Solomon Islands map outline">
+                </div>
+                <span class="card-title" style="white-space: nowrap;"><abbr title="Solomon Islands" class="help-abbr" style="border-bottom: none;">Solomon Is.</abbr></span>
                 <span class="quiz-type">True or False</span>
-                <p class="card-question">The Solomon Islands' dense geography makes it easy to maintain and transfer vital station data.</p>
+                <p class="card-question">The Solomon Islands' expansive territory is monitored by a network of at least 12 fixed stations.</p>
                 <div class="quiz-options">
                     <button class="quiz-btn" data-correct="false">True</button>
                     <button class="quiz-btn" data-correct="true">False</button>
@@ -431,10 +594,10 @@
                 <div class="quiz-feedback"></div>
                 <div class="card-score">
                     <span class="score-value">3</span>
-                    <span class="score-label">Active Stations</span>
+                    <span class="score-label">Active Fixed Stations</span>
                 </div>
                 <span class="answer">False</span>
-                <p>Severe geographical fragmentation severely hinders vital station maintenance and local data transfer.</p>
+                <p>Severe geographical fragmentation leaves the nation operating with only 3 fixed reporting stations.</p>
             </div>
         </div>
     </div>
@@ -442,7 +605,7 @@
 
         <div class="caption-wrapper" style="max-width: 1200px; padding: 1rem 2rem 0 2rem;">
             <figcaption class="source-caption">
-                <a href="https://pacificdata.org/data/dataset/meteorological-monitoring-network-df-meteo-monitor-net" target="_blank" rel="noopener" class="source-link">Pacific Data Hub (SDG Indicator)</a>. <span class="source-details">Official baseline data for operational land meteorological monitoring networks across Pacific territories.</span>
+                <a href="https://pacificdata.org/data/dataset/meteorological-monitoring-network-df-meteo-monitor-net" target="_blank" rel="noopener" class="source-link">Pacific Data Hub (Indicator DF_METEO_MONITOR_NET)</a>. <span class="source-details">Official baseline data for operational land meteorological monitoring networks across Pacific territories.</span>
             </figcaption>
             <a href="https://stats.pacificdata.org/vis?lc=en&df[ds]=ds%3ASPC2&df[id]=DF_METEO_MONITOR_NET" target="_blank" rel="noopener" class="download-btn">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
@@ -454,51 +617,89 @@
     <section class="article-section" id="projections">
         <div class="article-copy reveal">
             <span class="editorial-kicker">Chapter 04, The Horizon</span>
-            <h2 class="editorial-subhead">The cost of arriving late</h2>
-            <p>Climate models project severe environmental shifts for the Pacific. Without a dense, localized monitoring network, tracking these escalating changes relies on generalized global models rather than precise local early warnings.</p>
-            <p>The difference between a typical warming trajectory and a worst-case scenario isn't just a few degrees-it is the difference between manageable adaptation and catastrophic land loss. By 2100, the projected sea level rise alone threatens to fundamentally reshape the coastlines of nations like Fiji.</p>
-            <p style="font-size: 1.25rem; font-family: var(--font-display); margin-top: 2rem; color: var(--ink);">
-                Projected sea level anomaly by 2100: 
-            <strong id="dynamic-slr-text" class="slr-counter" aria-live="polite" style="color: var(--accent-teal); font-weight: 700; transition: color 0.4s ease;">+74.5 cm</strong>
-            </p>
+            <h2 class="editorial-subhead">The compounding sea-level threat</h2>
+            <p>Climate models project escalating sea-level anomalies across the Pacific basin. Satellite altimetry confirms <strong>~10 cm</strong> of sea-level rise since 1993, while high-tide flooding events have surged exponentially at monitoring stations like Pago Pago.</p>
+            <p>Under the high-emissions pathway (RCP8.5), global mean sea-level rise is projected to reach <strong>+74.0 cm</strong> by 2100. For low-lying atolls where maximum elevation is under 3 meters, extreme high tides combined with cyclone-driven storm surges will render critical infrastructure permanently flood-prone without rapid adaptation.</p>
+            
+            <div class="scrolly-map-container">
+                <img src="assets/maps/tuvalu-airstrip-base.png" alt="Map of Tuvalu Funafuti Airstrip" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="assets/maps/tuvalu-airstrip-flood-overlay.png" alt="Flood projection overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.7; mix-blend-mode: multiply;">
+                <div class="map-annotation" style="position: absolute; bottom: 20px; left: 20px; background: white; padding: 1rem; max-width: 260px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    <p style="margin:0; font-size: 0.85rem; line-height: 1.4;">By 2100, the worst-case high emissions scenario (RCP8.5) places low-elevation assets (such as Tuvalu's Funafuti runway corridor) below routine high-tide flood levels.</p>
+                    <p style="margin:0; font-size: 0.75rem; color: #666; margin-top: 0.5rem;">*RCPs (Representative Concentration Pathways) are standardised scenarios used by the IPCC to project future global warming based on greenhouse gas volumes.</p>
+                </div>
+            </div>
         </div>
 
         <div class="swipe-hint mobile-only">Swipe chart to explore</div>
-        <div class="chart-canvas reveal" id="flooding-canvas" data-scene="flooding" style="margin-bottom: 2.5rem;"></div>
+        <div class="chart-canvas reveal" id="flooding-canvas" data-scene="flooding" style="margin-bottom: 1rem;">
+            <div class="sr-only">
+                <table>
+                    <caption>High-tide flooding days per year, Pago Pago Station (NOAA)</caption>
+                    <tr><th>Year</th><th>Flood days</th></tr>
+                    <tr><td>2010</td><td>2</td></tr>
+                    <tr><td>2011</td><td>4</td></tr>
+                    <tr><td>2012</td><td>4</td></tr>
+                    <tr><td>2013</td><td>4</td></tr>
+                    <tr><td>2014</td><td>7</td></tr>
+                    <tr><td>2015</td><td>2</td></tr>
+                </table>
+                <p>No high-tide flooding day counts have been published for this station since 2015 &mdash; the record itself has gone dark, which is the point of this chart.</p>
+            </div>
+        </div>
+        <p class="chart-footnote">This station's own record stopped updating in 2015 &mdash; even long-running, historically well-instrumented sites lose funding for continued reporting.</p>
 
         <figure class="article-graphic">
+            <p class="dynamic-stat-callout reveal">
+                Projected sea-level anomaly by 2100: 
+                <strong id="dynamic-slr-text" class="slr-counter" aria-live="polite" style="color: var(--accent-ocean); font-weight: 700; transition: color 0.4s ease;">+53.0 cm</strong>
+            </p>
             <div class="projection-ruler-wrapper reveal">
-                <span class="ruler-title">Projection Range (Percentile)</span>
+                <span class="ruler-title">Emissions Pathway (2100 Anomaly vs 1986-2005 Baseline)</span>
                 <div class="projection-ruler">
                     <button class="ruler-step" data-filter="lower">
                         <span class="step-name">Lower Rise</span>
                         <div class="step-indicator"></div>
-                        <span class="step-value">17th</span>
+                        <span class="step-value">RCP2.6 (+44 cm)</span>
                     </button>
                     <button class="ruler-step active" data-filter="typical">
                         <span class="step-name">Typical</span>
                         <div class="step-indicator"></div>
-                        <span class="step-value">50th</span>
+                        <span class="step-value">RCP4.5 (+53 cm)</span>
                     </button>
                     <button class="ruler-step" data-filter="higher">
-                        <span class="step-name worst">Worst Case</span>
+                        <span class="step-name worst">High Emissions</span>
                         <div class="step-indicator"></div>
-                        <span class="step-value">83rd</span>
+                        <span class="step-value">RCP8.5 (+74 cm)</span>
                     </button>
                 </div>
             </div>
 
+            <p class="chart-footnote">The axis below is intentionally broken between 12 cm and 40 cm: the observed trend (left) and the three 2100 scenarios (right) sit at very different scales, so compressing the space between them keeps both legible. Click any scenario dot, or use the pathway selector above.</p>
+
             <div class="swipe-hint mobile-only">Swipe chart to explore</div>
-            <div class="chart-canvas" id="projection-canvas" data-scene="projection" style="margin-bottom: 0;"></div>
+            <div class="chart-canvas" id="projection-canvas" data-scene="projection" style="margin-bottom: 0;">
+                <div class="sr-only">
+                    <table>
+                        <caption>Observed sea-level rise (Pago Pago) and 2100 projections by emissions pathway</caption>
+                        <tr><th>Series</th><th>Value</th></tr>
+                        <tr><td>Observed, 1993</td><td>0.0 cm</td></tr>
+                        <tr><td>Observed, 2025 (latest)</td><td>+10.5 cm</td></tr>
+                        <tr><td>2100, RCP2.6 (Lower)</td><td>+44.0 cm</td></tr>
+                        <tr><td>2100, RCP4.5 (Typical)</td><td>+53.0 cm</td></tr>
+                        <tr><td>2100, RCP8.5 (High Emissions)</td><td>+74.0 cm</td></tr>
+                    </table>
+                </div>
+            </div>
             
             <div class="caption-wrapper">
                 <figcaption class="source-caption">
-                    <a href="https://climateknowledgeportal.worldbank.org/country/fiji/impacts-sea-level-rise" target="_blank" rel="noopener" class="source-link">World Bank CCKP</a> & <a href="https://tidesandcurrents.noaa.gov/HighTideFlooding_AnnualOutlook.html" target="_blank" rel="noopener" class="source-link">NOAA</a>. <span class="source-details">Historical high-tide flooding frequency and sea level rise projections relative to the 1995-2014 reference period.</span>
+                    <a href="https://climateknowledgeportal.worldbank.org/" target="_blank" rel="noopener" class="source-link">World Bank CCKP</a> & <a href="https://tidesandcurrents.noaa.gov/HighTideFlooding_AnnualOutlook.html" target="_blank" rel="noopener" class="source-link">NOAA</a>. <span class="source-details">Historical high-tide flooding frequency recorded at Pago Pago Station (NOAA) and CMIP5 sea-level rise projections relative to the 1986-2005 reference period.</span>
                 </figcaption>
                 <div class="caption-actions">
-                    <a href="https://climateknowledgeportal.worldbank.org/country/fiji/impacts-sea-level-rise" target="_blank" rel="noopener" class="download-btn">
+                    <a href="https://climateknowledgeportal.worldbank.org/" target="_blank" rel="noopener" class="download-btn">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                        Source Data
+                        Source Portal
                     </a>
                     <button type="button" class="download-btn" data-download="projections">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
@@ -512,32 +713,48 @@
     <section class="article-section" id="funding">
         <div class="article-copy reveal">
             <span class="editorial-kicker">Chapter 05, Closing the Gap</span>
-            <h2 class="editorial-subhead">Funding the radar</h2>
-            <p>The Systematic Observations Financing Facility (SOFF) was created specifically to fix this hardware deficit. This map visualizes the current pipeline of infrastructure funding targeting the Pacific's blank spaces.</p>
-            <p>However, securing the initial capital is only the first hurdle. Implementation requires long-term maintenance budgets and technical support across vast oceanic territories. This is not an unsolvable crisis; it is a bureaucratic bottleneck. True climate resilience means treating data collection as critical infrastructure, moving these funds from "Pending" to "Approved" so communities can act on evidence.</p>
+            <h2 class="editorial-subhead">Financing the Pacific radar grid</h2>
+            <p>The <a href="https://www.un-soff.org/" target="_blank" rel="noopener" class="source-link">United Nations created the Systematic Observations Financing Facility (SOFF)</a> to bridge the global meteorological deficit by financing long-term surface and upper-air infrastructure, and it is the closest thing the gap documented in this story has to an answer already in motion.</p>
+            <p>The SOFF pipeline operates across three strict phases: <strong>Readiness</strong> (gap assessments), <strong>Investment</strong> (physical hardware deployment), and <strong>Compliance</strong> (ongoing operations). Of the eight Pacific countries this story tracks, three &mdash; Solomon Islands, Samoa, and Nauru &mdash; already have their Investment Phase funding approved. The rest are still in Readiness or have no funding secured at all.</p>
+            
+            <figure class="editorial-img-container aspect-16-9 img-placeholder-holder" data-img-holder data-placeholder-label="Satellite or ground photo of monitoring infrastructure (16:9)" style="position: relative; padding: 2rem; display: flex; justify-content: center; align-items: center;">
+                <img src="assets/photos/soff-station-install.jpg" alt="SOFF-funded weather station installation" data-fallback-label="true" style="max-width: 90%; box-shadow: 2px 4px 15px rgba(0,0,0,0.2);">
+                <div class="annotated-callout" style="top: 12%; left: 6%;">
+                    <span class="callout-label">Solomon Islands, Samoa, Nauru</span>
+                    Investment Phase approved &mdash; hardware funding secured, installation underway or complete.
+                </div>
+            </figure>
+
+            <p style="margin-top: 2rem;">A mechanism to close this gap already exists. The work left is not inventing a solution &mdash; it is moving the five countries still in or before Readiness (Fiji, Kiribati, Tuvalu, Vanuatu, Tonga) through to Investment. That is a funding and political-will problem, not a technical one.</p>
         </div>
-        
-        <div class="chart-controls-wrapper reveal" style="margin-bottom: 2.5rem;">
-            <div class="metric-toggles">
-                <button class="metric-toggle-btn active" data-target="funding" data-filter="all">All Funding Statuses</button>
-                <button class="metric-toggle-btn" data-target="funding" data-filter="approved">Approved</button>
-                <button class="metric-toggle-btn" data-target="funding" data-filter="pending">Pending</button>
-                <button class="metric-toggle-btn" data-target="funding" data-filter="gap">Critical Gaps</button>
-            </div>
-        </div>
-        
+
+        <p class="dynamic-stat-callout reveal">
+            Of the 8 Pacific countries this story tracks:
+            <strong id="dynamic-soff-text" class="slr-counter" aria-live="polite" style="color: var(--accent-ocean); font-weight: 700;">3 approved</strong>
+            for SOFF Investment Phase funding (<span id="dynamic-soff-names">Solomon Islands, Samoa, Nauru</span>)
+        </p>
+
         <figure class="article-graphic">
-            <div class="swipe-hint mobile-only">Swipe chart to explore</div>
-            <div class="chart-canvas" id="funding-canvas" data-scene="funding" style="margin-bottom: 0;"></div>
+            <div class="chart-canvas" id="funding-canvas" data-scene="funding" style="margin-bottom: 0;">
+                <div class="sr-only">
+                    <table>
+                        <caption>SOFF financing phase by country (of 8 Pacific countries tracked)</caption>
+                        <tr><th>Phase</th><th>Countries</th><th>Count</th></tr>
+                        <tr><td>Investment Phase (hardware funded)</td><td>Solomon Islands, Samoa, Nauru</td><td>3</td></tr>
+                        <tr><td>Readiness Phase (assessment only)</td><td>Fiji, Kiribati, Tuvalu, Vanuatu</td><td>4</td></tr>
+                        <tr><td>Unfunded gap</td><td>Tonga</td><td>1</td></tr>
+                    </table>
+                </div>
+            </div>
             
             <div class="caption-wrapper">
                 <figcaption class="source-caption">
-                    <a href="https://www.un-soff.org/" target="_blank" rel="noopener" class="source-link">UN SOFF Operations, Funding Pipeline</a>. <span class="source-details">Infrastructure funding sourced from the Systematic Observations Financing Facility. "Pending" status indicates bureaucratic delays in final disbursement.</span>
+                    <a href="https://un-soff.org/wp-content/uploads/2026/02/INF-13.2-SOFF-Portfolio-and-Implementation-Progress.pdf" target="_blank" rel="noopener" class="source-link">SOFF Portfolio and Implementation Progress (INF 13.2, Feb 2026)</a>. <span class="source-details">Shows verified SOFF phase status (Investment/Readiness/Gap) for the 8 Pacific countries this story tracks. No per-country dollar amount is shown, as none is independently verified.</span>
                 </figcaption>
                 <div class="caption-actions">
                     <a href="https://www.un-soff.org/" target="_blank" rel="noopener" class="download-btn">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                        Source Hub
+                        SOFF Registry
                     </a>
                     <button type="button" class="download-btn" data-download="funding">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
@@ -546,47 +763,66 @@
                 </div>
             </div>
         </figure>
+
+        <div class="article-copy reveal">
+            <figure class="editorial-img-container aspect-16-9" data-img-holder data-placeholder-label="Closing image — community or installed station (16:9)" style="margin: 2.5rem 0 0 0; border: none; background: #000;">
+                <img src="assets/photos/soff-closing.jpg" alt="A newly installed weather monitoring station on a Pacific coastline" style="opacity: 0.9;" data-fallback-label="true">
+                <figcaption class="source-caption" style="color: #888; padding: 0.75rem 0;">
+                    <strong>What closing the gap looks like:</strong> every country in Investment Phase today started in the same Readiness queue the other five are in now. The pipeline works — it just needs to keep moving.
+                </figcaption>
+            </figure>
+        </div>
+    </section>
+
+    <section class="article-section" id="conclusion">
+        <div class="article-copy reveal" style="margin-bottom: 5rem;">
+            <span class="editorial-kicker">Chapter 06, Conclusion</span>
+            <h2 class="editorial-subhead">Closing the blind spot</h2>
+            <p>The Pacific monitoring gap is not a permanent geographic condition; it is a solvable infrastructure deficit. As baseline temperatures rise and extreme weather events compound, the human and economic cost of operating in the dark grows exponentially.</p>
+            <p><a href="https://wmo.int/site/early-warnings-all" target="_blank" rel="noopener" class="source-link">Early warning systems</a> are the most cost-effective line of climate defense humanity has engineered&mdash;yielding a proven tenfold return on investment&mdash;but they require hardware on the ground, telemetry in the sky, and sustained sovereign capital to maintain them.</p>
+            <p>Pacific nations are standing on the frontlines of a global crisis they did not create. Equipping them with the basic radar grid to see the storm coming is the absolute baseline of climate justice.</p>
+        </div>
     </section>
 
     <section class="methodology-section reveal" id="methodology" style="background-color: var(--bg-paper-soft); padding: 5rem 2rem; margin: 0; max-width: 100%;">
         <div style="max-width: 780px; margin: 0 auto;">
             <h2 class="editorial-subhead" style="margin-bottom: 1rem;">Methodology & Sources</h2>
-            <p style="font-size: 1rem; color: var(--ink-soft); line-height: 1.7; margin-bottom: 2rem;">This analysis relies on official data from national authorities and international monitors. Direct access to the raw datasets, processing scripts, and primary sources is provided to foster transparency and support informed public debate.</p>
+            <p style="font-size: 1rem; color: var(--ink-soft); line-height: 1.7; margin-bottom: 2rem;">This data story relies exclusively on verified open data from regional authorities, the UN Systematic Observations Financing Facility (SOFF), the World Meteorological Organisation (WMO), the Pacific Data Hub (SPC), and World Bank Climate Risk Country Profiles. Full access to raw data files and processing scripts is provided below.</p>
             
             <div class="data-download-actions">
                 <a href="https://github.com/chaturadissanayake/theunfairclimateprice/archive/refs/heads/main.zip" class="btn-primary">Download Dataset (CSV/JSON)</a>
                 <a href="https://github.com/chaturadissanayake/theunfairclimateprice" target="_blank" rel="noopener" class="btn-secondary">View Code (GitHub)</a>
             </div>
 
-            <h3 class="source-list-title">Primary Documents</h3>
+            <h3 class="source-list-title">Primary Documents & Registries</h3>
             <ul class="clean-source-list">
                 <li>
-                    <a href="https://stats.pacificdata.org/vis?lc=en&df[ds]=ds%3ASPC2&df[id]=DF_METEO_MONITOR_NET" target="_blank" rel="noopener">Meteorological monitoring network</a>
+                    <a href="https://stats.pacificdata.org/vis?lc=en&df[ds]=ds%3ASPC2&df[id]=DF_METEO_MONITOR_NET" target="_blank" rel="noopener">Meteorological Monitoring Network (DF_METEO_MONITOR_NET)</a>
                     <span class="source-org">Pacific Data Hub</span>
                 </li>
                 <li>
-                    <a href="https://stats.pacificdata.org/vis?lc=en&df[ds]=ds%3ASPC2&df[id]=DF_SDG_11&dq=A.VC_DSR_AFFCT" target="_blank" rel="noopener">Number of directly affected persons</a>
+                    <a href="https://stats.pacificdata.org/vis?lc=en&df[ds]=ds%3ASPC2&df[id]=DF_SDG_11&dq=A.VC_DSR_AFFCT" target="_blank" rel="noopener">Directly Affected Persons by Disasters (SDG 11.5.1)</a>
                     <span class="source-org">Pacific Data Hub</span>
                 </li>
                 <li>
-                    <a href="https://stats.pacificdata.org/vis?lc=en&df[ds]=ds%3ASPC2&df[id]=DF_SDG_11&dq=.VC_DSR_AALT" target="_blank" rel="noopener">Direct disaster economic loss</a>
-                    <span class="source-org">Pacific Data Hub & EM-DAT</span>
+                    <a href="https://stats.pacificdata.org/vis?lc=en&df[ds]=ds%3ASPC2&df[id]=DF_SDG_11&dq=.VC_DSR_AALT" target="_blank" rel="noopener">Direct Disaster Economic Loss, Average Annual Loss (SDG 11.5.2)</a>
+                    <span class="source-org">Pacific Data Hub</span>
                 </li>
                 <li>
-                    <a href="https://climateknowledgeportal.worldbank.org/country/fiji/impacts-sea-level-rise" target="_blank" rel="noopener">Sea level anomalies & projections</a>
+                    <a href="https://climateknowledgeportal.worldbank.org/" target="_blank" rel="noopener">Climate Risk Country Profiles & Sea Level Projections</a>
                     <span class="source-org">World Bank CCKP</span>
                 </li>
                 <li>
-                    <a href="https://tidesandcurrents.noaa.gov/HighTideFlooding_AnnualOutlook.html" target="_blank" rel="noopener">Historical high tide flooding days</a>
-                    <span class="source-org">NOAA / CCKP</span>
+                    <a href="https://tidesandcurrents.noaa.gov/HighTideFlooding_AnnualOutlook.html" target="_blank" rel="noopener">Historical High Tide Flooding Days (Pago Pago Station)</a>
+                    <span class="source-org">NOAA</span>
                 </li>
                 <li>
-                    <a href="https://www.un-soff.org/" target="_blank" rel="noopener">Systematic Observations Financing Facility</a>
+                    <a href="https://un-soff.org/wp-content/uploads/2026/02/INF-13.2-SOFF-Portfolio-and-Implementation-Progress.pdf" target="_blank" rel="noopener">SOFF Portfolio and Implementation Progress (INF 13.2, Feb 2026)</a>
                     <span class="source-org">UN SOFF</span>
                 </li>
                 <li>
-                    <a href="https://wmo.int/activities/global-basic-observing-network-gbon" target="_blank" rel="noopener">GBON Baseline Reports</a>
-                    <span class="source-org">World Meteorological Organization</span>
+                    <a href="https://www.un-soff.org/document/inf-6-2-wmo-gbon-baseline-2023/" target="_blank" rel="noopener">WMO GBON Global Baseline Diagnostic Report (INF 6.2)</a>
+                    <span class="source-org">World Meteorological Organisation</span>
                 </li>
             </ul>
 
@@ -623,7 +859,7 @@
             <div class="footer-col">
                 <h4 class="footer-heading">Tech & tools used</h4>
                 <p class="footer-text">
-                    D3.js v7, Vanilla JavaScript, Python (Pandas), HTML5/CSS3, Adobe Creative Suite (Illustrator/Photoshop).
+                    D3.js v7, Vanilla JavaScript, Python (Pandas), HTML5/CSS3, Adobe Creative Suite (Illustrator/Photoshop), Claude Sonnet 5, Gemini 3.1 Pro.
                 </p>
             </div>
         </div>
