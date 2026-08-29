@@ -15,6 +15,7 @@
     --accent-ocean: #005C8A; /* Deep Marine Blue */
     --accent-ocean-soft: rgba(0, 92, 138, 0.1);
     --accent-ocean-dark: #003B5C;
+    --accent-ocean-wash: rgba(0, 92, 138, 0.05); /* Pacific wash for light/paper section backgrounds */
     --accent-warning: #E9C46A; /* Sharp Ochre */
     --accent-success: #2A9D8F; /* Clear Teal */
     

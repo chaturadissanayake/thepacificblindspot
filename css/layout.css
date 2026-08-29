@@ -312,8 +312,6 @@
     align-items: center;
     justify-content: center;
     background: var(--bg-paper-soft);
-    border: 1px dashed var(--line);
-    border-radius: var(--radius-md);
     overflow: hidden;
     min-height: 220px;
 }

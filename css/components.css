@@ -259,8 +259,6 @@
     flex-direction: column;
     align-items: center;
     padding: 2.5rem 1.5rem; 
-    border-radius: 6px; 
-    border: 1px solid var(--line);
     box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
 }
 .flip-card-front {
@@ -317,7 +315,6 @@
     border: 1px solid var(--ink-soft);
     color: var(--ink);
     padding: 0.5rem 0.8rem;
-    border-radius: 4px;
     font-family: var(--font-mono);
     font-size: 0.75rem;
     font-weight: 600;
@@ -665,7 +662,6 @@ svg text {
     background-color: transparent;
     border: 1px solid var(--accent-coral);
     padding: 0.25rem 0.6rem;
-    border-radius: 2px;
     pointer-events: none;
 }
 .instruction-text {
@@ -927,7 +923,6 @@ button.download-btn {
     display: inline-block;
     border: 1px solid var(--accent-coral-soft);
     padding: 0.2rem 0.5rem;
-    border-radius: 2px;
 }
 .flip-card:hover .quiz-type {
     background-color: var(--accent-coral);

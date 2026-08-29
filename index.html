@@ -40,7 +40,6 @@
     margin: 2rem 0;
     background: var(--bg-paper-soft, #f7f9fa);
     border: 1px solid var(--line, #e2e8f0);
-    border-radius: 4px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -65,7 +64,6 @@
   }
 .img-fallback-active {
     background: transparent;
-    border: 1px dashed var(--ink-faint); /* Clean ash line */
     min-height: 220px;
   }
   .img-fallback-active::after {
@@ -262,8 +260,8 @@
         <figure class="reveal" data-placeholder-label="Buoy Diagram (3296 x 1580)" style="aspect-ratio: 3296 / 1580; background: transparent; border: none; border-radius: 0; width: calc(100% - 4rem); max-width: 950px; margin: 3rem auto 0 auto; padding: 0; overflow: visible;">
             <img src="assets/illustrations/buoy-isometric-cutaway.png" alt="Deep ocean DART buoy technical diagram" style="object-fit: contain !important; width: 100% !important; height: 100% !important; display: block;">
         </figure>
-        <p class="source-caption" style="color: #888; text-align: center; max-width: 950px; margin: 1rem auto 0 auto; padding: 0 2rem; position: relative; z-index: 2;">
-            Deep-ocean Assessment and Reporting of Tsunamis (DART) system. Source: <a href="https://www.ndbc.noaa.gov/dart.shtml" target="_blank" rel="noopener" class="source-link">National Data Buoy Center, NOAA</a>, U.S. Department of Commerce.
+        <p class="source-caption" style="text-align: center; max-width: 950px; margin: 1rem auto 0 auto; padding: 0 2rem; position: relative; z-index: 2;">
+            <a href="https://www.ndbc.noaa.gov/dart.shtml" target="_blank" rel="noopener" class="source-link">National Data Buoy Center, NOAA</a>. <span class="source-details">Deep-ocean Assessment and Reporting of Tsunamis (DART) system, U.S. Department of Commerce.</span>
         </p>
 
         <div class="central-figure-head reveal" style="text-align: left; max-width: 680px; margin: 4rem auto 3rem auto; padding: 0 2rem;">
@@ -311,24 +309,25 @@
             <p>This chart tracks the number of people directly affected by disasters each year, and the average annual economic loss disasters inflict, across Pacific Island Countries. While disasters are intensifying, local tracking hardware remains <a href="https://pacificdata.org/" target="_blank" rel="noopener" class="source-link">dangerously sparse across the Pacific region</a>.</p>
             <p>Without localised ground-truth data, forecasting relies heavily on coarse satellite estimates. This severely reduces landfall accuracy, narrowing the crucial <a href="https://public.wmo.int/en/earlywarningsforall" target="_blank" rel="noopener" class="source-link">lead time for evacuations</a> from days to hours. When data infrastructure is neglected, communities pay for it in disaster recovery and unmanaged vulnerability.</p>
             
-            <div class="ground-truth-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem; margin: 2rem 0;">
-                <div style="aspect-ratio: 3 / 4; overflow: hidden; background: #000;">
-                    <img src="assets/photos/ground-truth-01.jpg" alt="Overwash event flooding an atoll in the Marshall Islands" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9;" data-fallback-label="true">
-                </div>
-                <div style="aspect-ratio: 3 / 4; overflow: hidden; background: #000;">
-                    <img src="assets/photos/ground-truth-02.jpg" alt="Waves washing over a coastal road on Roi-Namur Island, Kwajalein Atoll" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9;" data-fallback-label="true">
-                </div>
-                <div style="aspect-ratio: 3 / 4; overflow: hidden; background: #000;">
-                    <img src="assets/photos/ground-truth-03.jpg" alt="NASA GPM satellite precipitation composite of Cyclone Pam near Vanuatu" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9;" data-fallback-label="true">
-                </div>
-                <div style="aspect-ratio: 3 / 4; overflow: hidden; background: #000;">
-                    <img src="assets/photos/ground-truth-04.jpg" alt="Illustration of the GPM Core Observatory satellite in orbit" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9;" data-fallback-label="true">
-                </div>
-            </div>
-            <figcaption class="source-caption" style="color: #888; padding: 0.75rem 0;">
-                <strong>Ground Truth:</strong> Chronic overwash and storm surge routinely swamp low-lying atolls in the Pacific, while the satellites tasked with tracking these storms remain the primary — often only — source of warning data. Credit: USGS / NASA-JAXA GPM, public domain.
-            </figcaption>
         </div>
+
+        <div class="ground-truth-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; width: 100%; max-width: 960px; margin: 0 auto; padding: 0 2rem;">
+            <div class="img-placeholder-holder" data-img-holder data-placeholder-label="Overwash Flooding, Marshall Islands (4:3)" style="aspect-ratio: 4 / 3; overflow: hidden; background: #000; min-height: 0;">
+                <img src="assets/photos/ground-truth-01.jpg" alt="Overwash event flooding an atoll in the Marshall Islands" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9;" data-fallback-label="true">
+            </div>
+            <div class="img-placeholder-holder" data-img-holder data-placeholder-label="Coastal Road Flooding, Kwajalein Atoll (4:3)" style="aspect-ratio: 4 / 3; overflow: hidden; background: #000; min-height: 0;">
+                <img src="assets/photos/ground-truth-02.jpg" alt="Waves washing over a coastal road on Roi-Namur Island, Kwajalein Atoll" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9;" data-fallback-label="true">
+            </div>
+            <div class="img-placeholder-holder" data-img-holder data-placeholder-label="Cyclone Pam Satellite Composite (4:3)" style="aspect-ratio: 4 / 3; overflow: hidden; background: #000; min-height: 0;">
+                <img src="assets/photos/ground-truth-03.jpg" alt="NASA GPM satellite precipitation composite of Cyclone Pam near Vanuatu" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9;" data-fallback-label="true">
+            </div>
+            <div class="img-placeholder-holder" data-img-holder data-placeholder-label="GPM Core Observatory Illustration (4:3)" style="aspect-ratio: 4 / 3; overflow: hidden; background: #000; min-height: 0;">
+                <img src="assets/photos/ground-truth-04.jpg" alt="Illustration of the GPM Core Observatory satellite in orbit" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9;" data-fallback-label="true">
+            </div>
+        </div>
+        <p class="source-caption" style="font-size: 0.75rem !important; color: var(--ink-faint) !important; line-height: 1.6 !important; max-width: 960px; margin: 0.75rem auto 3rem auto; padding: 0 2rem;">
+            Ground Truth: Chronic overwash and storm surge routinely swamp low-lying atolls in the Pacific, while the satellites tasked with tracking these storms remain the primary — often only — source of warning data. <span class="source-details">Photos 1&ndash;2: <a href="https://www.usgs.gov/" target="_blank" rel="noopener" class="source-link">USGS</a>, public domain. Photos 3&ndash;4: <a href="https://gpm.nasa.gov/" target="_blank" rel="noopener" class="source-link">NASA/JAXA GPM</a> mission, public domain.</span>
+        </p>
         
         <figure class="article-graphic">
             <div class="chart-controls-wrapper reveal">
@@ -620,7 +619,7 @@
 
         <div class="caption-wrapper" style="max-width: 1200px; padding: 1rem 2rem 0 2rem;">
             <figcaption class="source-caption">
-                <a href="https://pacificdata.org/data/dataset/meteorological-monitoring-network-df-meteo-monitor-net" target="_blank" rel="noopener" class="source-link">Pacific Data Hub (Indicator DF_METEO_MONITOR_NET)</a>. <span class="source-details">Official baseline data for operational land meteorological monitoring networks across Pacific territories.</span>
+                <a href="https://pacificdata.org/data/dataset/meteorological-monitoring-network-df-meteo-monitor-net" target="_blank" rel="noopener" class="source-link">Pacific Data Hub (Indicator DF_METEO_MONITOR_NET)</a>. <span class="source-details">Official baseline data for operational land meteorological monitoring networks across Pacific territories. Country outline basemaps: satellite imagery from Google Earth / Google Maps.</span>
             </figcaption>
             <a href="https://stats.pacificdata.org/vis?lc=en&df[ds]=ds%3ASPC2&df[id]=DF_METEO_MONITOR_NET" target="_blank" rel="noopener" class="download-btn">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
@@ -779,13 +778,13 @@
             </div>
         </figure>
 
+        <figure style="margin: 2.5rem 0 0 0; border: none; background: #000; width: 100%; max-width: 100%; aspect-ratio: 21 / 9;">
+            <img src="assets/photos/soff-closing.jpg" alt="Calm ocean waves at dawn" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9; display: block;">
+        </figure>
         <div class="article-copy reveal">
-            <figure class="editorial-img-container" data-img-holder data-placeholder-label="Closing image — panoramic strip (21:9)" style="margin: 2.5rem 0 0 0; border: none; background: #000; aspect-ratio: 21 / 9;">
-                <img src="assets/photos/soff-closing.jpg" alt="A calm Pacific coastline at dawn" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9; filter: grayscale(15%);" data-fallback-label="true">
-                <figcaption class="source-caption" style="color: #888; padding: 0.75rem 0;">
-                    <strong>What closing the gap looks like:</strong> every country in Investment Phase today started in the same Readiness queue the other five are in now. The pipeline works — it just needs to keep moving.
-                </figcaption>
-            </figure>
+            <figcaption class="source-caption" style="padding: 0.75rem 0 0 0;">
+                What closing the gap looks like: every country in Investment Phase today started in the same Readiness queue the other five are in now. The pipeline works — it just needs to keep moving. <span class="source-details">Photo: Oscar Ävalos / <a href="https://unsplash.com/photos/ocean-waves-crashing-on-shore-during-daytime-OnnR6RQf-Ak" target="_blank" rel="noopener" class="source-link">Unsplash</a>.</span>
+            </figcaption>
         </div>
     </section>
 
