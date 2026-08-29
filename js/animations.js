@@ -1205,10 +1205,9 @@ function initUIElements() {
                 const targetVal = AppData.projections[scenario][0].val;
                 const currentVal = parseFloat(dynamicText.textContent.replace(/[^0-9.]/g, '')) || 0;
                 
-                let textColor = 'var(--ink)';
+                let textColor = 'var(--accent-ocean)'; /* FIX: Synced to the Ocean Blue base theme */
                 if (scenario === 'lower') textColor = 'var(--accent-success)';
                 if (scenario === 'higher') textColor = 'var(--accent-danger)';
-                if (scenario === 'typical') textColor = 'var(--accent-ocean)'; 
                 dynamicText.style.color = textColor;
                 
                 Charts.countText(dynamicText, currentVal, targetVal, {

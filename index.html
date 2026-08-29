@@ -50,8 +50,11 @@
   .editorial-img-container.aspect-16-9 {
     aspect-ratio: 16 / 9;
   }
+  .editorial-img-container.aspect-16-10 {
+    aspect-ratio: 16 / 10; /* Perfect mathematical match for 3296x2060 */
+  }
   .editorial-img-container.aspect-wide {
-    aspect-ratio: 164 / 70; /* FIX: Mathematically matches 1640x700 to prevent cropping */
+    aspect-ratio: 164 / 70;
   }
   .editorial-img-container img {
     display: block;
@@ -60,18 +63,18 @@
     object-fit: cover;
     transition: opacity 0.3s ease;
   }
-  .img-fallback-active {
-    background: var(--bg-paper-soft);
+.img-fallback-active {
+    background: transparent;
+    border: 1px dashed var(--ink-faint); /* Clean ash line */
     min-height: 220px;
   }
   .img-fallback-active::after {
     content: attr(data-placeholder-label);
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--ink-faint);
   }
   .hero-bg-map-layer {
     position: absolute;
@@ -250,20 +253,21 @@
         <!-- Soft background image layer for the dark section -->
         <img src="assets/maps/pacificoceanfloor.webp" alt="" class="central-bg-map-layer" aria-hidden="true">
         
-        <div class="central-figure-head reveal" style="text-align: left; max-width: 680px; margin: 0 auto 1.5rem auto; padding: 0 2rem;">
+        <div class="central-figure-head reveal" style="text-align: left; max-width: 680px; margin: 0 auto 0 auto; padding: 0 2rem;">
             <span class="editorial-kicker">Chapter 01, The Global Gap</span>
             <h2 class="editorial-subhead">We are operating in the dark</h2>
             <p>According to the <a href="https://wmo.int/" target="_blank" rel="noopener" class="source-link">World Meteorological Organisation (WMO)</a>, Lower-Middle Income Countries (LMICs) currently meet only 6% of the required baseline for surface weather stations. For Least Developed Countries and Small Island Developing States (LDCs & SIDS) combined, surface compliance sits at just 9%, while upper-air monitoring reaches only 13%. This contrasts sharply with Upper-Middle Income Countries (UMICs), which average 39% compliance.</p>
-            
-            <figure class="editorial-img-container aspect-16-9" data-img-holder data-placeholder-label="Buoy Diagram (16:9)" style="background: #f4f4f4; padding: 2rem;">
-                <img src="assets/illustrations/buoy-isometric-cutaway.png" alt="Isometric cutaway of a deep ocean DART buoy" data-fallback-label="true">
-                <div style="position: absolute; top: 10%; right: 10%; max-width: 200px; font-family: var(--font-mono); font-size: 0.8rem;">
-                    <span style="display:inline-block; width:10px; height:10px; background:#FFC107; margin-right:5px;"></span>
-                    <strong>Satellite Telemetry Unit:</strong> The most expensive component. Without ongoing funding for satellite bandwidth, the station collects data locally but cannot transmit warnings to regional forecasting hubs.
-                </div>
-            </figure>
+        </div>
+        
+        <figure class="reveal" data-placeholder-label="Buoy Diagram (3296 x 1580)" style="aspect-ratio: 3296 / 1580; background: transparent; border: none; border-radius: 0; width: calc(100% - 4rem); max-width: 950px; margin: 3rem auto 0 auto; padding: 0; overflow: visible;">
+            <img src="assets/illustrations/buoy-isometric-cutaway.png" alt="Deep ocean DART buoy technical diagram" style="object-fit: contain !important; width: 100% !important; height: 100% !important; display: block;">
+        </figure>
+        <p class="source-caption" style="color: #888; text-align: center; max-width: 950px; margin: 1rem auto 0 auto; padding: 0 2rem; position: relative; z-index: 2;">
+            Deep-ocean Assessment and Reporting of Tsunamis (DART) system. Source: <a href="https://www.ndbc.noaa.gov/dart.shtml" target="_blank" rel="noopener" class="source-link">National Data Buoy Center, NOAA</a>, U.S. Department of Commerce.
+        </p>
 
-            <p style="margin-top: 1rem;">While satellite imagery provides a macro view of regional cloud cover, ground-level radar and surface stations provide essential "ground truth." They detect rapid micro-changes in atmospheric pressure, temperature, and localised humidity that transform ordinary squalls into catastrophic cyclones and trigger flash droughts. Without them, <a href="https://www.un.org/en/climatechange/early-warnings-for-all" target="_blank" rel="noopener" class="source-link">early warning systems</a> operate with massive margins of error.</p>
+        <div class="central-figure-head reveal" style="text-align: left; max-width: 680px; margin: 4rem auto 3rem auto; padding: 0 2rem;">
+        <p>While satellite imagery provides a macro view of regional cloud cover, ground-level radar and surface stations provide essential "ground truth." They detect rapid micro-changes in atmospheric pressure, temperature, and localised humidity that transform ordinary squalls into catastrophic cyclones and trigger flash droughts. Without them, <a href="https://www.un.org/en/climatechange/early-warnings-for-all" target="_blank" rel="noopener" class="source-link">early warning systems</a> operate with massive margins of error.</p>
         </div>
         
         <div class="chart-controls-wrapper reveal on-dark">
@@ -307,12 +311,23 @@
             <p>This chart tracks the number of people directly affected by disasters each year, and the average annual economic loss disasters inflict, across Pacific Island Countries. While disasters are intensifying, local tracking hardware remains <a href="https://pacificdata.org/" target="_blank" rel="noopener" class="source-link">dangerously sparse across the Pacific region</a>.</p>
             <p>Without localised ground-truth data, forecasting relies heavily on coarse satellite estimates. This severely reduces landfall accuracy, narrowing the crucial <a href="https://public.wmo.int/en/earlywarningsforall" target="_blank" rel="noopener" class="source-link">lead time for evacuations</a> from days to hours. When data infrastructure is neglected, communities pay for it in disaster recovery and unmanaged vulnerability.</p>
             
-            <figure class="editorial-img-container aspect-16-9" data-img-holder data-placeholder-label="Broken Station Photo (16:9)" style="margin: 2rem 0; border: none; background: #000;">
-                <img src="assets/photos/broken-weather-station.jpg" alt="A destroyed surface weather station covered in sand and rust" style="opacity: 0.85;" data-fallback-label="true">
-                <figcaption class="source-caption" style="color: #888; padding: 0.75rem 0;">
-                    <strong>Ground Truth:</strong> Marine salt corrosion and category-5 cyclones frequently destroy the few surface stations that do exist, requiring dedicated, sustained funding for operational maintenance.
-                </figcaption>
-            </figure>
+            <div class="ground-truth-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem; margin: 2rem 0;">
+                <div style="aspect-ratio: 3 / 4; overflow: hidden; background: #000;">
+                    <img src="assets/photos/ground-truth-01.jpg" alt="Overwash event flooding an atoll in the Marshall Islands" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9;" data-fallback-label="true">
+                </div>
+                <div style="aspect-ratio: 3 / 4; overflow: hidden; background: #000;">
+                    <img src="assets/photos/ground-truth-02.jpg" alt="Waves washing over a coastal road on Roi-Namur Island, Kwajalein Atoll" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9;" data-fallback-label="true">
+                </div>
+                <div style="aspect-ratio: 3 / 4; overflow: hidden; background: #000;">
+                    <img src="assets/photos/ground-truth-03.jpg" alt="NASA GPM satellite precipitation composite of Cyclone Pam near Vanuatu" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9;" data-fallback-label="true">
+                </div>
+                <div style="aspect-ratio: 3 / 4; overflow: hidden; background: #000;">
+                    <img src="assets/photos/ground-truth-04.jpg" alt="Illustration of the GPM Core Observatory satellite in orbit" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9;" data-fallback-label="true">
+                </div>
+            </div>
+            <figcaption class="source-caption" style="color: #888; padding: 0.75rem 0;">
+                <strong>Ground Truth:</strong> Chronic overwash and storm surge routinely swamp low-lying atolls in the Pacific, while the satellites tasked with tracking these storms remain the primary — often only — source of warning data. Credit: USGS / NASA-JAXA GPM, public domain.
+            </figcaption>
         </div>
         
         <figure class="article-graphic">
@@ -765,8 +780,8 @@
         </figure>
 
         <div class="article-copy reveal">
-            <figure class="editorial-img-container aspect-16-9" data-img-holder data-placeholder-label="Closing image — community or installed station (16:9)" style="margin: 2.5rem 0 0 0; border: none; background: #000;">
-                <img src="assets/photos/soff-closing.jpg" alt="A newly installed weather monitoring station on a Pacific coastline" style="opacity: 0.9;" data-fallback-label="true">
+            <figure class="editorial-img-container" data-img-holder data-placeholder-label="Closing image — panoramic strip (21:9)" style="margin: 2.5rem 0 0 0; border: none; background: #000; aspect-ratio: 21 / 9;">
+                <img src="assets/photos/soff-closing.jpg" alt="A calm Pacific coastline at dawn" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9; filter: grayscale(15%);" data-fallback-label="true">
                 <figcaption class="source-caption" style="color: #888; padding: 0.75rem 0;">
                     <strong>What closing the gap looks like:</strong> every country in Investment Phase today started in the same Readiness queue the other five are in now. The pipeline works — it just needs to keep moving.
                 </figcaption>
