@@ -1,49 +1,34 @@
-# The Unfair Climate Price
-
-> A visual data story about how Pacific island nations are paying the highest price for a climate crisis they barely caused. Built for the Pacific Dataviz Challenge 2026.
+# The Pacific Blind Spot
+> The world can't see the storm coming because nobody paid to watch. A data story on the Pacific's critical climate monitoring gap. Built for the Pacific Dataviz Challenge 2026.
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ## Overview
+The Pacific is the most climate-exposed region on Earth, yet it remains one of the least monitored. This scrollytelling data story maps the gap between climate risk and climate observation — from sparse meteorological station networks to the funding shortfalls behind the WMO's Global Basic Observing Network (GBON).
 
-Small Pacific island nations barely contribute to climate change, producing less than 1% of global emissions. However, six years of official data show they are losing the most land, money, and coastline as a result. "The Unfair Climate Price" is an interactive data journalism project that visualises this structural climate inequality across the Pacific.
+## Highlights
+- Scroll-driven narrative via native IntersectionObserver
+- Full keyboard + screen reader accessibility
+- Respects reduced-motion settings
+- Custom SVG charts, sharp at any screen size
 
-**If you are interested in data storytelling, front-end accessibility in dataviz, or climate communication, please consider starring this repository.**
-
-## Key Features for Data Practitioners
-
-This project serves as a practical case study for building accessible, high-performance web visualisations.* **Scroll-Driven Narrative:** Uses the browser's native IntersectionObserver to animate sections into view seamlessly as the user scrolls.
-* **Web Accessibility:** Every interactive component works with a keyboard and is optimised for screen readers.
-* **Motion Sensitivity:** The entire site respects user-defined reduced-motion system settings.
-* **Scalable Vectors:** Custom charts are built to be drawn as scalable graphics that stay sharp at any screen size.
-
-## Technical Stack
-
-The architecture relies on a lightweight front-end approach mixed with standard data visualisation tools:
-* **D3.js v7**
-* **p5.js**
-* **RawGraphs**
-* **Vanilla JS**
-* **Adobe Illustrator & Photoshop**
-* **SDMX / .Stat**
+## Stack
+D3.js v7 · Vanilla JS · Adobe Illustrator/Photoshop · Python (Pandas)
 
 ## Data Sources
+From the Pacific Data Hub and partner sources:
+- Meteorological monitoring network (Pacific Data Hub)
+- Direct disaster economic loss (SDG 11.5.2) - (Pacific Data Hub)
+- Number of directly affected persons attributed to disasters (SDG 1.5.1 / 11.5.1) - (Pacific Data Hub)
+- Sea level anomalies
+- UN SOFF INF 6.2 — WMO GBON Baseline Report 2023
+- NOAA — High Tide Flooding Days
+- World Bank Climate Risk Country Profiles (2021)
+- SOFF Partners funding tables & Portfolio Implementation Progress (INF 13.2)
 
-The narrative is driven by six open datasets sourced directly from the Pacific Data Hub.Stat Explorer:
-1. Sea level anomalies
-2. Mean sea surface temperature anomalies
-3. Greenhouse gas emissions per capita
-4. Direct disaster economic loss
-5. Coastline
-6. Climate-altering land cover index
-
-## Academic Citation
-
-If you use this project as a reference for your own data storytelling or academic work, please cite it:
-> Dissanayake, C. (2026). The Unfair Climate Price: how six climate datasets reveal an unequal ocean [Data story]. Pacific Dataviz Challenge 2026. Retrieved from https://pacific-paradox.vercel.app
+## Citation
+> Dissanayake, C. (2026). *The Pacific Blind Spot: missing climate data in the world's most exposed ocean* [Data story]. Pacific Dataviz Challenge 2026. https://chaturadissanayake.github.io/theunfairclimateprice/
 
 ---
-
-### Author
 Built by **Chatura Dissanayake**.
