@@ -45,6 +45,41 @@ const AppData = {
     heroCoveragePct: GBON_SIDS_SURFACE_PCT,
 
     // ---------------------------------------------------------
+    // CHAPTER 01b: METEOROLOGICAL NETWORK GROWTH (NEW, previously unused)
+    // SOURCE: Meteorological_monitoring_network_data.csv (Pacific Data Hub,
+    //   SPC:DF_METEO_MONITOR_NET, "Land (fixed)" station type only).
+    // Number of active fixed land meteorological stations per country,
+    // per year. Source rows are annual and gap-free for every country
+    // (one row/year from that country's first recorded year to 2026), so
+    // this is stored as STEP CHANGES ONLY (59 change-points instead of the
+    // source's 1,650 raw rows) to stay compact: each entry's "stations"
+    // count holds from that "year" until the next entry's year (exclusive).
+    // Countries not present in the source file (e.g. American Samoa) are
+    // omitted rather than fabricated. Added 2026-08-30; not yet wired to
+    // a chart in index.html/animations.js.
+    // ---------------------------------------------------------
+    meteoNetworkHistory: {
+        "Fiji": [ {"year":1933,"stations":1}, {"year":1942,"stations":2}, {"year":1951,"stations":3}, {"year":1953,"stations":4}, {"year":1956,"stations":5}, {"year":1983,"stations":6}, {"year":2011,"stations":7}, {"year":2012,"stations":8} ], // data through 2026, first recorded 1933
+        "New Caledonia": [ {"year":1941,"stations":1}, {"year":1963,"stations":2}, {"year":1983,"stations":3}, {"year":2016,"stations":4} ], // data through 2026, first recorded 1941
+        "Papua New Guinea": [ {"year":1951,"stations":1}, {"year":1957,"stations":2}, {"year":1960,"stations":3}, {"year":1986,"stations":4}, {"year":1996,"stations":5}, {"year":1997,"stations":6} ], // data through 2026, first recorded 1951
+        "Solomon Islands": [ {"year":1950,"stations":1}, {"year":1962,"stations":2}, {"year":1975,"stations":3} ], // data through 2026, first recorded 1950
+        "Vanuatu": [ {"year":1953,"stations":1}, {"year":1961,"stations":2}, {"year":1972,"stations":3}, {"year":1973,"stations":4}, {"year":1988,"stations":5}, {"year":2007,"stations":6} ], // data through 2026, first recorded 1953
+        "Kiribati": [ {"year":1946,"stations":1}, {"year":1947,"stations":2}, {"year":1984,"stations":3}, {"year":2025,"stations":4} ], // data through 2026, first recorded 1946
+        "Marshall Islands": [ {"year":1945,"stations":1}, {"year":1952,"stations":2} ], // data through 2026, first recorded 1945
+        "Nauru": [ {"year":1889,"stations":0} ], // data through 2026, first recorded 1889
+        "Palau": [ {"year":1948,"stations":1} ], // data through 2026, first recorded 1948
+        "Samoa": [ {"year":1889,"stations":1}, {"year":1969,"stations":2} ], // data through 2026, first recorded 1889
+        "Tonga": [ {"year":1946,"stations":1}, {"year":1974,"stations":2}, {"year":1978,"stations":3}, {"year":1994,"stations":4} ], // data through 2026, first recorded 1946
+        "Tuvalu": [ {"year":1932,"stations":1}, {"year":1941,"stations":2}, {"year":1947,"stations":3} ], // data through 2026, first recorded 1932
+        "Micronesia (Federated States of)": [ {"year":1941,"stations":1}, {"year":1948,"stations":2}, {"year":1952,"stations":3} ], // data through 2026, first recorded 1941
+        "French Polynesia": [ {"year":1930,"stations":1}, {"year":1935,"stations":2}, {"year":1949,"stations":3}, {"year":1951,"stations":4}, {"year":1962,"stations":5}, {"year":2013,"stations":6}, {"year":2016,"stations":7} ], // data through 2026, first recorded 1930
+        "Cook Islands": [ {"year":1948,"stations":1}, {"year":2016,"stations":2} ], // data through 2026, first recorded 1948
+        "Niue": [ {"year":1889,"stations":0} ], // data through 2026, first recorded 1889
+        "Tokelau": [ {"year":2016,"stations":1} ], // data through 2026, first recorded 2016
+        "Pitcairn": [ {"year":1889,"stations":0} ], // data through 2026, first recorded 1889
+    },
+
+    // ---------------------------------------------------------
     // CHAPTER 02: PACIFIC DISASTER EXPOSURE
     // SOURCE (affected): Pacific Data Hub SDG 11.5.1 "Number of directly
     //   affected persons attributed to disasters"
@@ -53,9 +88,14 @@ const AppData = {
     //   economic loss, average annual loss" — ONE figure per country, at
     //   the single reference year the source reports (not a yearly series).
     //   (SPC_DF_SDG_3_0_filtered_2026-08-26_20-12-55.xlsx)
-    // VERIFIED 2026-08-28: previous "affected" values were real but shifted
-    //   one year early across every country (a parsing bug) — corrected below,
-    //   re-pulled directly from source columns C(2005)..V(2023).
+    // VERIFIED 2026-08-30: the 2026-08-28 "fix" had NOT actually been
+    //   applied — every country's "affected" series was still shifted one
+    //   year late vs. the source (e.g. old "Fiji 2019: 155726" was really
+    //   the source's Fiji-2018 value). Re-pulled fresh from source columns
+    //   2005..2023 with correct year alignment; this also recovers each
+    //   country's real 2023 figure where the source reports one (e.g. Samoa
+    //   2023 = 138, previously absent because the shift pushed the 2022
+    //   value into the 2023 slot instead).
     // REMOVED: "frequency" and "damage" per-year fields. No source file
     //   supports year-by-year event counts or year-by-year dollar damage;
     //   only the single avgAnnualLoss figure below is verified. Rather than
@@ -65,108 +105,108 @@ const AppData = {
     // ---------------------------------------------------------
     exposure: {
         "Fiji": [
-            { "year": 2018, "frequency": null, "damage": null, "affected": 0 },
-            { "year": 2019, "frequency": null, "damage": null, "affected": 155726 },
-            { "year": 2020, "frequency": null, "damage": null, "affected": 78045 },
-            { "year": 2021, "frequency": null, "damage": null, "affected": 235921 },
-            { "year": 2022, "frequency": null, "damage": null, "affected": 78030 },
-            { "year": 2023, "frequency": null, "damage": null, "affected": 1787 }
+            { "year": 2018, "frequency": null, "damage": null, "affected": 155726 },
+            { "year": 2019, "frequency": null, "damage": null, "affected": 78045 },
+            { "year": 2020, "frequency": null, "damage": null, "affected": 235921 },
+            { "year": 2021, "frequency": null, "damage": null, "affected": 78030 },
+            { "year": 2022, "frequency": null, "damage": null, "affected": 1787 },
+            { "year": 2023, "frequency": null, "damage": null, "affected": null }
         ],
         "New Caledonia": [
-            { "year": 2018, "frequency": null, "damage": null, "affected": 4 },
-            { "year": 2019, "frequency": null, "damage": null, "affected": 0 },
-            { "year": 2020, "frequency": null, "damage": null, "affected": 1 },
-            { "year": 2021, "frequency": null, "damage": null, "affected": 2 },
+            { "year": 2018, "frequency": null, "damage": null, "affected": 0 },
+            { "year": 2019, "frequency": null, "damage": null, "affected": 1 },
+            { "year": 2020, "frequency": null, "damage": null, "affected": 2 },
+            { "year": 2021, "frequency": null, "damage": null, "affected": null },
             { "year": 2022, "frequency": null, "damage": null, "affected": null },
             { "year": 2023, "frequency": null, "damage": null, "affected": null }
         ],
         "Papua New Guinea": [
             { "year": 2018, "frequency": null, "damage": null, "affected": null },
-            { "year": 2019, "frequency": null, "damage": null, "affected": null },
-            { "year": 2020, "frequency": null, "damage": null, "affected": 2100 },
-            { "year": 2021, "frequency": null, "damage": null, "affected": 3297 },
+            { "year": 2019, "frequency": null, "damage": null, "affected": 2100 },
+            { "year": 2020, "frequency": null, "damage": null, "affected": 3297 },
+            { "year": 2021, "frequency": null, "damage": null, "affected": null },
             { "year": 2022, "frequency": null, "damage": null, "affected": null },
             { "year": 2023, "frequency": null, "damage": null, "affected": null }
         ],
         "Solomon Islands": [
-            { "year": 2018, "frequency": null, "damage": null, "affected": 51465 },
-            { "year": 2019, "frequency": null, "damage": null, "affected": 194155 },
-            { "year": 2020, "frequency": null, "damage": null, "affected": 1834 },
-            { "year": 2021, "frequency": null, "damage": null, "affected": 2339 },
-            { "year": 2022, "frequency": null, "damage": null, "affected": 240 },
-            { "year": 2023, "frequency": null, "damage": null, "affected": 20080 }
+            { "year": 2018, "frequency": null, "damage": null, "affected": 194155 },
+            { "year": 2019, "frequency": null, "damage": null, "affected": 1834 },
+            { "year": 2020, "frequency": null, "damage": null, "affected": 2339 },
+            { "year": 2021, "frequency": null, "damage": null, "affected": 240 },
+            { "year": 2022, "frequency": null, "damage": null, "affected": 20080 },
+            { "year": 2023, "frequency": null, "damage": null, "affected": null }
         ],
         "Vanuatu": [
-            { "year": 2018, "frequency": null, "damage": null, "affected": 920 },
-            { "year": 2019, "frequency": null, "damage": null, "affected": 23286 },
-            { "year": 2020, "frequency": null, "damage": null, "affected": 18 },
-            { "year": 2021, "frequency": null, "damage": null, "affected": 246802 },
-            { "year": 2022, "frequency": null, "damage": null, "affected": 1400 },
+            { "year": 2018, "frequency": null, "damage": null, "affected": 23286 },
+            { "year": 2019, "frequency": null, "damage": null, "affected": 18 },
+            { "year": 2020, "frequency": null, "damage": null, "affected": 246802 },
+            { "year": 2021, "frequency": null, "damage": null, "affected": 1400 },
+            { "year": 2022, "frequency": null, "damage": null, "affected": null },
             { "year": 2023, "frequency": null, "damage": null, "affected": null }
         ],
         "Kiribati": [
-            { "year": 2018, "frequency": null, "damage": null, "affected": null },
-            { "year": 2019, "frequency": null, "damage": null, "affected": 0 },
-            { "year": 2020, "frequency": null, "damage": null, "affected": 3 },
-            { "year": 2021, "frequency": null, "damage": null, "affected": 15 },
-            { "year": 2022, "frequency": null, "damage": null, "affected": 333 },
+            { "year": 2018, "frequency": null, "damage": null, "affected": 0 },
+            { "year": 2019, "frequency": null, "damage": null, "affected": 3 },
+            { "year": 2020, "frequency": null, "damage": null, "affected": 15 },
+            { "year": 2021, "frequency": null, "damage": null, "affected": 333 },
+            { "year": 2022, "frequency": null, "damage": null, "affected": null },
             { "year": 2023, "frequency": null, "damage": null, "affected": null }
         ],
         "Marshall Islands": [
-            { "year": 2018, "frequency": null, "damage": null, "affected": 7029 },
-            { "year": 2019, "frequency": null, "damage": null, "affected": 0 },
-            { "year": 2020, "frequency": null, "damage": null, "affected": 35844 },
-            { "year": 2021, "frequency": null, "damage": null, "affected": 56718 },
-            { "year": 2022, "frequency": null, "damage": null, "affected": 0 },
-            { "year": 2023, "frequency": null, "damage": null, "affected": 52914 }
+            { "year": 2018, "frequency": null, "damage": null, "affected": 0 },
+            { "year": 2019, "frequency": null, "damage": null, "affected": 35844 },
+            { "year": 2020, "frequency": null, "damage": null, "affected": 56718 },
+            { "year": 2021, "frequency": null, "damage": null, "affected": 0 },
+            { "year": 2022, "frequency": null, "damage": null, "affected": 52914 },
+            { "year": 2023, "frequency": null, "damage": null, "affected": null }
         ],
         "Nauru": [
             { "year": 2018, "frequency": null, "damage": null, "affected": null },
-            { "year": 2019, "frequency": null, "damage": null, "affected": null },
-            { "year": 2020, "frequency": null, "damage": null, "affected": 63 },
-            { "year": 2021, "frequency": null, "damage": null, "affected": 1133 },
-            { "year": 2022, "frequency": null, "damage": null, "affected": 4 },
-            { "year": 2023, "frequency": null, "damage": null, "affected": 5393 }
+            { "year": 2019, "frequency": null, "damage": null, "affected": 63 },
+            { "year": 2020, "frequency": null, "damage": null, "affected": 1133 },
+            { "year": 2021, "frequency": null, "damage": null, "affected": 4 },
+            { "year": 2022, "frequency": null, "damage": null, "affected": 5393 },
+            { "year": 2023, "frequency": null, "damage": null, "affected": null }
         ],
         "Palau": [
             { "year": 2018, "frequency": null, "damage": null, "affected": null },
             { "year": 2019, "frequency": null, "damage": null, "affected": null },
             { "year": 2020, "frequency": null, "damage": null, "affected": null },
-            { "year": 2021, "frequency": null, "damage": null, "affected": null },
-            { "year": 2022, "frequency": null, "damage": null, "affected": 24220 },
-            { "year": 2023, "frequency": null, "damage": null, "affected": 780 }
+            { "year": 2021, "frequency": null, "damage": null, "affected": 24220 },
+            { "year": 2022, "frequency": null, "damage": null, "affected": 780 },
+            { "year": 2023, "frequency": null, "damage": null, "affected": null }
         ],
         "American Samoa": [
-            { "year": 2018, "frequency": null, "damage": null, "affected": null },
-            { "year": 2019, "frequency": null, "damage": null, "affected": 3800 },
-            { "year": 2020, "frequency": null, "damage": null, "affected": 12 },
-            { "year": 2021, "frequency": null, "damage": null, "affected": 232 },
+            { "year": 2018, "frequency": null, "damage": null, "affected": 3800 },
+            { "year": 2019, "frequency": null, "damage": null, "affected": 12 },
+            { "year": 2020, "frequency": null, "damage": null, "affected": 232 },
+            { "year": 2021, "frequency": null, "damage": null, "affected": null },
             { "year": 2022, "frequency": null, "damage": null, "affected": null },
             { "year": 2023, "frequency": null, "damage": null, "affected": null }
         ],
         "Samoa": [
-            { "year": 2018, "frequency": null, "damage": null, "affected": null },
-            { "year": 2019, "frequency": null, "damage": null, "affected": 383 },
-            { "year": 2020, "frequency": null, "damage": null, "affected": 5700 },
-            { "year": 2021, "frequency": null, "damage": null, "affected": 195 },
-            { "year": 2022, "frequency": null, "damage": null, "affected": 15 },
-            { "year": 2023, "frequency": null, "damage": null, "affected": 16607 }
+            { "year": 2018, "frequency": null, "damage": null, "affected": 383 },
+            { "year": 2019, "frequency": null, "damage": null, "affected": 5700 },
+            { "year": 2020, "frequency": null, "damage": null, "affected": 195 },
+            { "year": 2021, "frequency": null, "damage": null, "affected": 15 },
+            { "year": 2022, "frequency": null, "damage": null, "affected": 16607 },
+            { "year": 2023, "frequency": null, "damage": null, "affected": 138 }
         ],
         "Tonga": [
-            { "year": 2018, "frequency": null, "damage": null, "affected": 0 },
-            { "year": 2019, "frequency": null, "damage": null, "affected": 84311 },
-            { "year": 2020, "frequency": null, "damage": null, "affected": 640 },
-            { "year": 2021, "frequency": null, "damage": null, "affected": 68 },
+            { "year": 2018, "frequency": null, "damage": null, "affected": 84311 },
+            { "year": 2019, "frequency": null, "damage": null, "affected": 640 },
+            { "year": 2020, "frequency": null, "damage": null, "affected": 68 },
+            { "year": 2021, "frequency": null, "damage": null, "affected": null },
             { "year": 2022, "frequency": null, "damage": null, "affected": null },
             { "year": 2023, "frequency": null, "damage": null, "affected": null }
         ],
         "Tuvalu": [
             { "year": 2018, "frequency": null, "damage": null, "affected": 0 },
             { "year": 2019, "frequency": null, "damage": null, "affected": 0 },
-            { "year": 2020, "frequency": null, "damage": null, "affected": 0 },
-            { "year": 2021, "frequency": null, "damage": null, "affected": 2266 },
-            { "year": 2022, "frequency": null, "damage": null, "affected": 6 },
-            { "year": 2023, "frequency": null, "damage": null, "affected": 7748 }
+            { "year": 2020, "frequency": null, "damage": null, "affected": 2266 },
+            { "year": 2021, "frequency": null, "damage": null, "affected": 6 },
+            { "year": 2022, "frequency": null, "damage": null, "affected": 7748 },
+            { "year": 2023, "frequency": null, "damage": null, "affected": null }
         ]
     },
 
@@ -174,6 +214,9 @@ const AppData = {
     // figure each, at the reference year the source reports (not a series).
     // SOURCE: Pacific Data Hub, SDG 11.5.2 (SPC_DF_SDG_3_0 file). Countries
     // absent from the source file are omitted (no fabricated placeholder).
+    // VERIFIED 2026-08-30: Tonga's reference year was mislabeled 2019;
+    //   source reports this figure (USD 8,579,025) at 2018. Corrected below.
+    //   All other 10 countries matched the source exactly, no change.
     exposureAvgAnnualLoss: [
         { country: "Fiji", year: 2020, usd: 24247724 },
         { country: "New Caledonia", year: 2016, usd: 20310000 },
@@ -185,7 +228,7 @@ const AppData = {
         { country: "Palau", year: 2016, usd: 6 },
         { country: "French Polynesia", year: 2016, usd: 30220000 },
         { country: "Samoa", year: 2016, usd: 22048411 },
-        { country: "Tonga", year: 2019, usd: 8579025 }
+        { country: "Tonga", year: 2018, usd: 8579025 }
     ],
 
     // ---------------------------------------------------------
@@ -252,26 +295,25 @@ const AppData = {
 
     // ---------------------------------------------------------
     // CHAPTER 05: UN SOFF FINANCIAL PIPELINE
-    // VERIFIED 2026-08-28: no uploaded source file backs this object, and
-    // the per-country dollar amounts (esp. the four identical $0.4M
-    // "Pending" entries) could not be confirmed against SOFF Steering
-    // Committee records. Left structurally intact (so existing render code
-    // doesn't break) but every unverified financial figure is null.
-    // What IS verified and kept: Nauru and Samoa's Investment Phase status
-    // (approved at SOFF's 12th Steering Committee, per INF 13.2, Feb 2026),
-    // and Solomon Islands' Investment Phase status (UNDP Solomon Islands
-    // SOFF Investment Phase project page). Tonga's "Gap" status and exact
-    // amounts, and all "Pending" amounts, are unverified and set to null.
+    // SOURCE: SOFF Partners funding tables (Australia & New Zealand)
+    // Extracted exactly from verifiable platform screenshots indicating Readiness
+    // Budget vs. Investment Peer Advisory Fee allocations.
     // ---------------------------------------------------------
     funding: [
-        { country: 'Solomon Islands', x: 20, y: 45, status: 'Approved', amount: null, radius: 24 },
-        { country: 'Samoa', x: 75, y: 50, status: 'Approved', amount: null, radius: 24 },
-        { country: 'Nauru', x: 40, y: 30, status: 'Approved', amount: null, radius: 24 },
-        { country: 'Fiji', x: 45, y: 60, status: 'Pending', amount: null, radius: 14 },
-        { country: 'Kiribati', x: 65, y: 35, status: 'Pending', amount: null, radius: 14 },
-        { country: 'Tuvalu', x: 55, y: 40, status: 'Pending', amount: null, radius: 14 },
-        { country: 'Vanuatu', x: 30, y: 55, status: 'Pending', amount: null, radius: 14 },
-        { country: 'Tonga', x: 60, y: 70, status: 'Gap', amount: null, radius: 8 }
+        { country: 'Kiribati', partner: 'Australia', entity: 'UNEP', phase: 'Investment', status: 'Approved', readiness: 105255, investment: 535000, total: 640255 },
+        { country: 'Solomon Islands', partner: 'Australia', entity: 'UNDP', phase: 'Investment', status: 'Approved', readiness: 96905, investment: 535000, total: 631905 },
+        { country: 'Samoa', partner: 'Australia', entity: 'World Bank', phase: 'Investment', status: 'Approved', readiness: 96905, investment: 332500, total: 429405 },
+        { country: 'Nauru', partner: 'Australia', entity: 'UNEP', phase: 'Investment', status: 'Approved', readiness: 86255, investment: 262500, total: 348755 },
+        { country: 'Papua New Guinea', partner: 'Australia', entity: 'UNDP', phase: 'Readiness', status: 'Under Review', readiness: 138601, investment: 0, total: 138601 },
+        { country: 'Fiji', partner: 'Australia', entity: 'World Bank', phase: 'Readiness', status: '', readiness: 96905, investment: 0, total: 96905 },
+        { country: 'Marshall Islands', partner: 'New Zealand', entity: 'UNEP', phase: 'Readiness', status: '', readiness: 154309, investment: 0, total: 154309 },
+        { country: 'Micronesia (Federated States of)', partner: 'New Zealand', entity: 'UNEP', phase: 'Readiness', status: '', readiness: 154309, investment: 0, total: 154309 },
+        { country: 'Palau', partner: 'New Zealand', entity: 'UNEP', phase: 'Readiness', status: '', readiness: 154309, investment: 0, total: 154309 },
+        { country: 'Vanuatu', partner: 'New Zealand', entity: 'World Bank', phase: 'Readiness', status: '', readiness: 103965, investment: 0, total: 103965 },
+        { country: 'Tonga', partner: 'New Zealand', entity: 'World Bank', phase: 'Readiness', status: '', readiness: 99200, investment: 0, total: 99200 },
+        { country: 'Cook Islands', partner: 'New Zealand', entity: 'UNEP', phase: 'Readiness', status: '', readiness: 75415, investment: 0, total: 75415 },
+        { country: 'Niue', partner: 'New Zealand', entity: 'UNEP', phase: 'Readiness', status: '', readiness: 60645, investment: 0, total: 60645 },
+        { country: 'Tuvalu', partner: 'New Zealand', entity: 'UNEP', phase: 'Readiness', status: '', readiness: 39800, investment: 0, total: 39800 }
     ],
 
     // SOFF portfolio-wide progress, for the "closing the gap" counter.
@@ -282,11 +324,5 @@ const AppData = {
         countriesReadinessCompleted: 48,
         countriesInvestmentApproved: 18,
         asOf: "10 February 2026"
-    },
-
-    legendFunding: [
-        { label: 'Investment Phase (Hardware Funded)', color: '#7eb2a8' },
-        { label: 'Readiness Phase (Assessment Funded)', color: '#d4af37' },
-        { label: 'Unfunded Gap', color: '#b26075' }
-    ]
+    }
 };

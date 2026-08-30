@@ -23,7 +23,10 @@ const Utils = {
         };
     },
     formatNumber(value, decimals = 1) {
-        return Number(value).toFixed(decimals);
+        return Number(value).toLocaleString('en-US', {
+            minimumFractionDigits: decimals,
+            maximumFractionDigits: decimals
+        });
     },
     // Zero-pads a decimal value to a fixed integer-digit width, e.g.
     // padPercent(9, 1, 2) -> "09.0". Used for the hero readout so the

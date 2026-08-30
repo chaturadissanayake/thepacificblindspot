@@ -144,31 +144,44 @@
     line-height: 1.6;
     max-width: 42rem;
 }
+.regional-locator-map {
+    width: 100%;
+    margin-top: 2rem;
+}
+.hero-divider {
+    width: 48px;
+    height: 1px;
+    background-color: var(--line);
+    border: none;
+    margin: 2rem 0 1.5rem 0;
+}
 .meta-data-line {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex-wrap: wrap;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--ink-faint);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-top: 2.5rem;
-    border-top: 1px solid var(--line);
-    padding-top: 1.5rem;
+    gap: 0.4rem;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    text-transform: none;
+    margin-top: 0;
     width: 100%;
     max-width: 680px;
+}
+.meta-data-line a {
+    font-weight: 700;
+    color: var(--ink);
 }
 .meta-data-line a:hover {
     color: var(--accent-coral);
 }
+.meta-date {
+    font-size: 0.85rem;
+    color: var(--ink-faint);
+}
 .meta-divider {
-    width: 4px;
-    height: 4px;
-    background-color: var(--accent-coral);
-    margin: 0 1rem;
-    border-radius: 50%;
+    display: none;
 }
 .central-figure-head .editorial-kicker { color: var(--accent-gold); }
 .central-figure-head .editorial-subhead { color: var(--paper); }
@@ -217,9 +230,13 @@
     gap: 1.5rem;
 }
 .flip-card-grid .flip-card:nth-child(1).reveal { transition-delay: 0s; }
-.flip-card-grid .flip-card:nth-child(2).reveal { transition-delay: 0.12s; }
-.flip-card-grid .flip-card:nth-child(3).reveal { transition-delay: 0.24s; }
-.flip-card-grid .flip-card:nth-child(4).reveal { transition-delay: 0.36s; }
+.flip-card-grid .flip-card:nth-child(2).reveal { transition-delay: 0.08s; }
+.flip-card-grid .flip-card:nth-child(3).reveal { transition-delay: 0.16s; }
+.flip-card-grid .flip-card:nth-child(4).reveal { transition-delay: 0.24s; }
+.flip-card-grid .flip-card:nth-child(5).reveal { transition-delay: 0.32s; }
+.flip-card-grid .flip-card:nth-child(6).reveal { transition-delay: 0.4s; }
+.flip-card-grid .flip-card:nth-child(7).reveal { transition-delay: 0.48s; }
+.flip-card-grid .flip-card:nth-child(8).reveal { transition-delay: 0.56s; }
 
 .flip-card {
     background-color: transparent;
@@ -258,14 +275,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 2.5rem 1.5rem; 
+    padding: 1.75rem 1.25rem;
     box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
 }
 .flip-card-front {
     background-color: var(--bg-paper-soft);
     color: var(--ink);
     overflow: hidden; /* FIX: Clips the background image to the card's rounded corners */
-    justify-content: center; /* FIX: Centers the wording vertically over the background */
+    justify-content: flex-start; /* Top-aligned so title/question start at the same spot on every card */
+    padding-top: 2.25rem;
 }
 .flip-card-front > *:not(.card-map-thumb) {
     position: relative;
@@ -273,39 +291,39 @@
 }
 .flip-card-front .card-title {
     font-family: var(--font-display);
-    font-size: clamp(1.8rem, 1.5rem + 1vw, 2.4rem);
+    font-size: clamp(1.7rem, 1.4rem + 1vw, 2.2rem);
     line-height: 1.1;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.6rem;
 }
 .flip-card-back {
     background-color: var(--ink);
     color: var(--paper);
     transform: rotateY(180deg);
+    overflow: hidden; /* Safety net: never lets text bleed past the card edge */
+    justify-content: flex-start; /* Top-aligned so every back face starts at the same spot, no matter how long its paragraph is */
+    padding-top: 2.25rem;
 }
 .flip-card-back .answer {
     font-family: var(--font-mono);
-    font-size: 1.5rem;
+    font-size: 1rem;
     font-weight: 600;
     color: var(--paper);
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.5rem;
     text-transform: uppercase;
 }
 .flip-card-back p {
-    font-size: 1.05rem;
-    line-height: 1.6;
+    font-size: 0.85rem;
+    line-height: 1.5;
     color: var(--paper-soft);
-    flex-grow: 1;
-    display: flex;
-    align-items: center;
     text-align: center;
     margin: 0;
-    padding: 1rem 0;
+    padding: 0.35rem 0 0 0;
 }
 
 /* Quiz Buttons & Layout */
 .quiz-options {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.6rem;
     justify-content: center;
     width: 100%;
     margin-top: auto;
@@ -314,9 +332,9 @@
     background: transparent;
     border: 1px solid var(--ink-soft);
     color: var(--ink);
-    padding: 0.5rem 0.8rem;
+    padding: 0.6rem 0.8rem;
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -327,25 +345,48 @@
     color: var(--paper);
     border-color: var(--ink);
 }
+@keyframes feedbackPop {
+    0% { opacity: 0; transform: scale(0.6) translateY(5px); }
+    60% { transform: scale(1.1) translateY(0); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
 .quiz-feedback {
     font-family: var(--font-mono);
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.15em;
-    margin-bottom: 0.75rem;
-    background: transparent !important; 
+    margin-bottom: 1rem;
     padding: 0;
-    min-height: 1rem; /* FIX: Locks the physical space so alignment never jumps */
-    display: flex;
+    height: 1.5rem; /* Locks physical space so alignment never jumps */
+    border: none !important; /* Removes confusing button-like appearance */
+    background: transparent !important;
+    box-shadow: none !important;
+    display: inline-flex;
     align-items: center;
+    justify-content: center;
+    opacity: 0; /* Hidden until flipped */
 }
 
+/* Trigger satisfying pop animation when card flips */
+.flip-card.result-correct .quiz-feedback,
+.flip-card.result-wrong .quiz-feedback,
+.flip-card.result-skipped .quiz-feedback {
+    animation: feedbackPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    animation-delay: 0.15s; /* Wait for the card to be mostly flipped */
+}
+
+/* Add intuitive game icons */
+.flip-card.result-correct .quiz-feedback::before { content: '✓'; margin-right: 0.35rem; font-size: 0.9rem; }
+.flip-card.result-wrong .quiz-feedback::before { content: '✕'; margin-right: 0.35rem; font-size: 0.9rem; }
+/* Skipped icon intentionally removed to keep the interface clean */
+
 /* Tweak inner spacing to let the card breathe */
-.flip-card-back .card-score { margin-bottom: 0.75rem; }
-.flip-card-back .score-value { font-size: 4rem; }
-.flip-card-back .answer { font-size: 1.15rem; margin-bottom: 0.75rem; }
-.flip-card-back p { font-size: 0.9rem; line-height: 1.5; margin: 0; }
+.flip-card-back .card-score { margin-bottom: 0.6rem; }
+.flip-card-back .score-value { font-size: 3.5rem; }
+.flip-card-back .answer { font-size: 1rem; margin-bottom: 0.5rem; }
+.flip-card-back p { font-size: 0.95rem; line-height: 1.6; margin: 0; padding: 0.75rem 0 0 0; }
 
 /* Interactive Green (Correct) / Red (Wrong) Backgrounds */
 .flip-card.result-correct .flip-card-back {
@@ -368,7 +409,7 @@
     color: rgba(15, 23, 42, 0.7);
 }
 .flip-card.result-correct .quiz-feedback {
-    color: rgba(15, 23, 42, 0.5); /* Subtle dark ink */
+    color: var(--bg-deep);
 }
 
 .flip-card.result-wrong .flip-card-back .score-value,
@@ -381,11 +422,11 @@
     color: rgba(255,255,255,0.7);
 }
 .flip-card.result-wrong .quiz-feedback {
-    color: rgba(255, 255, 255, 0.6); /* Subtle white */
+    color: var(--paper);
 }
 
 .flip-card.result-skipped .quiz-feedback {
-    color: rgba(255, 255, 255, 0.4); /* Subtle white */
+    color: rgba(255, 255, 255, 0.6);
 }
 .flip-card.result-skipped .flip-card-back .score-value,
 .flip-card.result-skipped .flip-card-back .answer,
@@ -498,22 +539,22 @@
 }
 
 .source-link {
-    color: var(--ink-soft); /* Softer than subtitles */
+    color: var(--ink-soft); 
     font-weight: 500;
     text-decoration: underline;
     text-decoration-color: var(--ink-faint); 
     text-underline-offset: 3px;
     text-decoration-thickness: 1px;
     transition: all 0.2s ease;
-    border-radius: 4px;
-    padding: 0 0.25rem;
-    margin: 0 -0.25rem;
+    border-radius: 0;
+    padding: 0; /* FIX: Removed horizontal padding causing text gaps */
+    margin: 0; /* FIX: Removed negative margins causing text gaps */
 }
 .source-link:hover, .source-link:focus-visible {
     color: var(--accent-ocean);
     text-decoration-color: var(--accent-ocean);
     text-decoration-thickness: 2px;
-    background-color: var(--accent-ocean-soft); /* Missing shade restored */
+    background-color: rgba(10, 108, 144, 0.08); /* Flat shade restored, no curves */
 }
 .on-dark .source-link {
     color: var(--paper-soft);
@@ -523,7 +564,6 @@
     color: var(--paper);
     text-decoration-color: var(--paper);
     text-decoration-thickness: 2px;
-    background-color: rgba(255, 255, 255, 0.1); /* Missing shade restored for dark mode */
 }
 .central-figure .source-link {
     color: var(--paper);
@@ -598,14 +638,38 @@ svg text {
     border-bottom-color: var(--exposure-color, var(--accent-coral)); /* UX FIX: Matches active metric color */
     box-shadow: none;
 }
+.funding-filter-btn {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--ink-soft);
+    padding: 0.4rem 0.5rem;
+    border-radius: 0;
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+.funding-filter-btn:hover {
+    color: var(--ink);
+}
+.funding-filter-btn.active {
+    color: var(--ink);
+    border-bottom-color: var(--accent-ocean);
+}
 .d3-grid line {
     stroke: var(--line);
     stroke-dasharray: none !important;
     opacity: 0.7;
     shape-rendering: crispEdges;
 }
-.d3-axis path, .d3-axis line {
-    display: none;
+.d3-grid .domain, .d3-axis path, .d3-axis line, .d3-axis .domain {
+    display: none !important;
+    stroke-width: 0 !important;
 }
 .d3-axis text {
     fill: var(--ink-soft);
@@ -655,7 +719,7 @@ svg text {
 .instruction-badge {
     font-family: var(--font-mono);
     font-size: 0.6rem;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--accent-coral);
@@ -687,8 +751,7 @@ svg text {
     width: 100%;
     max-width: 960px;
     margin: 1.5rem auto 0 auto;
-    padding: 0 2rem;
-    padding-top: 1.5rem;
+    padding: 0.75rem 2rem 0 2rem; /* FIX: Halved the top padding to pull source text closer to the divider line */
     border-top: 1px solid var(--line);
 }
 .on-dark .caption-wrapper {
@@ -784,27 +847,47 @@ button.download-btn {
     color: var(--ink-faint);
     line-height: 1.6;
     letter-spacing: 0.01em;
-    padding-top: 1rem;
+    padding-top: 0; /* FIX: Removed redundant inner padding */
     max-width: 960px;
     text-align: left;
 }
-.source-details {
+/* Unified figure/photo/chart labeling system: every visual gets a short
+   bold type+number tag, followed by a one-line plain description, with
+   the Source: line always broken onto its own row below (never merged
+   into the same sentence as the description, and never appearing alone
+   without a description above it). */
+/* Unified chart labeling system: description and source flow seamlessly inline */
+.caption-desc {
     color: var(--ink-soft);
+}
+.on-dark .caption-desc {
+    color: rgba(255, 255, 255, 0.75);
+}
+.source-details {
+    display: inline;
+    margin-left: 0.35rem;
+    color: var(--ink-soft);
+}
+.on-dark .source-details {
+    color: rgba(255, 255, 255, 0.5);
 }
 .chart-footnote {
     width: 100%;
     max-width: 680px; /* Aligns identically with .article-copy width */
-    margin: 0 auto 3rem auto; 
-    padding: 0 1.5rem;
+    margin: 1.25rem auto 3.5rem auto; 
+    padding: 0 2rem;
     font-family: var(--font-sans);
-    font-size: 0.85rem; 
-    line-height: 1.6;
+    font-size: 0.95rem; 
+    line-height: 1.7;
     color: var(--ink-soft);
-    font-style: normal;
-    text-align: center; /* Beautifully anchors beneath the chart */
+    font-style: normal; /* Matches article text */
+    text-align: center;
+}
+.on-dark.chart-footnote, .chart-footnote.on-dark {
+    color: rgba(255, 255, 255, 0.6);
 }
 @media (max-width: 560px) {
-    .chart-footnote { padding: 0 1.5rem; font-size: 0.78rem; text-align: left; }
+    .chart-footnote { padding: 0 1.5rem; font-size: 0.78rem; text-align: center; }
 }
 
 .dynamic-stat-callout {
@@ -846,7 +929,7 @@ button.download-btn {
     width: 100%;
     max-width: 960px;
     gap: 1.25rem;
-    margin: 0 auto 2.5rem auto;
+    margin: 3rem auto 2.5rem auto; /* FIX: Added 3rem top margin to prevent collision with paragraphs above */
     padding: 0 2rem;
 }
 
@@ -901,21 +984,19 @@ button.download-btn {
 
 .card-question {
     font-family: var(--font-sans);
-    font-size: 0.95rem;
-    line-height: 1.5;
-    color: var(--ink-soft);
-    flex-grow: 1; /* Automatically absorbs remaining space to push buttons to the bottom */
-    display: flex;
-    align-items: center;
+    font-size: 1.05rem;
+    font-weight: 500; /* Softened to Medium/Semibold */
+    line-height: 1.45;
+    color: var(--ink); /* FIX: Darker ink for maximum contrast */
     text-align: center;
-    margin: 0;
-    padding: 1rem 0.5rem;
+    margin: auto 0;
+    padding: 0.5rem;
     transition: color 0.3s ease;
 }
 .quiz-type {
     font-family: var(--font-mono);
     font-size: 0.65rem;
-    font-weight: 700;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--accent-coral);
@@ -1067,22 +1148,129 @@ button.download-btn {
     transform: scale(1.3);
 }
 
-/* Distinct Teal for Lower Rise */
+/* Each pathway keeps one dedicated color — green (lower), blue
+   (typical), red (higher) — matched exactly to the chart's scenario
+   dots and the headline number, so the same tier never appears in two
+   different shades across the selector, the chart, and the text. */
 .ruler-step[data-filter="lower"].active .step-indicator {
-    border-color: var(--accent-teal);
-    background: var(--accent-teal);
+    border-color: var(--accent-success);
+    background: var(--accent-success);
 }
 .ruler-step[data-filter="lower"].active .step-name {
-    color: var(--accent-teal);
+    color: var(--accent-success);
 }
-
-/* Distinct Coral for Worst Case */
+.ruler-step[data-filter="typical"].active .step-indicator {
+    border-color: var(--accent-ocean);
+    background: var(--accent-ocean);
+}
+.ruler-step[data-filter="typical"].active .step-name {
+    color: var(--accent-ocean);
+}
 .ruler-step[data-filter="higher"].active .step-indicator {
-    border-color: var(--accent-coral);
-    background: var(--accent-coral);
+    border-color: var(--accent-danger);
+    background: var(--accent-danger);
 }
 .ruler-step[data-filter="higher"].active .step-name {
-    color: var(--accent-coral);
+    color: var(--accent-danger);
+}
+
+.funding-name-link {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-style: solid;
+    text-underline-offset: 3px;
+    cursor: pointer;
+}
+.funding-name-link:hover,
+.funding-name-link:focus-visible {
+    color: var(--ink-soft);
+}
+.chart-hover-hint {
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+    text-align: center;
+    margin: 0 auto 1.25rem auto;
+    max-width: 640px;
+}
+.chart-hover-hint.on-dark {
+    color: var(--paper-soft);
+}
+.funding-dual-charts {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    justify-content: center;
+}
+.funding-chart-col {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 520px;
+}
+.mini-chart-title {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink);
+    text-align: center;
+    margin-bottom: 1rem;
+}
+.funding-mini-canvas {
+    max-width: 100%;
+    padding: 0 0.5rem;
+}
+/* Restore normal breathing room, but prevent the 600px centering bug */
+#funding .chart-controls-wrapper {
+    margin-top: 0 !important; /* FIX: Removes the global 3rem gap for this specific section */
+    margin-bottom: 2rem !important;
+    padding-bottom: 0 !important;
+}
+#funding .chart-filters {
+    margin-bottom: 0 !important;
+}
+#funding-canvas {
+    min-height: 0 !important;
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+    align-items: flex-start !important;
+}
+.funding-spotlight {
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 0 auto !important;
+    max-width: 640px;
+    opacity: 0;
+    height: 0;
+    padding: 0 !important;
+    line-height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease;
+}
+.funding-spotlight.is-visible {
+    opacity: 1;
+    height: auto;
+    margin: 0 auto 1.5rem auto !important;
+    line-height: 1.5;
+    overflow: visible;
+}
+@media (max-width: 420px) {
+    .funding-dual-charts {
+        gap: 0.75rem;
+    }
 }
 .help-abbr {
     text-decoration: none; /* FIX: Removes the distracting dotted line */

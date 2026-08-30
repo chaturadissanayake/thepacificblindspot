@@ -4,12 +4,23 @@ const Charts = {
     inkSoft: '#4B5563',
     inkFaint: '#9CA3AF',
     gridLine: '#E5E7EB',
-    coral: '#D9381E', /* Pentagram Vivid Vermilion */
-    coralLight: '#E8705F',
-    coralDark: '#A32915',
-    teal: '#005C8A', /* Pentagram Deep Marine Blue */
-    gold: '#E9C46A', /* Pentagram Ochre */
-    success: '#2A9D8F', /* Pentagram Teal/Green */
+
+    // Chart colors are read live from the CSS custom properties in
+    // main.css (single source of truth) rather than hardcoded twice —
+    // hardcoding them here previously drifted out of sync and left
+    // `this.teal`, `this.coral`, `this.gold`, `this.success` undefined,
+    // which silently strips the `fill`/`stroke` attribute in D3 and
+    // renders chart elements in the browser's default black. These
+    // getters fix that for every chart at once.
+    cssVar(name, fallback) {
+        const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+        return v || fallback || '#111111';
+    },
+    get teal() { return this.cssVar('--accent-ocean', '#0A6C90'); },       // brand blue: neutral / "current value" series
+    get gold() { return this.cssVar('--accent-warning', '#E9C46A'); },    // ochre: "lower/best-case" pathway series
+    get coral() { return this.cssVar('--accent-danger', '#C1443B'); },    // true red: deficits, gaps, worst-case
+    get coralDark() { return this.cssVar('--accent-coral-dark', '#A32915'); },
+    get success() { return this.cssVar('--accent-success', '#1E8A5C'); }, // true green: best-case
     dur(ms) { return Utils.prefersReducedMotion() ? 0 : ms; },
 
     countText(el, from, to, opts = {}) {
@@ -86,7 +97,7 @@ const Charts = {
         if (!container) return;
         container.innerHTML = '';
         const width = 960, height = 280; 
-        const margin = { top: 75, right: 100, bottom: 20, left: 200 }; /* FIX: Widened left margin from 150 to 200 to prevent text cutoff */ 
+        const margin = { top: 75, right: 200, bottom: 20, left: 200 }; /* FIX: Equalized left and right margins to perfectly center the chart */ 
         const svg = d3.select(container).append('svg')
             .attr('viewBox', `0 0 ${width} ${height}`)
             .attr('preserveAspectRatio', 'xMidYMid meet');
@@ -99,8 +110,8 @@ const Charts = {
             .call(d3.axisTop(x).tickSize(- (height - margin.top - margin.bottom)).ticks(5).tickFormat(d => d + '%'));
             
         xAxis.select('.domain').remove();
-        xAxis.selectAll('text').attr('fill', 'rgba(255, 255, 255, 0.95)').style('font-family', 'var(--font-sans)').style('font-size', '12px');
-        xAxis.selectAll('line').attr('stroke', 'rgba(255, 255, 255, 0.1)');
+        xAxis.selectAll('text').style('fill', '#ffffff').style('font-family', 'var(--font-sans)').style('font-size', '12px');
+        xAxis.selectAll('line').attr('stroke', 'rgba(255, 255, 255, 0.15)');
             
         const yAxis = svg.append('g').attr('class', 'd3-axis')
             .attr('transform', `translate(${margin.left},0)`)
@@ -108,7 +119,7 @@ const Charts = {
             
         yAxis.select('.domain').remove();
         yAxis.selectAll('text')
-            .attr('fill', '#f0f4f4')
+            .style('fill', '#ffffff')
             .style('font-size', '14px')
             .style('font-weight', '600')
             .attr('dx', '-1.5em')
@@ -138,14 +149,14 @@ const Charts = {
             .on('mousemove', event => Utils.tooltip.move(event))
             .on('mouseleave', () => Utils.tooltip.hide());
             
-        row.append('rect')
+            row.append('rect')
             .attr('class', 'deficit-bar')
             .attr('x', x(0))
             .attr('y', d => y(d.category))
             .attr('height', y.bandwidth())
             .attr('width', x(100) - x(0))
             .attr('fill', 'rgba(255, 255, 255, 0.08)') /* High-contrast structure */
-            .attr('rx', 2);
+            ;
             
         row.append('rect')
             .attr('class', 'active-bar')
@@ -153,7 +164,7 @@ const Charts = {
             .attr('y', d => y(d.category))
             .attr('height', y.bandwidth())
             .attr('width', 0)
-            .attr('rx', 2)
+            
             .attr('fill', this.teal);
             
         row.append('text')
@@ -165,9 +176,9 @@ const Charts = {
             .attr('opacity', 0);
             
         const legend = svg.append('g').attr('transform', `translate(${margin.left}, 10)`);
-        legend.append('rect').attr('x', 0).attr('y', -5).attr('width', 10).attr('height', 10).attr('rx', 2).attr('fill', this.teal);
+        legend.append('rect').attr('x', 0).attr('y', -5).attr('width', 10).attr('height', 10).attr('fill', this.teal);
         legend.append('text').attr('x', 18).attr('y', 4).text('Active Infrastructure').style('font-size', '11px').attr('fill', 'rgba(255,255,255,0.7)');
-        legend.append('rect').attr('x', 160).attr('y', -5).attr('width', 10).attr('height', 10).attr('rx', 2).attr('fill', 'rgba(255, 255, 255, 0.15)');
+        legend.append('rect').attr('x', 160).attr('y', -5).attr('width', 10).attr('height', 10).attr('fill', 'rgba(255, 255, 255, 0.15)');
         legend.append('text').attr('x', 178).attr('y', 4).text('Missing Data Gap').style('font-size', '11px').attr('fill', 'rgba(255,255,255,0.7)');
             
         this.state.compliance = { row, x };
@@ -177,23 +188,29 @@ const Charts = {
         if (!this.state.compliance) return;
         const { row, x } = this.state.compliance;
         
-        row.select('.active-bar').transition().duration(this.dur(1200)).ease(d3.easeCubicOut)
-            .attr('width', d => x(d.value) - x(0));
+        if (filterType) {
+            // Filter click: only update opacity, don't restart the bar growth animation
+            if (filterType === 'sids') {
+                row.transition().duration(this.dur(400)).ease(d3.easeCubicOut)
+                    .style('opacity', d => (d.group === 'sids' || d.group === 'pacific') ? 1 : 0.25); 
+            } else {
+                row.transition().duration(this.dur(400)).ease(d3.easeCubicOut).style('opacity', 1);
+            }
+        } else if (!this.state.compliance.animated) {
+            // Initial scroll reveal: animate the bars growing
+            this.state.compliance.animated = true;
             
-        row.select('.value-text').transition().delay(this.dur(1000)).duration(this.dur(500))
-            .attr('x', d => {
-                const barWidth = x(d.value) - x(0);
-                return barWidth > 35 ? x(d.value) - 8 : x(d.value) + 8;
-            })
-            .attr('text-anchor', d => (x(d.value) - x(0)) > 35 ? 'end' : 'start')
-            .attr('fill', '#ffffff') /* FIX: Forces white text for visibility inside the dark teal bar and on dark background */
-            .attr('opacity', 1);
-
-        if (filterType === 'sids') {
-            row.transition().duration(this.dur(400)).ease(d3.easeCubicOut)
-                .style('opacity', d => (d.group === 'sids' || d.group === 'pacific') ? 1 : 0.15); 
-        } else {
-            row.transition().duration(this.dur(400)).ease(d3.easeCubicOut).style('opacity', 1);
+            row.select('.active-bar').transition().duration(this.dur(1200)).ease(d3.easeCubicOut)
+                .attr('width', d => x(d.value) - x(0));
+                
+            row.select('.value-text').transition().delay(this.dur(1000)).duration(this.dur(500))
+                .attr('x', d => {
+                    const barWidth = x(d.value) - x(0);
+                    return barWidth > 35 ? x(d.value) - 8 : x(d.value) + 8;
+                })
+                .attr('text-anchor', d => (x(d.value) - x(0)) > 35 ? 'end' : 'start')
+                .attr('fill', '#ffffff') 
+                .attr('opacity', 1);
         }
     },
     
@@ -208,50 +225,49 @@ const Charts = {
         this.renderExposureAffected(container, "Vanuatu");
     },
 
-    // Per-year "Affected Persons" bar chart for a single selected country
-    // (AppData.exposure[country], a 2018-2023 yearly series).
+    // 1. VERTICAL BAR CHART: Per-year "Affected Persons"
     renderExposureAffected(container, country) {
         container.innerHTML = '';
         const width = 960, height = 400;
-        const margin = { top: 40, right: 60, bottom: 40, left: 60 };
+        const margin = { top: 50, right: 60, bottom: 40, left: 80 }; 
         const svg = d3.select(container).append('svg')
             .attr('viewBox', `0 0 ${width} ${height}`)
             .attr('preserveAspectRatio', 'xMidYMid meet');
 
         const data = AppData.exposure[country] || [];
 
-        const x = d3.scaleBand().domain(data.map(d => d.year)).range([margin.left, width - margin.right]).padding(0.4);
+        // Increase padding to 0.6 to make bars significantly thinner
+        const x = d3.scaleBand().domain(data.map(d => d.year)).range([margin.left, width - margin.right]).padding(0.6);
         const y = d3.scaleLinear().domain([0, (d3.max(data, d => d.affected) || 0) * 1.15]).range([height - margin.bottom, margin.top]);
 
+        // Y Axis Grid
         const yAxisGroup = svg.append('g').attr('class', 'd3-grid y-grid')
             .attr('transform', `translate(${margin.left},0)`);
-
-        yAxisGroup.call(d3.axisLeft(y).tickSize(-(width - margin.left - margin.right)).ticks(5))
+        yAxisGroup.call(d3.axisLeft(y).tickSize(-(width - margin.left - margin.right)).ticks(5).tickFormat(d3.format('~s')))
             .call(g => g.select('.domain').remove())
-            .selectAll('text')
-            .attr('fill', this.inkSoft)
-            .attr('x', -8)
-            .attr('dy', -4)
-            .style('font-family', 'var(--font-mono)')
-            .style('font-size', '11px');
+            .selectAll('text').attr('fill', this.inkSoft).attr('x', -8).attr('dy', -4).style('font-family', 'var(--font-mono)').style('font-size', '11px');
 
+        // Y Axis Label
+        svg.append('text').text('Total People Affected')
+            .attr('x', margin.left).attr('y', margin.top - 20)
+            .attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '12px').style('font-weight', '600');
+
+        // X Axis
         svg.append('g').attr('class', 'd3-axis x-axis')
             .attr('transform', `translate(0,${height - margin.bottom})`)
             .call(d3.axisBottom(x).tickSize(0))
             .call(g => g.select('.domain').remove())
-            .selectAll('text').attr('fill', this.inkSoft)
-            .style('font-family', 'var(--font-mono)')
-            .style('font-size', '12px')
-            .attr('dy', '1em');
+            .selectAll('text').attr('fill', this.inkSoft).style('font-family', 'var(--font-mono)').style('font-size', '12px').attr('dy', '1em');
 
+        // Vertical Bars
         const bars = svg.selectAll('.bar').data(data).enter().append('rect')
             .attr('class', 'bar')
-            .attr('x', d => x(d.year) + x.bandwidth() / 2 - 19)
-            .attr('width', 38)
+            .attr('x', d => x(d.year))
+            .attr('width', x.bandwidth())
             .attr('y', height - margin.bottom)
             .attr('height', 0)
-            .attr('rx', 2)
-            .attr('fill', this.teal) /* Changed to Ocean Blue */
+            
+            .attr('fill', this.coral) 
             .style('cursor', 'pointer')
             .on('mouseenter', (event, d) => Utils.tooltip.show(
                 event,
@@ -261,9 +277,14 @@ const Charts = {
             .on('mousemove', event => Utils.tooltip.move(event))
             .on('mouseleave', () => Utils.tooltip.hide());
 
+        // Intro Animation
+        bars.transition('grow').duration(this.dur(800)).ease(d3.easeCubicOut).delay((d,i) => i * 50)
+            .attr('y', d => y(d.affected || 0))
+            .attr('height', d => Math.max(0, height - margin.bottom - y(d.affected || 0)));
+
         const stakesSection = document.getElementById('stakes');
         if (stakesSection) {
-            stakesSection.style.setProperty('--exposure-color', this.teal); /* Changed to Ocean Blue */
+            stakesSection.style.setProperty('--exposure-color', this.coral);
             stakesSection.style.setProperty('--exposure-text', '#ffffff');
         }
 
@@ -277,17 +298,11 @@ const Charts = {
         this.state.exposure.yAxisGroup = yAxisGroup;
     },
 
-    // Single-figure-per-country "Average Annual Economic Loss" comparison.
-    // AppData.exposureAvgAnnualLoss has ONE verified {country, year, usd}
-    // entry per country (not a yearly series), so this is a sorted
-    // cross-country bar comparison rather than the per-year chart above.
-    // Note: 4 of the 13 country-filter-button countries (Solomon Islands,
-    // Nauru, American Samoa, Tuvalu) have no verified figure in this
-    // dataset and simply don't appear here — flagged rather than guessed.
+    // 2. HORIZONTAL BAR CHART: Cross-country "Average Annual Economic Loss"
     renderExposureAvgAnnualLoss(container) {
         container.innerHTML = '';
-        const width = 960, height = 420;
-        const margin = { top: 30, right: 90, bottom: 30, left: 190 };
+        const width = 960, height = 440;
+        const margin = { top: 40, right: 90, bottom: 50, left: 190 };
         const svg = d3.select(container).append('svg')
             .attr('viewBox', `0 0 ${width} ${height}`)
             .attr('preserveAspectRatio', 'xMidYMid meet');
@@ -295,28 +310,39 @@ const Charts = {
         const data = [...AppData.exposureAvgAnnualLoss].sort((a, b) => b.usd - a.usd);
 
         const x = d3.scaleLinear().domain([0, d3.max(data, d => d.usd) * 1.08]).range([margin.left, width - margin.right]);
-        const y = d3.scaleBand().domain(data.map(d => d.country)).range([margin.top, height - margin.bottom]).padding(0.25);
+        
+        // Increase padding to 0.6 to make bars significantly thinner
+        const y = d3.scaleBand().domain(data.map(d => d.country)).range([margin.top, height - margin.bottom]).padding(0.6);
 
+        // X Axis Grid
         const xAxisGroup = svg.append('g').attr('class', 'd3-grid')
             .attr('transform', `translate(0,${height - margin.bottom})`)
             .call(d3.axisBottom(x).tickSize(-(height - margin.top - margin.bottom)).ticks(5).tickFormat(d => `$${d3.format('.2s')(d)}`));
         xAxisGroup.select('.domain').remove();
         xAxisGroup.selectAll('text').attr('fill', this.inkSoft).attr('dy', '1em').style('font-family', 'var(--font-mono)').style('font-size', '11px');
 
+        // X Axis Label
+        svg.append('text').text('Average Annual Economic Loss (USD)')
+            .attr('x', width - margin.right).attr('y', height - 10)
+            .attr('text-anchor', 'end')
+            .attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '12px').style('font-weight', '600');
+
+        // Y Axis (Countries)
         const yAxisGroup = svg.append('g').attr('class', 'd3-axis')
             .attr('transform', `translate(${margin.left},0)`)
             .call(d3.axisLeft(y).tickSize(0));
         yAxisGroup.select('.domain').remove();
-        yAxisGroup.selectAll('text').attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '12px');
+        yAxisGroup.selectAll('text').attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '12px').style('font-weight', '500');
 
+        // Horizontal Bars
         const bars = svg.selectAll('.avgloss-bar').data(data, d => d.country).enter().append('rect')
             .attr('class', 'avgloss-bar')
             .attr('x', margin.left)
             .attr('y', d => y(d.country))
             .attr('height', y.bandwidth())
             .attr('width', 0)
-            .attr('rx', 2)
-            .attr('fill', this.teal) /* Changed to Ocean Blue */
+            
+            .attr('fill', this.coral) 
             .style('cursor', 'pointer')
             .on('mouseenter', (event, d) => Utils.tooltip.show(
                 event,
@@ -327,12 +353,13 @@ const Charts = {
             .on('mousemove', event => Utils.tooltip.move(event))
             .on('mouseleave', () => Utils.tooltip.hide());
 
-        bars.transition().duration(this.dur(1000)).ease(d3.easeCubicOut).delay((d, i) => i * 40)
+        // Intro Animation - Use Named Transition to prevent collision
+        bars.transition('grow').duration(this.dur(1000)).ease(d3.easeCubicOut).delay((d, i) => i * 40)
             .attr('width', d => Math.max(0, x(d.usd) - margin.left));
 
         const stakesSection = document.getElementById('stakes');
         if (stakesSection) {
-            stakesSection.style.setProperty('--exposure-color', this.teal); /* Changed to Ocean Blue */
+            stakesSection.style.setProperty('--exposure-color', this.coral);
             stakesSection.style.setProperty('--exposure-text', '#ffffff');
         }
 
@@ -340,15 +367,13 @@ const Charts = {
         this.state.exposure.avgBars = bars;
     },
 
-    // Highlights the country selected via the Chapter 02 filter buttons
-    // within the cross-country avgAnnualLoss comparison. Countries with no
-    // verified figure (see note above) have no bar to highlight at all.
     highlightExposureAvgAnnualLoss(country) {
         const { avgBars } = this.state.exposure || {};
         if (!avgBars) return;
-        avgBars
-            .attr('fill', this.teal)
-            .attr('opacity', d => d.country === country ? 1 : 0.35); /* Fades unselected countries elegantly */
+        // Use Named Transition so it doesn't cancel the 'grow' width transition
+        avgBars.transition('highlight').duration(300)
+            .attr('fill', this.coral)
+            .attr('opacity', d => d.country === country ? 1 : 0.25); 
     },
 
     updateExposure(country, metric) {
@@ -360,14 +385,13 @@ const Charts = {
         if (country) state.currentCountry = country;
         if (metric) state.currentMetric = metric;
 
-        // FIX: Lock container height to prevent jarring page layout jumps
-        container.style.minHeight = '420px';
+        container.style.minHeight = '440px';
 
+        // 1. If currently showing Avg Annual Loss
         if (state.currentMetric === 'avgAnnualLoss') {
             if (state.mode !== 'avgAnnualLoss') {
-                // FIX: Synchronous teardown completely prevents rapid-click race conditions
                 this.renderExposureAvgAnnualLoss(container);
-                d3.select(container).select('svg').style('opacity', 0).transition().duration(300).style('opacity', 1);
+                d3.select(container).select('svg').style('opacity', 0).transition('appear').duration(300).style('opacity', 1);
                 this.highlightExposureAvgAnnualLoss(state.currentCountry);
                 return;
             }
@@ -375,26 +399,26 @@ const Charts = {
             return;
         }
 
-        // currentMetric === 'affected'
+        // 2. If currently showing Affected Persons
         if (state.mode !== 'affected' || !state.bars) {
-            // FIX: Synchronous teardown completely prevents rapid-click race conditions
             this.renderExposureAffected(container, state.currentCountry);
-            d3.select(container).select('svg').style('opacity', 0).transition().duration(300).style('opacity', 1);
+            d3.select(container).select('svg').style('opacity', 0).transition('appear').duration(300).style('opacity', 1);
             return;
         }
 
         const data = AppData.exposure[state.currentCountry] || [];
         const stakesSection = document.getElementById('stakes');
         if (stakesSection) {
-            stakesSection.style.setProperty('--exposure-color', this.teal);
+            stakesSection.style.setProperty('--exposure-color', this.coral);
             stakesSection.style.setProperty('--exposure-text', '#ffffff');
         }
 
         const maxY = d3.max(data, d => d.affected || 0);
         state.y.domain([0, Math.max((maxY || 0) * 1.15, 1)]);
 
-        state.yAxisGroup.transition().duration(this.dur(800)).ease(d3.easeCubicOut)
-            .call(d3.axisLeft(state.y).tickSize(-(state.width - state.margin.left - state.margin.right)).ticks(5))
+        // Animate the Y-Axis grid scaling up or down
+        state.yAxisGroup.transition('axis').duration(this.dur(800)).ease(d3.easeCubicOut)
+            .call(d3.axisLeft(state.y).tickSize(-(state.width - state.margin.left - state.margin.right)).ticks(5).tickFormat(d3.format('~s')))
             .call(g => g.select('.domain').remove());
 
         state.yAxisGroup.selectAll('text')
@@ -404,12 +428,15 @@ const Charts = {
             .style('font-family', 'var(--font-mono)')
             .style('font-size', '11px');
 
-        state.bars.data(data).transition().duration(this.dur(800)).ease(d3.easeCubicOut)
+        // Animate the Bars scaling to the new country's data
+        const barsJoin = d3.select(container).select('svg').selectAll('.bar').data(data);
+        
+        barsJoin.transition('grow').duration(this.dur(800)).ease(d3.easeCubicOut)
             .attr('y', d => state.y(d.affected || 0))
-            .attr('height', d => state.height - state.margin.bottom - state.y(d.affected || 0))
-            .attr('fill', this.teal);
+            .attr('height', d => Math.max(0, state.height - state.margin.bottom - state.y(d.affected || 0)))
+            .attr('fill', this.coral);
 
-        state.bars.on('mouseenter', (event, d) => Utils.tooltip.show(
+        barsJoin.on('mouseenter', (event, d) => Utils.tooltip.show(
             event,
             `Year: ${d.year}`,
             d.affected !== null && d.affected !== undefined ? `Affected: ${Utils.formatNumber(d.affected, 0)}` : 'Affected: Data Unavailable'
@@ -491,7 +518,7 @@ const Charts = {
             .attr('y', height - margin.bottom)
             .attr('width', x.bandwidth())
             .attr('height', 0)
-            .attr('rx', 1)
+            
             .attr('fill', d => d.year >= 2005 ? this.coral : this.teal)
             .style('cursor', 'pointer')
             .on('mouseenter', (event, d) => Utils.tooltip.show(event, `Year: ${d.year}`, `Floods: ${d.days} days`))
@@ -538,10 +565,17 @@ initProjection() {
         const histData = AppData.historicalSeaLevel;
         const lastObserved = histData[histData.length - 1];
         const scenarioKeys = ['lower', 'typical', 'higher'];
+        
+        // Each of the three pathways keeps one dedicated color, used
+        // consistently everywhere it shows up (this dot, the pathway
+        // selector below the headline, and the headline number itself):
+        // green for the best case, blue for the middle case, red for the
+        // worst case. No mixed shades of the same hue, no color that
+        // means one thing on the selector and another on the chart.
         const scenarioMeta = {
-            lower: { label: 'Lower', code: 'RCP2.6', color: this.success }, /* Green for best outcome */
-            typical: { label: 'Typical', code: 'RCP4.5', color: this.teal }, /* Ocean blue for baseline */
-            higher: { label: 'High', code: 'RCP8.5', color: this.coral } /* Red for worst outcome */
+            lower: { label: 'Lower', code: 'RCP2.6', color: this.success }, 
+            typical: { label: 'Typical', code: 'RCP4.5', color: this.teal }, 
+            higher: { label: 'High', code: 'RCP8.5', color: this.coral } 
         };
 
         const xA = d3.scaleLinear().domain([1993, lastObserved.year]).range([panelA.x0, panelA.x1]);
@@ -565,7 +599,7 @@ initProjection() {
         const areaGen = d3.area().x(d => xA(d.year)).y0(yA(0)).y1(d => yA(d.val)).curve(d3.curveMonotoneX);
         const lineGen = d3.line().x(d => xA(d.year)).y(d => yA(d.val)).curve(d3.curveMonotoneX);
 
-        svg.append('path').datum(histData).attr('fill', 'rgba(126, 178, 168, 0.16)').attr('d', areaGen);
+        svg.append('path').datum(histData).attr('fill', 'rgba(10, 108, 144, 0.16)').attr('d', areaGen);
         svg.append('path').datum(histData).attr('fill', 'none').attr('stroke', this.teal).attr('stroke-width', 2.25).attr('d', lineGen);
 
         const lastDot = svg.append('circle').attr('cx', xA(lastObserved.year)).attr('cy', yA(lastObserved.val)).attr('r', 5)
@@ -574,7 +608,7 @@ initProjection() {
             .style('font-family', 'var(--font-mono)').style('font-size', '12px').style('font-weight', 700)
             .attr('fill', this.teal).text(`+${lastObserved.val.toFixed(1)}cm`);
 
-        // --- Interactive Overlay for Left Panel (Observed Data) ---
+        // Interactive Overlay for Left Panel
         const bisectYear = d3.bisector(d => d.year).left;
         const hoverGuide = svg.append('line').attr('y1', plotTop).attr('y2', plotBottom)
             .attr('stroke', this.inkFaint).attr('stroke-width', 1).attr('stroke-dasharray', '2 3').attr('opacity', 0).style('pointer-events', 'none');
@@ -608,7 +642,7 @@ initProjection() {
                 Utils.tooltip.hide();
             });
 
-        // --- Break marker between the two panels (Cleaned) ---
+        // Break marker 
         const breakX = (gap.x0 + gap.x1) / 2;
         svg.append('line').attr('x1', breakX).attr('x2', breakX).attr('y1', plotTop).attr('y2', plotBottom)
             .attr('stroke', 'var(--line)').attr('stroke-width', 1.5).attr('stroke-dasharray', '4 6');
@@ -616,7 +650,7 @@ initProjection() {
         svg.append('text').attr('x', breakX).attr('y', plotTop - 12).attr('text-anchor', 'middle')
             .style('font-family', 'var(--font-mono)').style('font-size', '10px').style('font-weight', '600')
             .style('letter-spacing', '0.05em')
-            .attr('fill', this.inkFaint).text('DATA GAP');
+            .attr('fill', this.inkFaint).text('PROJECTION');
 
         const yB = d3.scaleLinear().domain([40, 80]).range([plotBottom, plotTop]);
         const xB = d3.scalePoint().domain(scenarioKeys).range([panelB.x0 + 20, panelB.x1 - 20]).padding(0.6);
@@ -629,16 +663,16 @@ initProjection() {
         gridB.selectAll('text').attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '12px').attr('x', 10);
 
         svg.append('text').attr('x', panelB.x1).attr('y', plotTop - 12).attr('text-anchor', 'end')
-            .text('2100 projection, by pathway (cm)').attr('fill', this.ink)
+            .text('Year 2100 projection, by pathway (cm)').attr('fill', this.ink)
             .style('font-family', 'var(--font-sans)').style('font-size', '12px').style('font-weight', 600);
 
-        // --- Water Level Fill ---
+        // Water Level Fill
         const waterLevel = svg.append('rect')
             .attr('x', panelB.x0)
             .attr('width', panelB.x1 - panelB.x0)
             .attr('y', plotBottom)
             .attr('height', 0)
-            .attr('fill', 'rgba(45, 90, 107, 0.12)') /* Matches Slate-Blue */
+            .attr('fill', 'rgba(10, 108, 144, 0.12)') 
             .attr('opacity', 1);
 
         const scenarioNodes = {};
@@ -647,7 +681,7 @@ initProjection() {
             const val = AppData.projections[key][0].val;
             const cx = xB(key), cy = yB(val);
             const g = svg.append('g').attr('class', `scenario-node scenario-${key}`).style('cursor', 'pointer')
-                .on('mouseenter', (event) => Utils.tooltip.show(event, `${meta.label} emissions (${meta.code})`, `+${val.toFixed(1)} cm by 2100`))
+                .on('mouseenter', (event) => Utils.tooltip.show(event, `${meta.label} emissions (${meta.code})`, `+${val.toFixed(1)} cm by the year 2100`))
                 .on('mousemove', event => Utils.tooltip.move(event))
                 .on('mouseleave', () => Utils.tooltip.hide())
                 .on('click', () => {
@@ -657,6 +691,7 @@ initProjection() {
 
             const guide = g.append('line').attr('x1', panelB.x0 + 8).attr('x2', panelB.x1 - 8).attr('y1', cy).attr('y2', cy)
                 .attr('stroke', meta.color).attr('stroke-width', 1).attr('stroke-dasharray', '2 3').attr('opacity', 0.35);
+            
             const nameLabel = g.append('text').attr('x', cx).attr('y', cy + 24).attr('text-anchor', 'middle')
                 .style('font-family', 'var(--font-sans)').style('font-size', '10.5px').style('font-weight', 600)
                 .attr('fill', this.inkSoft).text(meta.label).attr('opacity', 0.65);
@@ -665,11 +700,10 @@ initProjection() {
             scenarioNodes[key] = { g, guide, nameLabel, val, cx, cy };
         });
 
-        // Single Dynamic Dot for Chart - Initialized to 'typical' so it renders immediately
+        // Initialize to 'typical'
         const initTarget = scenarioNodes['typical'];
         const initMeta = scenarioMeta['typical'];
         
-        /* FIX: Enable dragging on the active group (No grab cursor) */
         const activeGroup = svg.append('g').attr('class', 'active-projection-group');
         
         // Setup Drag Behavior to snap between the 3 scenarios
@@ -694,12 +728,14 @@ initProjection() {
             
         activeGroup.call(dragBehavior);
 
+        // Clean dot without the ship
         const activeDot = activeGroup.append('circle').attr('r', 8).attr('fill', '#fff').attr('stroke-width', 3)
             .attr('cx', initTarget.cx).attr('cy', initTarget.cy).attr('stroke', initMeta.color);
             
         const activeValueLabel = activeGroup.append('text').attr('text-anchor', 'middle')
             .style('font-family', 'var(--font-mono)').style('font-weight', 700).style('font-size', '15px')
-            .attr('x', initTarget.cx).attr('y', initTarget.cy - 16).attr('fill', initMeta.color)
+            .attr('x', initTarget.cx).attr('y', initTarget.cy - 16) // Placed perfectly above the dot
+            .attr('fill', initMeta.color)
             .text(`+${initTarget.val.toFixed(1)}`);
             
         waterLevel.attr('y', initTarget.cy).attr('height', plotBottom - initTarget.cy);
@@ -719,16 +755,16 @@ initProjection() {
 
         const dur = this.dur(1000);
 
-        // Animate the active dot location and color
+        // Animate Dot
         state.activeDot.transition().duration(dur).ease(d3.easeCubicOut)
             .attr('cx', target.cx)
             .attr('cy', target.cy)
             .attr('stroke', meta.color);
 
-        // Animate the label moving with the dot and interpolate the number
+        // Animate Label (moves above the dot)
         state.activeValueLabel.transition().duration(dur).ease(d3.easeCubicOut)
             .attr('x', target.cx)
-            .attr('y', target.cy - 16)
+            .attr('y', target.cy - 16) 
             .attr('fill', meta.color)
             .tween('text', function() {
                 const i = d3.interpolateNumber(
@@ -740,116 +776,218 @@ initProjection() {
                 };
             });
 
-        // Animate the water-fill rising/falling and tint to match the scenario
-        const fillColor = d3.color(meta.color);
-        fillColor.opacity = 0.12;
+        // Use hex colors to generate the correct transparent background shade
+        const colorScale = d3.color(meta.color);
+        colorScale.opacity = 0.12;
 
+        // Animate Water Level
         state.waterLevel.transition().duration(dur).ease(d3.easeCubicOut)
             .attr('y', target.cy)
             .attr('height', Math.max(0, state.plotBottom - target.cy))
-            .attr('fill', fillColor);
+            .attr('fill', colorScale);
 
         state.activeScenario = scenarioKey;
     },
 
-    // Chapter 05's SOFF pipeline status, as a single proportional strip
-    // rather than three separate bars measured against a shared max of 8.
-    // With counts of 3/4/1, three independent bars left most of the
-    // chart empty and looked off-center next to the full-width charts
-    // elsewhere on the site. One continuous bar — split into segments
-    // sized to each group's share of all 8 countries — always fills the
-    // full chart width, so it sits exactly like every other chart here.
-    // It also only needs one hue: three unrelated colors (green/gold/
-    // red) for a single "how far along" measure implied a categorical
-    // judgment (good/warn/bad) the data doesn't actually make — every
-    // country is on the same path, just at a different point on it. Tint
-    // and shade of one color reads as progress instead, darkest where
-    // the most has been achieved. No separate legend either: each
-    // segment's label sits directly beneath it, so position does the
-    // job a color key would otherwise have to do.
+    // Chapter 05's SOFF pipeline as two simple ranked bar charts —
+    // Readiness Phase Budget and Total incl. Investment Phase Hardware —
+    // instead of one combined dumbbell chart. Splitting the two dollar
+    // figures into separate panels (rather than encoding both on one
+    // shared axis with a connecting line) means each panel gets its own
+    // scale, so the much-smaller Readiness numbers aren't crushed near
+    // zero by the far larger Total figures, and a reader only has to
+    // read "longer bar = more money" once per chart instead of decoding
+    // a two-dot-plus-stick symbol. Every dollar value is printed right
+    // on its bar; hovering only adds the secondary Partner/Entity/Status
+    // detail, so nothing essential is hidden behind a hover state.
     initFunding() {
-        const container = Utils.select('#funding-canvas');
-        if (!container) return;
-        const table = container.querySelector('.sr-only');
-        container.innerHTML = '';
-        if (table) container.appendChild(table);
+        const readinessContainer = Utils.select('#funding-readiness-canvas');
+        const totalContainer = Utils.select('#funding-total-canvas');
+        if (!readinessContainer || !totalContainer) return;
 
-        const shades = {
-            Gap: '#CBDCE6',
-            Pending: '#42799B',
-            Approved: this.teal
+        const srTable = readinessContainer.querySelector('.sr-only');
+        readinessContainer.innerHTML = '';
+        if (srTable) readinessContainer.appendChild(srTable);
+        totalContainer.innerHTML = '';
+
+        // Same row order in both panels (ranked by Total) so a given
+        // country sits at the same height in both charts and can be
+        // compared side by side at a glance.
+        const data = [...AppData.funding].sort((a, b) => b.total - a.total);
+
+        const buildPanel = (container, valueKey, color) => {
+            const width = 480, height = data.length * 34 + 40;
+            const margin = { top: 6, right: 92, bottom: 26, left: 118 };
+            const maxVal = d3.max(data, d => d[valueKey]) * 1.12;
+
+            const svg = d3.select(container).append('svg')
+                .attr('viewBox', `0 0 ${width} ${height}`)
+                .attr('preserveAspectRatio', 'xMidYMid meet');
+
+            const x = d3.scaleLinear().domain([0, maxVal]).range([margin.left, width - margin.right]);
+            const y = d3.scaleBand().domain(data.map(d => d.country)).range([margin.top, height - margin.bottom]).padding(0.32);
+
+            const xAxisGroup = svg.append('g').attr('class', 'd3-grid')
+                .attr('transform', `translate(0, ${height - margin.bottom})`)
+                .call(d3.axisBottom(x).ticks(4).tickSize(-(height - margin.top - margin.bottom)).tickFormat(d => `$${d3.format('.2s')(d)}`));
+            xAxisGroup.select('.domain').remove();
+            xAxisGroup.selectAll('line').attr('stroke', '#e2e8f0');
+            xAxisGroup.selectAll('text').attr('fill', this.inkSoft).style('font-family', 'var(--font-mono)').style('font-size', '9px').attr('dy', '0.8em');
+
+            const yAxisGroup = svg.append('g').attr('class', 'd3-axis')
+                .attr('transform', `translate(${margin.left}, 0)`)
+                .call(d3.axisLeft(y).tickSize(0));
+            yAxisGroup.select('.domain').remove();
+            yAxisGroup.selectAll('text').attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '10px').style('font-weight', '600').attr('dx', '-6px');
+
+            const rows = svg.selectAll('.funding-bar-row')
+                .data(data, d => d.country).enter().append('g')
+                .attr('class', 'funding-bar-row')
+                .style('cursor', 'pointer')
+                .on('mouseenter', (event, d) => {
+                    Utils.tooltip.show(event, d.country, `Entity: ${d.entity}`, `Partner: ${d.partner}`, `Status: ${d.status || 'Active'}`);
+                })
+                .on('mousemove', event => Utils.tooltip.move(event))
+                .on('mouseleave', () => Utils.tooltip.hide())
+                .on('click', (event, d) => Charts.highlightFundingCountry(d.country));
+
+            rows.append('rect')
+                .attr('class', 'funding-hit-area')
+                .attr('x', margin.left)
+                .attr('y', d => y(d.country))
+                .attr('width', width - margin.left - margin.right)
+                .attr('height', y.bandwidth())
+                .attr('fill', 'transparent');
+
+            rows.append('rect')
+                .attr('class', 'funding-bar')
+                .attr('x', margin.left)
+                .attr('y', d => y(d.country))
+                .attr('height', y.bandwidth())
+                .attr('width', 0)
+                .attr('fill', color);
+
+            rows.append('text')
+                .attr('class', 'funding-bar-label')
+                .attr('x', margin.left + 6)
+                .attr('y', d => y(d.country) + y.bandwidth() / 2)
+                .attr('dy', '0.35em')
+                .text(d => `$${d3.format(',')(d[valueKey])}`)
+                .style('font-family', 'var(--font-mono)')
+                .style('font-size', '10px')
+                .attr('fill', this.inkSoft)
+                .style('opacity', 0);
+
+            return { svg, rows, x, y, margin, width, height };
         };
-        const meta = {
-            Gap: { label: 'Unfunded Gap', sub: 'No funding secured', textOnLight: true },
-            Pending: { label: 'Readiness Phase', sub: 'Assessment only, no hardware funding yet' },
-            Approved: { label: 'Investment Phase', sub: 'Hardware funding approved' }
-        };
-        // Left-to-right = further along the SOFF pipeline, so the strip
-        // itself reads as the "closing the gap" journey the copy above
-        // it describes.
-        const order = ['Gap', 'Pending', 'Approved'];
-        const total = AppData.funding.length;
-        const data = order.map(status => {
-            const countries = AppData.funding.filter(d => d.status === status).map(d => d.country);
-            return {
-                status, color: shades[status], count: countries.length, countries,
-                pct: (countries.length / total) * 100, ...meta[status]
-            };
-        });
 
-        const wrap = document.createElement('div');
-        wrap.className = 'funding-proportional';
+        const readinessPanel = buildPanel(readinessContainer, 'readiness', this.gold);
+        const totalPanel = buildPanel(totalContainer, 'total', this.teal);
 
-        const track = document.createElement('div');
-        track.className = 'funding-bar-track';
-
-        const labels = document.createElement('div');
-        labels.className = 'funding-bar-labels';
-
-        data.forEach(d => {
-            const seg = document.createElement('div');
-            seg.className = 'funding-bar-segment';
-            seg.style.background = d.color;
-            seg.style.color = d.textOnLight ? this.ink : '#ffffff';
-            seg.style.width = '0%';
-            seg.dataset.targetWidth = `${d.pct}%`;
-            seg.innerHTML = `<span class="funding-segment-count">${d.count}</span>`;
-            seg.addEventListener('mouseenter', (e) => Utils.tooltip.show(e, `${d.label} — ${d.count} of ${total}`, d.countries.join(', ')));
-            seg.addEventListener('mousemove', (e) => Utils.tooltip.move(e));
-            seg.addEventListener('mouseleave', () => Utils.tooltip.hide());
-            track.appendChild(seg);
-
-            const col = document.createElement('div');
-            col.className = 'funding-label-col';
-            col.style.flexGrow = d.count;
-            col.innerHTML = `
-                <p class="funding-label-title">${d.label}</p>
-                <p class="funding-label-sub">${d.sub}</p>
-                <p class="funding-label-countries">${d.countries.join(', ')}</p>
-            `;
-            labels.appendChild(col);
-        });
-
-        wrap.appendChild(track);
-        wrap.appendChild(labels);
-        container.appendChild(wrap);
-
-        this.state.funding = { segments: Array.from(track.children) };
+        this.state.funding = { readinessPanel, totalPanel, data, filter: 'all' };
     },
 
     updateFunding() {
-        if (!this.state.funding) return;
-        const { segments } = this.state.funding;
-        segments.forEach((seg, i) => {
-            const grow = () => {
-                seg.style.transition = `width ${this.dur(900)}ms cubic-bezier(0.16, 1, 0.3, 1)`;
-                seg.style.width = seg.dataset.targetWidth;
-            };
-            if (this.dur(1) === 0) { grow(); return; }
-            window.setTimeout(grow, i * 150);
+        if (!this.state.funding || this.state.funding.animated) return;
+        this.state.funding.animated = true;
+        const { readinessPanel, totalPanel } = this.state.funding;
+        const dur = this.dur(900);
+
+        [[readinessPanel, 'readiness'], [totalPanel, 'total']].forEach(([panel, key]) => {
+            panel.rows.select('.funding-bar')
+                .transition().duration(dur).ease(d3.easeCubicOut)
+                .attr('width', d => Math.max(0, panel.x(d[key]) - panel.margin.left));
+
+            panel.rows.select('.funding-bar-label')
+                .transition().delay(dur - 150).duration(350)
+                .style('opacity', 1)
+                .attr('x', d => panel.x(d[key]) + 8);
         });
+    },
+
+    // Shows/hides rows in both panels by SOFF phase so a reader can
+    // narrow the list down to just the 4 approved countries or the 10
+    // still in Readiness, the same "filter buttons" pattern used on the
+    // exposure and compliance charts elsewhere in this story.
+    applyFundingFilter(filterKey) {
+        if (!this.state.funding) return;
+        this.state.funding.filter = filterKey;
+        const matches = d => {
+            if (filterKey === 'approved') return d.phase === 'Investment';
+            if (filterKey === 'pending') return d.phase !== 'Investment';
+            return true;
+        };
+        [this.state.funding.readinessPanel, this.state.funding.totalPanel].forEach(panel => {
+            panel.rows.transition().duration(350)
+                .style('opacity', d => matches(d) ? 1 : 0.1)
+                .style('pointer-events', d => matches(d) ? 'auto' : 'none');
+        });
+    },
+
+    // Lets the "(Kiribati, Solomon Islands, Samoa, Nauru)" names printed
+    // above the chart — and a click on any bar — act as a spotlight
+    // control: rings the matching bar in both panels and counts its two
+    // dollar figures up from zero in a shared readout, so the "click and
+    // watch the numbers move" moment is explicit instead of a silent
+    // highlight.
+    highlightFundingCountry(country) {
+        if (!this.state.funding) return;
+        const { readinessPanel, totalPanel, data } = this.state.funding;
+        const d = data.find(row => row.country === country);
+        if (!d) return;
+
+        [readinessPanel, totalPanel].forEach((panel, i) => {
+            const key = i === 0 ? 'readiness' : 'total';
+            panel.rows.transition().duration(250).style('opacity', row => row.country === country ? 1 : 0.25);
+
+            const target = panel.rows.filter(row => row.country === country);
+            if (target.empty()) return;
+            target.raise();
+
+            const cy = parseFloat(target.select('.funding-bar').attr('y')) + panel.y.bandwidth() / 2;
+            const cx = panel.x(d[key]);
+
+            panel.svg.selectAll('.funding-pulse').remove();
+            panel.svg.append('circle')
+                .attr('class', 'funding-pulse')
+                .attr('cx', cx).attr('cy', cy).attr('r', 4)
+                .attr('fill', 'none').attr('stroke', this.ink).attr('stroke-width', 2)
+                .attr('opacity', 0.85)
+                .transition().duration(900).ease(d3.easeCubicOut)
+                .attr('r', 22).attr('opacity', 0)
+                .remove();
+        });
+
+        const spotlight = Utils.select('#funding-spotlight');
+        if (spotlight) {
+            spotlight.classList.add('is-visible');
+            spotlight.innerHTML = '';
+            spotlight.appendChild(document.createTextNode(`${d.country} — Readiness `));
+            const readinessSpan = document.createElement('span');
+            spotlight.appendChild(readinessSpan);
+            spotlight.appendChild(document.createTextNode(' · Total '));
+            const totalSpan = document.createElement('span');
+            spotlight.appendChild(totalSpan);
+
+            const dur = this.dur(900);
+            const fmt = d3.format('$,.0f');
+            [[readinessSpan, d.readiness], [totalSpan, d.total]].forEach(([el, target]) => {
+                if (dur === 0) { el.textContent = fmt(target); return; }
+                d3.select(el).transition().duration(dur).ease(d3.easeCubicOut)
+                    .tween('text', function () {
+                        const i = d3.interpolateNumber(0, target);
+                        return function (t) { this.textContent = fmt(i(t)); };
+                    });
+            });
+        }
+
+        const node = readinessPanel.rows.filter(row => row.country === country).node();
+        if (node && node.scrollIntoView) {
+            node.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
     }
 };
+
 
 const heroMotion = { current: 0, target: 0, raf: null };
 let radarNodes = [];
@@ -863,9 +1001,20 @@ function syncDynamicStats() {
     const countEl = Utils.select('#dynamic-soff-text');
     const namesEl = Utils.select('#dynamic-soff-names');
     if (!AppData.funding) return;
-    const approved = AppData.funding.filter(d => d.status === 'Approved');
+    const approved = AppData.funding.filter(d => d.phase === 'Investment');
     if (countEl) countEl.textContent = `${approved.length} approved`;
-    if (namesEl) namesEl.textContent = approved.map(d => d.country).join(', ');
+    if (namesEl) {
+        namesEl.innerHTML = '';
+        approved.forEach((d, i) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'funding-name-link';
+            btn.dataset.country = d.country;
+            btn.textContent = d.country;
+            namesEl.appendChild(btn);
+            if (i < approved.length - 1) namesEl.appendChild(document.createTextNode(', '));
+        });
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -1004,7 +1153,7 @@ function updateRadar(progress) {
         
         if (progress > threshold && progress < threshold + 0.3) {
             node.setAttribute('class', 'active');
-            node.style.fill = isActive ? 'var(--accent-gold)' : 'var(--accent-coral)'; 
+            node.style.fill = isActive ? 'var(--accent-ocean-soft)' : 'var(--accent-ocean-dark)'; 
         } else {
             node.setAttribute('class', 'inactive');
             node.style.fill = ''; 
@@ -1027,7 +1176,8 @@ function initScrollytellingObserver() {
 }
 
 function initNavObserver() {
-    const navLinks = Utils.selectAll('.nav-links a[href^="#"]:not([href="#"])');
+    /* The '>' ensures we only track the main navigation links, ignoring the mobile sub-menu */
+    const navLinks = Utils.selectAll('.nav-links > a[href^="#"]:not([href="#"])');
     const targets = navLinks.map((link) => document.querySelector(link.getAttribute('href'))).filter(Boolean);
     if (!targets.length) return;
     const observer = new IntersectionObserver((entries) => {
@@ -1108,6 +1258,24 @@ function updateNavVisibility() {
 }
 
 function initUIElements() {
+    // Lets a reader click any name in "(Kiribati, Solomon Islands, Samoa,
+    // Nauru)" above the funding chart to jump straight to that country's
+    // row instead of scanning all 14 for it.
+    document.addEventListener('click', (e) => {
+        const link = e.target.closest('.funding-name-link');
+        if (link) Charts.highlightFundingCountry(link.dataset.country);
+    });
+
+    Utils.selectAll('.funding-filter-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const targetBtn = e.target.closest('.funding-filter-btn');
+            if(!targetBtn) return;
+            Utils.selectAll('.funding-filter-btn').forEach(b => b.classList.remove('active'));
+            targetBtn.classList.add('active');
+            Charts.applyFundingFilter(targetBtn.getAttribute('data-funding-filter'));
+        });
+    });
+
     const toast = Utils.select('#mobile-toast');
     const toastClose = Utils.select('#toast-close');
     if (toast && toastClose) {
@@ -1165,24 +1333,28 @@ function initUIElements() {
 
     Utils.selectAll('.chart-filter-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
+            const targetBtn = e.target.closest('.chart-filter-btn');
+            if (!targetBtn) return;
             Utils.selectAll('.chart-filter-btn').forEach(b => b.classList.remove('active'));
-            e.target.classList.add('active');
-            Charts.updateExposure(e.target.getAttribute('data-country'), null);
+            targetBtn.classList.add('active');
+            Charts.updateExposure(targetBtn.getAttribute('data-country'), null);
         });
     });
 
     Utils.selectAll('.metric-toggle-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
-            const targetChart = e.target.getAttribute('data-target');
-            const parent = e.target.closest('.metric-toggles');
+            const targetBtn = e.target.closest('.metric-toggle-btn');
+            if (!targetBtn) return;
+            const targetChart = targetBtn.getAttribute('data-target');
+            const parent = targetBtn.closest('.metric-toggles');
             if (parent) {
                 parent.querySelectorAll('.metric-toggle-btn').forEach(b => b.classList.remove('active'));
-                e.target.classList.add('active');
+                targetBtn.classList.add('active');
             }
             if (targetChart === 'compliance') {
-                Charts.updateCompliance(e.target.getAttribute('data-filter'));
+                Charts.updateCompliance(targetBtn.getAttribute('data-filter'));
             } else {
-                Charts.updateExposure(null, e.target.getAttribute('data-metric'));
+                Charts.updateExposure(null, targetBtn.getAttribute('data-metric'));
             }
         });
     });
@@ -1205,10 +1377,12 @@ function initUIElements() {
                 const targetVal = AppData.projections[scenario][0].val;
                 const currentVal = parseFloat(dynamicText.textContent.replace(/[^0-9.]/g, '')) || 0;
                 
-                let textColor = 'var(--accent-ocean)'; /* FIX: Synced to the Ocean Blue base theme */
-                if (scenario === 'lower') textColor = 'var(--accent-success)';
-                if (scenario === 'higher') textColor = 'var(--accent-danger)';
-                dynamicText.style.color = textColor;
+                // Same three colors as the chart dots and the selector
+                // below: green (lower), blue (typical), red (higher) —
+                // whichever pathway is picked, the number, the dot, and
+                // the selector all agree on its color.
+                const textColors = { lower: 'var(--accent-success)', typical: 'var(--accent-ocean)', higher: 'var(--accent-danger)' };
+                dynamicText.style.color = textColors[scenario] || 'var(--accent-ocean)';
                 
                 Charts.countText(dynamicText, currentVal, targetVal, {
                     prefix: '+',
