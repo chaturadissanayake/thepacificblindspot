@@ -7,12 +7,6 @@
 ## Overview
 The Pacific is the most climate-exposed region on Earth, yet it remains one of the least monitored. This scrollytelling data story maps the gap between climate risk and climate observation — from sparse meteorological station networks to the funding shortfalls behind the WMO's Global Basic Observing Network (GBON).
 
-## Highlights
-- Scroll-driven narrative via native IntersectionObserver
-- Full keyboard + screen reader accessibility
-- Respects reduced-motion settings
-- Custom SVG charts, sharp at any screen size
-
 ## Stack
 D3.js v7 · Vanilla JS · Adobe Illustrator/Photoshop · Python (Pandas)
 
