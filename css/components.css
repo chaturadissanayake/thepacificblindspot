@@ -248,6 +248,14 @@
 .flip-card:hover {
     transform: translateY(-4px);
 }
+@keyframes cardShake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-6px); }
+    40%, 80% { transform: translateX(6px); }
+}
+.flip-card.shake {
+    animation: cardShake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+}
 /* Accessibility: Keyboard focus visual style */
 .flip-card:focus-visible .flip-card-inner {
     outline: 2px solid var(--accent-coral);
@@ -276,7 +284,14 @@
     flex-direction: column;
     align-items: center;
     padding: 1.75rem 1.25rem;
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+    box-shadow: var(--shadow-soft);
+    transition: box-shadow 0.3s ease;
+}
+/* Elevation lifts slightly on hover -- a small, honest signal that the
+   card is interactive, echoing the -4px translateY on .flip-card:hover. */
+.flip-card:hover .flip-card-front,
+.flip-card:hover .flip-card-back {
+    box-shadow: var(--shadow-lifted);
 }
 .flip-card-front {
     background-color: var(--bg-paper-soft);
@@ -295,29 +310,43 @@
     line-height: 1.1;
     margin-bottom: 0.6rem;
 }
+/* Faint terrain thumbnail sitting behind the front-of-card copy */
+.card-map-thumb {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    z-index: 0;
+    background: transparent;
+    pointer-events: none;
+}
+.card-map-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.15;
+    mix-blend-mode: multiply;
+}
 .flip-card-back {
     background-color: var(--ink);
     color: var(--paper);
     transform: rotateY(180deg);
-    overflow: hidden; /* Safety net: never lets text bleed past the card edge */
-    justify-content: flex-start; /* Top-aligned so every back face starts at the same spot, no matter how long its paragraph is */
-    padding-top: 2.25rem;
-}
-.flip-card-back .answer {
-    font-family: var(--font-mono);
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--paper);
-    margin-bottom: 0.5rem;
-    text-transform: uppercase;
+    overflow: hidden; 
+    justify-content: flex-start; /* FIX: Aligns content from the top so badges are in the exact same place across all cards */
+    padding: 2.5rem 1.75rem;
+    gap: 1.25rem; /* Creates a clean, consistent space between header and text */
+    /* Subtle inset frame -- a quiet editorial touch instead of a hard border */
+    box-shadow: var(--shadow-soft), inset 0 0 0 1px rgba(255, 255, 255, 0.14);
 }
 .flip-card-back p {
-    font-size: 0.85rem;
-    line-height: 1.5;
+    font-size: 0.95rem;
+    line-height: 1.6;
     color: var(--paper-soft);
     text-align: center;
     margin: 0;
-    padding: 0.35rem 0 0 0;
+    padding: 0;
+    font-weight: 400; /* Consistent across all result states */
 }
 
 /* Quiz Buttons & Layout */
@@ -330,14 +359,14 @@
 }
 .quiz-btn {
     background: transparent;
-    border: 1px solid var(--ink-soft);
+    border: 1px solid var(--ink);
     color: var(--ink);
-    padding: 0.6rem 0.8rem;
+    padding: 0.65rem 0.8rem; /* Comfortable tap target (Fitts's Law) */
     font-family: var(--font-mono);
     font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
     flex: 1;
 }
 .quiz-btn:hover {
@@ -345,48 +374,48 @@
     color: var(--paper);
     border-color: var(--ink);
 }
+.quiz-btn:active {
+    transform: scale(0.97); /* Quick tactile press feedback, no bounce */
+}
 @keyframes feedbackPop {
-    0% { opacity: 0; transform: scale(0.6) translateY(5px); }
-    60% { transform: scale(1.1) translateY(0); }
+    0% { opacity: 0; transform: scale(0.85) translateY(4px); }
     100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 
+/* Verdict badge -- matches the small bordered, uppercase-mono chip
+   language already used for .quiz-type on the card front, instead of
+   standing alone as oversized bold caps. */
 .quiz-feedback {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.15em;
-    margin-bottom: 1rem;
-    padding: 0;
-    height: 1.5rem; /* Locks physical space so alignment never jumps */
-    border: none !important; /* Removes confusing button-like appearance */
-    background: transparent !important;
-    box-shadow: none !important;
+    letter-spacing: 0.1em;
+    margin-bottom: 0;
+    padding: 0.4rem 0.9rem;
+    height: auto;
+    border: 1px solid currentColor;
+    background: transparent;
+    box-shadow: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    opacity: 0; /* Hidden until flipped */
+    opacity: 0; 
 }
 
-/* Trigger satisfying pop animation when card flips */
+/* Trigger a calm, quick fade/settle when the card flips -- no elastic
+   overshoot, which read as a bit too playful for the editorial tone. */
 .flip-card.result-correct .quiz-feedback,
 .flip-card.result-wrong .quiz-feedback,
 .flip-card.result-skipped .quiz-feedback {
-    animation: feedbackPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-    animation-delay: 0.15s; /* Wait for the card to be mostly flipped */
+    animation: feedbackPop 0.3s var(--ease-editorial) forwards;
+    animation-delay: 0.15s; 
 }
 
 /* Add intuitive game icons */
-.flip-card.result-correct .quiz-feedback::before { content: '✓'; margin-right: 0.35rem; font-size: 0.9rem; }
-.flip-card.result-wrong .quiz-feedback::before { content: '✕'; margin-right: 0.35rem; font-size: 0.9rem; }
+.flip-card.result-correct .quiz-feedback::before { content: '✓'; margin-right: 0.35rem; font-size: 0.8rem; }
+.flip-card.result-wrong .quiz-feedback::before { content: '✕'; margin-right: 0.35rem; font-size: 0.8rem; }
 /* Skipped icon intentionally removed to keep the interface clean */
-
-/* Tweak inner spacing to let the card breathe */
-.flip-card-back .card-score { margin-bottom: 0.6rem; }
-.flip-card-back .score-value { font-size: 3.5rem; }
-.flip-card-back .answer { font-size: 1rem; margin-bottom: 0.5rem; }
-.flip-card-back p { font-size: 0.95rem; line-height: 1.6; margin: 0; padding: 0.75rem 0 0 0; }
 
 /* Interactive Green (Correct) / Red (Wrong) Backgrounds */
 .flip-card.result-correct .flip-card-back {
@@ -412,11 +441,9 @@
     color: var(--bg-deep);
 }
 
-.flip-card.result-wrong .flip-card-back .score-value,
-.flip-card.result-wrong .flip-card-back .answer,
 .flip-card.result-wrong .flip-card-back p {
     color: var(--paper);
-    font-weight: 500;
+    font-weight: 400 !important; /* Ensures text weight is consistent across all cards */
 }
 .flip-card.result-wrong .flip-card-back .score-label {
     color: rgba(255,255,255,0.7);
@@ -992,7 +1019,14 @@ button.download-btn {
     line-height: 1.45;
     color: var(--ink); /* FIX: Darker ink for maximum contrast */
     text-align: center;
-    margin: auto 0;
+    /* FIX: was "margin: auto 0", which vertically centers this paragraph
+       in whatever space is left over -- since every question is a
+       different length, that made the title/badge/question block start
+       at a different height on every card. Anchoring it right after the
+       badge keeps that block consistent across all cards; only the
+       button row (via .quiz-options's own margin-top: auto) floats to
+       the bottom, where the varying leftover space belongs. */
+    margin: 0 0 1rem 0;
     padding: 0.5rem;
     transition: color 0.3s ease;
 }
@@ -1254,21 +1288,18 @@ button.download-btn {
     font-size: 0.95rem;
     font-weight: 600;
     color: var(--ink);
-    margin: 0 auto !important;
+    margin: 0 auto 1.5rem auto !important;
     max-width: 640px;
     opacity: 0;
-    height: 0;
+    min-height: 1.5rem;
     padding: 0 !important;
-    line-height: 0;
-    overflow: hidden;
+    line-height: 1.5;
+    pointer-events: none;
     transition: opacity 0.3s ease;
 }
 .funding-spotlight.is-visible {
     opacity: 1;
-    height: auto;
-    margin: 0 auto 1.5rem auto !important;
-    line-height: 1.5;
-    overflow: visible;
+    pointer-events: auto;
 }
 @media (max-width: 420px) {
     .funding-dual-charts {

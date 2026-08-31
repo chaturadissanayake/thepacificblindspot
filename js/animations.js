@@ -265,7 +265,13 @@ initMeteo() {
             .attr('y', d => y(d.category))
             .attr('height', y.bandwidth())
             .attr('width', x(100) - x(0))
-            .attr('fill', 'rgba(255, 255, 255, 0.08)');
+            // Solid, near-opaque track instead of translucent white -- on the
+            // photographic dark background, translucent white let the terrain
+            // texture bleed through and muddy the "gap" reading. A flat panel
+            // with a hairline edge reads cleanly at any texture underneath.
+            .attr('fill', this.cssVar('--bg-deep-soft', '#161B22'))
+            .attr('stroke', 'rgba(255, 255, 255, 0.12)')
+            .attr('stroke-width', 1);
             
         row.append('rect')
             .attr('class', 'active-bar')
@@ -273,7 +279,11 @@ initMeteo() {
             .attr('y', d => y(d.category))
             .attr('height', y.bandwidth())
             .attr('width', 0)
-            .attr('fill', this.teal);
+            // Gold (--accent-warning) instead of the base --accent-ocean --
+            // it's already this chapter's accent color (the kicker text
+            // above the chart) and reads with far more contrast against
+            // the near-black background than the muted marine blue did.
+            .attr('fill', this.gold);
             
         row.append('text')
             .attr('class', 'value-text')
@@ -284,9 +294,9 @@ initMeteo() {
             .attr('opacity', 0);
             
         const legend = svg.append('g').attr('transform', `translate(${margin.left}, 10)`);
-        legend.append('rect').attr('x', 0).attr('y', -5).attr('width', 10).attr('height', 10).attr('fill', this.teal);
+        legend.append('rect').attr('x', 0).attr('y', -5).attr('width', 10).attr('height', 10).attr('fill', this.gold);
         legend.append('text').attr('x', 18).attr('y', 4).text('Active Infrastructure').style('font-size', '11px').attr('fill', 'rgba(255,255,255,0.7)');
-        legend.append('rect').attr('x', 160).attr('y', -5).attr('width', 10).attr('height', 10).attr('fill', 'rgba(255, 255, 255, 0.15)');
+        legend.append('rect').attr('x', 160).attr('y', -5).attr('width', 10).attr('height', 10).attr('fill', this.cssVar('--bg-deep-soft', '#161B22')).attr('stroke', 'rgba(255, 255, 255, 0.12)').attr('stroke-width', 1);
         legend.append('text').attr('x', 178).attr('y', 4).text('Missing Data Gap').style('font-size', '11px').attr('fill', 'rgba(255,255,255,0.7)');
             
         this.state.compliance = { row, x };
@@ -310,12 +320,9 @@ initMeteo() {
                 .attr('width', d => x(d.value) - x(0));
                 
             row.select('.value-text').transition().delay(this.dur(1000)).duration(this.dur(500))
-                .attr('x', d => {
-                    const barWidth = x(d.value) - x(0);
-                    return barWidth > 35 ? x(d.value) - 8 : x(d.value) + 8;
-                })
-                .attr('text-anchor', d => (x(d.value) - x(0)) > 35 ? 'end' : 'start')
-                .attr('fill', '#ffffff') 
+                .attr('x', d => x(d.value) + 10) /* Pushes all text just outside the right edge of the bar */
+                .attr('text-anchor', 'start') /* Left-aligns the text so it flows outward */
+                .attr('fill', this.gold) /* Uses the theme's yellow/gold color */
                 .attr('opacity', 1);
         }
     },
@@ -639,15 +646,14 @@ initMeteo() {
             higher: { label: 'High', code: 'RCP8.5', color: this.coral } 
         };
 
-        const xA = d3.scaleLinear().domain([1993, lastObserved.year]).range([panelA.x0, panelA.x1]);
-        const yA = d3.scaleLinear().domain([0, 12]).range([plotBottom, plotTop]);
+const xA = d3.scaleLinear().domain([1993, lastObserved.year]).range([panelA.x0, panelA.x1]);
+        // FIX: Scaled the observed Y-axis up to 80 to match the absolute height of the right side.
+        const yA = d3.scaleLinear().domain([0, 80]).range([plotBottom, plotTop]);
 
         const gridA = svg.append('g').attr('class', 'd3-grid')
             .attr('transform', `translate(${panelA.x0},0)`)
-            .call(d3.axisLeft(yA).tickValues([0, 3, 6, 9, 12]).tickSize(-(panelA.x1 - panelA.x0)));
-        gridA.select('.domain').remove();
-        gridA.selectAll('line').attr('stroke', '#e2e8f0');
-        gridA.selectAll('text').attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '12px').attr('x', -10);
+            // FIX: Updated tick marks to match the new 0-80 scale
+            .call(d3.axisLeft(yA).tickValues([0, 20, 40, 60, 80]).tickSize(-(panelA.x1 - panelA.x0)));
 
         svg.append('text').attr('x', panelA.x0).attr('y', plotTop - 12).text('Observed sea level (cm since 1993)')
             .attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '12px').style('font-weight', 600);
@@ -664,7 +670,7 @@ initMeteo() {
         svg.append('path').datum(histData).attr('fill', 'none').attr('stroke', this.teal).attr('stroke-width', 2.25).attr('d', lineGen);
 
         const lastDot = svg.append('circle').attr('cx', xA(lastObserved.year)).attr('cy', yA(lastObserved.val)).attr('r', 5)
-            .attr('fill', '#fff').attr('stroke', this.teal).attr('stroke-width', 2.5);
+            .attr('fill', 'var(--bg-paper)').attr('stroke', this.teal).attr('stroke-width', 2.5);
         const lastText = svg.append('text').attr('x', xA(lastObserved.year)).attr('y', yA(lastObserved.val) - 14).attr('text-anchor', 'end')
             .style('font-family', 'var(--font-mono)').style('font-size', '12px').style('font-weight', 700)
             .attr('fill', this.teal).text(`+${lastObserved.val.toFixed(1)}cm`);
@@ -704,21 +710,25 @@ initMeteo() {
 
         const breakX = (gap.x0 + gap.x1) / 2;
         svg.append('line').attr('x1', breakX).attr('x2', breakX).attr('y1', plotTop).attr('y2', plotBottom)
-            .attr('stroke', 'var(--line)').attr('stroke-width', 1.5).attr('stroke-dasharray', '4 6');
+            .attr('stroke', 'var(--line)').attr('stroke-width', 1.5);
         
         svg.append('text').attr('x', breakX).attr('y', plotTop - 12).attr('text-anchor', 'middle')
             .style('font-family', 'var(--font-mono)').style('font-size', '10px').style('font-weight', '600')
             .style('letter-spacing', '0.05em')
             .attr('fill', this.inkFaint).text('PROJECTION');
 
-        const yB = d3.scaleLinear().domain([40, 80]).range([plotBottom, plotTop]);
+        // FIX: Lifted the projection Y-axis to the top portion of the chart (200px tall),
+        // leaving a physical gap between Y=276 (12cm) and Y=230 (40cm) to enforce the broken axis.
+        const yB = d3.scaleLinear().domain([40, 80]).range([plotTop + 200, plotTop]);
         const xB = d3.scalePoint().domain(scenarioKeys).range([panelB.x0 + 20, panelB.x1 - 20]).padding(0.6);
 
         const gridB = svg.append('g').attr('class', 'd3-grid')
             .attr('transform', `translate(${panelB.x1},0)`)
             .call(d3.axisRight(yB).tickValues([40, 50, 60, 70, 80]).tickSize(-(panelB.x1 - panelB.x0)));
         gridB.select('.domain').remove();
-        gridB.selectAll('line').attr('stroke', '#e2e8f0');
+        gridB.selectAll('line')
+            .attr('stroke', 'var(--line)')
+            .attr('opacity', 0.6);
         gridB.selectAll('text').attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '12px').attr('x', 10);
 
         svg.append('text').attr('x', panelB.x1).attr('y', plotTop - 12).attr('text-anchor', 'end')
@@ -747,20 +757,17 @@ initMeteo() {
                     if (btn) btn.click();
                 });
 
-            const guide = g.append('line').attr('x1', panelB.x0 + 8).attr('x2', panelB.x1 - 8).attr('y1', cy).attr('y2', cy)
-                .attr('stroke', meta.color).attr('stroke-width', 1).attr('stroke-dasharray', '2 3').attr('opacity', 0.35);
-            
-            const nameLabel = g.append('text').attr('x', cx).attr('y', cy + 24).attr('text-anchor', 'middle')
+        const nameLabel = g.append('text').attr('x', cx).attr('y', cy + 24).attr('text-anchor', 'middle')
                 .style('font-family', 'var(--font-sans)').style('font-size', '10.5px').style('font-weight', 600)
                 .attr('fill', this.inkSoft).text(meta.label).attr('opacity', 0.65);
             g.append('circle').attr('cx', cx).attr('cy', cy).attr('r', 20).attr('fill', 'transparent'); 
 
-            scenarioNodes[key] = { g, guide, nameLabel, val, cx, cy };
+            scenarioNodes[key] = { g, nameLabel, val, cx, cy };
         });
 
         const initTarget = scenarioNodes['typical'];
         const initMeta = scenarioMeta['typical'];
-        
+
         const activeGroup = svg.append('g').attr('class', 'active-projection-group');
         
         const dragBehavior = d3.drag()
@@ -783,7 +790,7 @@ initMeteo() {
             
         activeGroup.call(dragBehavior);
 
-        const activeDot = activeGroup.append('circle').attr('r', 8).attr('fill', '#fff').attr('stroke-width', 3)
+        const activeDot = activeGroup.append('circle').attr('r', 8).attr('fill', 'var(--bg-paper)').attr('stroke-width', 3)
             .attr('cx', initTarget.cx).attr('cy', plotBottom).attr('stroke', initMeta.color);
             
         const activeValueLabel = activeGroup.append('text').attr('text-anchor', 'middle')
@@ -795,7 +802,7 @@ initMeteo() {
         waterLevel.attr('y', plotBottom).attr('height', 0);
 
         this.state.projection = {
-            svg, xA, yA, xB, yB, panelA, panelB, gap, lastObserved,
+            svg, xA, yA, xB, yB, panelA, panelB, gap, lastObserved, breakX,
             scenarioNodes, scenarioMeta, waterLevel, plotBottom, activeDot, activeValueLabel, activeScenario: 'typical'
         };
     },
@@ -988,7 +995,7 @@ initMeteo() {
         if (spotlight) {
             spotlight.classList.add('is-visible');
             spotlight.innerHTML = '';
-            spotlight.appendChild(document.createTextNode(`${d.country} — Readiness `));
+            spotlight.appendChild(document.createTextNode(`${d.country} Readiness `));
             const readinessSpan = document.createElement('span');
             spotlight.appendChild(readinessSpan);
             spotlight.appendChild(document.createTextNode(' · Total '));
@@ -1005,11 +1012,6 @@ initMeteo() {
                         return function (t) { this.textContent = fmt(i(t)); };
                     });
             });
-        }
-
-        const node = readinessPanel.rows.filter(row => row.country === country).node();
-        if (node && node.scrollIntoView) {
-            node.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     }
 };
@@ -1338,6 +1340,16 @@ function initUIElements() {
         });
     });
 
+    Utils.selectAll('.funding-filter-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const targetBtn = e.target.closest('.funding-filter-btn');
+            if (!targetBtn) return;
+            Utils.selectAll('.funding-filter-btn').forEach(b => b.classList.remove('active'));
+            targetBtn.classList.add('active');
+            Charts.applyFundingFilter(targetBtn.getAttribute('data-funding-filter'));
+        });
+    });
+
     Utils.selectAll('.metric-toggle-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const targetBtn = e.target.closest('.metric-toggle-btn');
@@ -1447,13 +1459,20 @@ function initUIElements() {
     }
 
     Utils.selectAll('.flip-card').forEach(card => {
-        const btns = card.querySelectorAll('.quiz-btn');
         const feedback = card.querySelector('.quiz-feedback');
         
         const triggerChartUpdate = () => {
-            const countryTitle = card.querySelector('.card-title').innerText.trim();
+            const titleEl = card.querySelector('.card-title');
+            if (!titleEl) return;
+            
+            // Use textContent instead of innerText to prevent silent JS errors in some environments
+            const countryTitle = titleEl.textContent.trim().toUpperCase();
+            
             const filterBtns = Array.from(document.querySelectorAll('.chart-filter-btn'));
-            const matchingBtn = filterBtns.find(b => b.getAttribute('data-country').toUpperCase() === countryTitle.toUpperCase() || b.getAttribute('data-country').includes(countryTitle.replace('.', '')));
+            const matchingBtn = filterBtns.find(b => {
+                const btnCountry = (b.getAttribute('data-country') || '').toUpperCase();
+                return btnCountry === countryTitle || btnCountry.includes(countryTitle.replace('.', ''));
+            });
             
             if (matchingBtn) {
                 filterBtns.forEach(b => b.classList.remove('active'));
@@ -1468,9 +1487,15 @@ function initUIElements() {
             if (isFlipped) triggerChartUpdate();
         };
 
-        btns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation(); 
+        card.addEventListener('click', (e) => {
+            // Prevent double-tapping while the card is already animating/shaking
+            if (card.classList.contains('shake')) return;
+            
+            const btn = e.target.closest('.quiz-btn');
+            
+            if (btn) {
+                // Button was clicked (True / False)
+                e.preventDefault(); 
                 
                 if (card.classList.contains('flipped')) {
                     card.classList.remove('result-correct', 'result-wrong', 'result-skipped');
@@ -1478,34 +1503,50 @@ function initUIElements() {
                     return;
                 }
 
-                const isCorrect = btn.getAttribute('data-correct') === 'true';
+                // Force lowercase to ensure the logic perfectly matches 'true' vs 'false' 
+                // regardless of how it was typed in the HTML
+                const correctAttr = btn.getAttribute('data-correct') || '';
+                const isCorrect = correctAttr.toLowerCase() === 'true';
+                
                 card.classList.remove('result-correct', 'result-wrong', 'result-skipped');
                 
                 if (isCorrect) {
                     card.classList.add('result-correct');
-                    if (feedback) feedback.textContent = 'Correct!';
+                    if (feedback) feedback.textContent = 'Correct';
+                    executeFlip(true);
                 } else {
                     card.classList.add('result-wrong');
                     if (feedback) feedback.textContent = 'Incorrect';
+                    
+                    card.classList.add('shake');
+                    setTimeout(() => {
+                        card.classList.remove('shake');
+                        executeFlip(true);
+                    }, 400);
                 }
-                
-                executeFlip(true);
-            });
-        });
-
-        card.addEventListener('click', () => {
-            if (!card.classList.contains('flipped')) {
-                card.classList.add('result-skipped');
-                if (feedback) feedback.textContent = 'Skipped';
-                executeFlip(true);
             } else {
-                card.classList.remove('result-correct', 'result-wrong', 'result-skipped');
-                executeFlip(false);
+                // Card itself was clicked (Skip)
+                // Removed the strict gap-check so any non-button click reliably acts as a skip
+                if (!card.classList.contains('flipped')) {
+                    card.classList.add('result-skipped');
+                    if (feedback) feedback.textContent = 'Skipped';
+                    executeFlip(true);
+                } else {
+                    card.classList.remove('result-correct', 'result-wrong', 'result-skipped');
+                    executeFlip(false);
+                }
             }
         });
 
         card.addEventListener('keydown', e => {
-            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.click(); }
+            if (e.key === 'Enter' || e.key === ' ') { 
+                e.preventDefault(); 
+                if (e.target.classList.contains('quiz-btn')) {
+                    e.target.click();
+                } else {
+                    card.click(); 
+                }
+            }
         });
     });
     
