@@ -5,22 +5,15 @@ const Charts = {
     inkFaint: '#9CA3AF',
     gridLine: '#E5E7EB',
 
-    // Chart colors are read live from the CSS custom properties in
-    // main.css (single source of truth) rather than hardcoded twice —
-    // hardcoding them here previously drifted out of sync and left
-    // `this.teal`, `this.coral`, `this.gold`, `this.success` undefined,
-    // which silently strips the `fill`/`stroke` attribute in D3 and
-    // renders chart elements in the browser's default black. These
-    // getters fix that for every chart at once.
     cssVar(name, fallback) {
         const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
         return v || fallback || '#111111';
     },
-    get teal() { return this.cssVar('--accent-ocean', '#0A6C90'); },       // brand blue: neutral / "current value" series
-    get gold() { return this.cssVar('--accent-warning', '#E9C46A'); },    // ochre: "lower/best-case" pathway series
-    get coral() { return this.cssVar('--accent-danger', '#C1443B'); },    // true red: deficits, gaps, worst-case
+    get teal() { return this.cssVar('--accent-ocean', '#0A6C90'); },
+    get gold() { return this.cssVar('--accent-warning', '#E9C46A'); },
+    get coral() { return this.cssVar('--accent-danger', '#C1443B'); },
     get coralDark() { return this.cssVar('--accent-coral-dark', '#A32915'); },
-    get success() { return this.cssVar('--accent-success', '#1E8A5C'); }, // true green: best-case
+    get success() { return this.cssVar('--accent-success', '#1E8A5C'); },
     dur(ms) { return Utils.prefersReducedMotion() ? 0 : ms; },
 
     countText(el, from, to, opts = {}) {
@@ -91,13 +84,130 @@ const Charts = {
             host.appendChild(node);
         });
     },
+
+initMeteo() {
+        const container = Utils.select('#meteo-canvas');
+        if (!container) return;
+        container.innerHTML = '';
+
+        const countries = AppData.meteoCountryOrder;
+        const [yearStart, yearEnd] = AppData.meteoYearRange;
+        const years = d3.range(yearStart, yearEnd + 1);
+
+        // FIX: Oversizing the cell height to 30px so it remains thick after the SVG scales down.
+        const cellW = 6, cellH = 30, rowGap = 4;
+        // FIX: Widened margins even more to accommodate the 15px text below.
+        const margin = { top: 40, right: 200, bottom: 40, left: 200 };
+        const width = margin.left + years.length * cellW + margin.right;
+        const height = margin.top + countries.length * (cellH + rowGap) + margin.bottom;
+
+        const svg = d3.select(container).append('svg')
+            .attr('viewBox', `0 0 ${width} ${height}`)
+            .attr('preserveAspectRatio', 'xMidYMid meet');
+
+        const color = d3.scaleLinear()
+            .domain([0, 1, AppData.meteoMaxStations])
+            .range([this.cssVar('--bg-paper-soft', '#F0F0EB'), 'rgba(0, 92, 138, 0.35)', this.teal])
+            .interpolate(d3.interpolateRgb);
+
+        const rowLabels = svg.append('g').attr('class', 'd3-axis meteo-row-labels');
+        countries.forEach((c, i) => {
+            const label = (AppData.meteoCountryLabels && AppData.meteoCountryLabels[c]) || c;
+            rowLabels.append('text')
+                .attr('x', margin.left - 16)
+                .attr('y', margin.top + i * (cellH + rowGap) + cellH / 2)
+                .attr('dy', '0.35em')
+                .attr('text-anchor', 'end')
+                .style('font-family', 'var(--font-sans)')
+                .style('font-size', '15px') /* Bumped to 15px so it scales down to ~12px visually */
+                .style('font-weight', '500')
+                .attr('fill', this.inkSoft)
+                .text(label);
+        });
+
+        const grid = svg.append('g').attr('class', 'meteo-grid').attr('transform', `translate(${margin.left}, ${margin.top})`);
+        const cells = [];
+        countries.forEach((country, rowIndex) => {
+            const steps = (AppData.meteoStations[country] || []).slice().sort((a, b) => a.year - b.year);
+            let stepIndex = -1;
+            years.forEach((year, colIndex) => {
+                while (stepIndex + 1 < steps.length && steps[stepIndex + 1].year <= year) stepIndex++;
+                const stations = stepIndex >= 0 ? steps[stepIndex].stations : 0;
+                cells.push({ country, rowIndex, year, colIndex, stations });
+            });
+        });
+
+        const cellSel = grid.selectAll('rect.meteo-cell')
+            .data(cells)
+            .enter()
+            .append('rect')
+            .attr('class', 'meteo-cell')
+            .attr('x', d => d.colIndex * cellW)
+            .attr('y', d => d.rowIndex * (cellH + rowGap))
+            .attr('width', cellW - 1)
+            .attr('height', cellH)
+            .attr('fill', d => color(d.stations))
+            .attr('opacity', 0)
+            .on('mousemove', (event, d) => {
+                const label = (AppData.meteoCountryLabels && AppData.meteoCountryLabels[d.country]) || d.country;
+                const stationWord = d.stations === 1 ? 'station' : 'stations';
+                Utils.tooltip.show(event, `${label}, ${d.year}`, `${d.stations} active ${stationWord}`);
+            })
+            .on('mouseleave', () => Utils.tooltip.hide());
+
+        cellSel.transition().duration(600).delay((d, i) => Math.min(i * 0.4, 500)).attr('opacity', 1);
+
+        const xAxisGroup = svg.append('g')
+            .attr('class', 'd3-axis')
+            .attr('transform', `translate(${margin.left}, ${margin.top + countries.length * (cellH + rowGap) + 6})`);
+        const decadeTicks = years.filter(y => y % 20 === 0);
+        xAxisGroup.selectAll('text')
+            .data(decadeTicks)
+            .enter()
+            .append('text')
+            .attr('x', y => (y - yearStart) * cellW)
+            .attr('y', 18)
+            .attr('text-anchor', 'middle')
+            .style('font-family', 'var(--font-mono)')
+            .style('font-size', '14px') /* Oversized for scaling */
+            .attr('fill', this.inkSoft)
+            .text(y => y);
+
+        // Legend: 0 stations (gap) through meteoMaxStations. Placed in its
+        // own row above the grid -- putting it at the bottom (where the
+        // x-axis decade labels also live) made it collide with the 1900/
+        // 1920 tick labels near the left edge.
+        const legendSteps = [0, 2, 4, 6, AppData.meteoMaxStations];
+        // FIX: Increased width and box size again for the 14px text
+        const legendItemW = 75; 
+        const legendWidth = legendSteps.length * legendItemW;
+        const legend = svg.append('g').attr('transform', `translate(${width - margin.right - legendWidth + 20}, 16)`);
+        legendSteps.forEach((v, i) => {
+            legend.append('rect').attr('x', i * legendItemW).attr('y', -12).attr('width', 16).attr('height', 16).attr('fill', color(v));
+            legend.append('text').attr('x', i * legendItemW + 24).attr('y', 2)
+                .style('font-family', 'var(--font-sans)')
+                .style('font-size', '14px') /* Oversized for scaling */
+                .attr('fill', this.inkSoft)
+                .text(v === 0 ? 'None' : v);
+        });
+
+        this.state.meteo = { svg, initialized: true };
+    },
+
+    updateMeteo() {
+        // All 18 countries render in initMeteo(); nothing to filter or
+        // swap per-country now that this is a heatmap, not a line chart.
+        // Kept as a no-op so the scene-trigger call site (see the
+        // IntersectionObserver switch near the bottom of this file)
+        // doesn't need a special case.
+    },
     
     initCompliance() {
         const container = Utils.select('#compliance-canvas');
         if (!container) return;
         container.innerHTML = '';
         const width = 960, height = 280; 
-        const margin = { top: 75, right: 200, bottom: 20, left: 200 }; /* FIX: Equalized left and right margins to perfectly center the chart */ 
+        const margin = { top: 75, right: 200, bottom: 20, left: 200 }; 
         const svg = d3.select(container).append('svg')
             .attr('viewBox', `0 0 ${width} ${height}`)
             .attr('preserveAspectRatio', 'xMidYMid meet');
@@ -155,8 +265,7 @@ const Charts = {
             .attr('y', d => y(d.category))
             .attr('height', y.bandwidth())
             .attr('width', x(100) - x(0))
-            .attr('fill', 'rgba(255, 255, 255, 0.08)') /* High-contrast structure */
-            ;
+            .attr('fill', 'rgba(255, 255, 255, 0.08)');
             
         row.append('rect')
             .attr('class', 'active-bar')
@@ -164,7 +273,6 @@ const Charts = {
             .attr('y', d => y(d.category))
             .attr('height', y.bandwidth())
             .attr('width', 0)
-            
             .attr('fill', this.teal);
             
         row.append('text')
@@ -183,13 +291,12 @@ const Charts = {
             
         this.state.compliance = { row, x };
     },
-    
+
     updateCompliance(filterType = null) {
         if (!this.state.compliance) return;
         const { row, x } = this.state.compliance;
         
         if (filterType) {
-            // Filter click: only update opacity, don't restart the bar growth animation
             if (filterType === 'sids') {
                 row.transition().duration(this.dur(400)).ease(d3.easeCubicOut)
                     .style('opacity', d => (d.group === 'sids' || d.group === 'pacific') ? 1 : 0.25); 
@@ -197,7 +304,6 @@ const Charts = {
                 row.transition().duration(this.dur(400)).ease(d3.easeCubicOut).style('opacity', 1);
             }
         } else if (!this.state.compliance.animated) {
-            // Initial scroll reveal: animate the bars growing
             this.state.compliance.animated = true;
             
             row.select('.active-bar').transition().duration(this.dur(1200)).ease(d3.easeCubicOut)
@@ -222,11 +328,10 @@ const Charts = {
             currentMetric: "affected",
             mode: null
         };
-        this.renderExposureAffected(container, "Vanuatu");
+        this.renderExposureAffected(container, "Vanuatu", false);
     },
 
-    // 1. VERTICAL BAR CHART: Per-year "Affected Persons"
-    renderExposureAffected(container, country) {
+    renderExposureAffected(container, country, animate = true) {
         container.innerHTML = '';
         const width = 960, height = 400;
         const margin = { top: 50, right: 60, bottom: 40, left: 80 }; 
@@ -236,37 +341,31 @@ const Charts = {
 
         const data = AppData.exposure[country] || [];
 
-        // Increase padding to 0.6 to make bars significantly thinner
         const x = d3.scaleBand().domain(data.map(d => d.year)).range([margin.left, width - margin.right]).padding(0.6);
         const y = d3.scaleLinear().domain([0, (d3.max(data, d => d.affected) || 0) * 1.15]).range([height - margin.bottom, margin.top]);
 
-        // Y Axis Grid
         const yAxisGroup = svg.append('g').attr('class', 'd3-grid y-grid')
             .attr('transform', `translate(${margin.left},0)`);
         yAxisGroup.call(d3.axisLeft(y).tickSize(-(width - margin.left - margin.right)).ticks(5).tickFormat(d3.format('~s')))
             .call(g => g.select('.domain').remove())
             .selectAll('text').attr('fill', this.inkSoft).attr('x', -8).attr('dy', -4).style('font-family', 'var(--font-mono)').style('font-size', '11px');
 
-        // Y Axis Label
         svg.append('text').text('Total People Affected')
             .attr('x', margin.left).attr('y', margin.top - 20)
             .attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '12px').style('font-weight', '600');
 
-        // X Axis
         svg.append('g').attr('class', 'd3-axis x-axis')
             .attr('transform', `translate(0,${height - margin.bottom})`)
             .call(d3.axisBottom(x).tickSize(0))
             .call(g => g.select('.domain').remove())
             .selectAll('text').attr('fill', this.inkSoft).style('font-family', 'var(--font-mono)').style('font-size', '12px').attr('dy', '1em');
 
-        // Vertical Bars
         const bars = svg.selectAll('.bar').data(data).enter().append('rect')
             .attr('class', 'bar')
             .attr('x', d => x(d.year))
             .attr('width', x.bandwidth())
             .attr('y', height - margin.bottom)
             .attr('height', 0)
-            
             .attr('fill', this.coral) 
             .style('cursor', 'pointer')
             .on('mouseenter', (event, d) => Utils.tooltip.show(
@@ -277,10 +376,11 @@ const Charts = {
             .on('mousemove', event => Utils.tooltip.move(event))
             .on('mouseleave', () => Utils.tooltip.hide());
 
-        // Intro Animation
-        bars.transition('grow').duration(this.dur(800)).ease(d3.easeCubicOut).delay((d,i) => i * 50)
-            .attr('y', d => y(d.affected || 0))
-            .attr('height', d => Math.max(0, height - margin.bottom - y(d.affected || 0)));
+        if (animate) {
+            bars.transition('grow').duration(this.dur(800)).ease(d3.easeCubicOut).delay((d,i) => i * 50)
+                .attr('y', d => y(d.affected || 0))
+                .attr('height', d => Math.max(0, height - margin.bottom - y(d.affected || 0)));
+        }
 
         const stakesSection = document.getElementById('stakes');
         if (stakesSection) {
@@ -298,7 +398,6 @@ const Charts = {
         this.state.exposure.yAxisGroup = yAxisGroup;
     },
 
-    // 2. HORIZONTAL BAR CHART: Cross-country "Average Annual Economic Loss"
     renderExposureAvgAnnualLoss(container) {
         container.innerHTML = '';
         const width = 960, height = 440;
@@ -310,38 +409,31 @@ const Charts = {
         const data = [...AppData.exposureAvgAnnualLoss].sort((a, b) => b.usd - a.usd);
 
         const x = d3.scaleLinear().domain([0, d3.max(data, d => d.usd) * 1.08]).range([margin.left, width - margin.right]);
-        
-        // Increase padding to 0.6 to make bars significantly thinner
         const y = d3.scaleBand().domain(data.map(d => d.country)).range([margin.top, height - margin.bottom]).padding(0.6);
 
-        // X Axis Grid
         const xAxisGroup = svg.append('g').attr('class', 'd3-grid')
             .attr('transform', `translate(0,${height - margin.bottom})`)
             .call(d3.axisBottom(x).tickSize(-(height - margin.top - margin.bottom)).ticks(5).tickFormat(d => `$${d3.format('.2s')(d)}`));
         xAxisGroup.select('.domain').remove();
         xAxisGroup.selectAll('text').attr('fill', this.inkSoft).attr('dy', '1em').style('font-family', 'var(--font-mono)').style('font-size', '11px');
 
-        // X Axis Label
         svg.append('text').text('Average Annual Economic Loss (USD)')
             .attr('x', width - margin.right).attr('y', height - 10)
             .attr('text-anchor', 'end')
             .attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '12px').style('font-weight', '600');
 
-        // Y Axis (Countries)
         const yAxisGroup = svg.append('g').attr('class', 'd3-axis')
             .attr('transform', `translate(${margin.left},0)`)
             .call(d3.axisLeft(y).tickSize(0));
         yAxisGroup.select('.domain').remove();
         yAxisGroup.selectAll('text').attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '12px').style('font-weight', '500');
 
-        // Horizontal Bars
         const bars = svg.selectAll('.avgloss-bar').data(data, d => d.country).enter().append('rect')
             .attr('class', 'avgloss-bar')
             .attr('x', margin.left)
             .attr('y', d => y(d.country))
             .attr('height', y.bandwidth())
             .attr('width', 0)
-            
             .attr('fill', this.coral) 
             .style('cursor', 'pointer')
             .on('mouseenter', (event, d) => Utils.tooltip.show(
@@ -353,7 +445,6 @@ const Charts = {
             .on('mousemove', event => Utils.tooltip.move(event))
             .on('mouseleave', () => Utils.tooltip.hide());
 
-        // Intro Animation - Use Named Transition to prevent collision
         bars.transition('grow').duration(this.dur(1000)).ease(d3.easeCubicOut).delay((d, i) => i * 40)
             .attr('width', d => Math.max(0, x(d.usd) - margin.left));
 
@@ -370,7 +461,6 @@ const Charts = {
     highlightExposureAvgAnnualLoss(country) {
         const { avgBars } = this.state.exposure || {};
         if (!avgBars) return;
-        // Use Named Transition so it doesn't cancel the 'grow' width transition
         avgBars.transition('highlight').duration(300)
             .attr('fill', this.coral)
             .attr('opacity', d => d.country === country ? 1 : 0.25); 
@@ -387,7 +477,6 @@ const Charts = {
 
         container.style.minHeight = '440px';
 
-        // 1. If currently showing Avg Annual Loss
         if (state.currentMetric === 'avgAnnualLoss') {
             if (state.mode !== 'avgAnnualLoss') {
                 this.renderExposureAvgAnnualLoss(container);
@@ -399,7 +488,6 @@ const Charts = {
             return;
         }
 
-        // 2. If currently showing Affected Persons
         if (state.mode !== 'affected' || !state.bars) {
             this.renderExposureAffected(container, state.currentCountry);
             d3.select(container).select('svg').style('opacity', 0).transition('appear').duration(300).style('opacity', 1);
@@ -416,7 +504,6 @@ const Charts = {
         const maxY = d3.max(data, d => d.affected || 0);
         state.y.domain([0, Math.max((maxY || 0) * 1.15, 1)]);
 
-        // Animate the Y-Axis grid scaling up or down
         state.yAxisGroup.transition('axis').duration(this.dur(800)).ease(d3.easeCubicOut)
             .call(d3.axisLeft(state.y).tickSize(-(state.width - state.margin.left - state.margin.right)).ticks(5).tickFormat(d3.format('~s')))
             .call(g => g.select('.domain').remove());
@@ -428,7 +515,6 @@ const Charts = {
             .style('font-family', 'var(--font-mono)')
             .style('font-size', '11px');
 
-        // Animate the Bars scaling to the new country's data
         const barsJoin = d3.select(container).select('svg').selectAll('.bar').data(data);
         
         barsJoin.transition('grow').duration(this.dur(800)).ease(d3.easeCubicOut)
@@ -448,16 +534,13 @@ const Charts = {
         if (!container) return; 
         container.innerHTML = '';
         const width = 960, height = 260;
-        const margin = { top: 30, right: 40, bottom: 45, left: 100 }; /* FIX: Increased bottom margin to reveal X-axis numbers */
+        const margin = { top: 30, right: 40, bottom: 45, left: 100 }; 
         const svg = d3.select(container).append('svg')
             .attr('viewBox', `0 0 ${width} ${height}`)
             .attr('preserveAspectRatio', 'xMidYMid meet');
 
         const data = AppData.historicalFlooding;
         const lastDataYear = data[data.length - 1].year;
-        // Extend the visible timeline to the real current year (never
-        // hardcoded) so the chart itself shows how long the record has
-        // gone unrenewed -- the gap IS the story, not a rendering bug.
         const todayYear = new Date().getFullYear();
         const domainYears = d3.range(data[0].year, Math.max(todayYear, lastDataYear) + 1);
 
@@ -472,23 +555,20 @@ const Charts = {
 
         const yAxisGroup = svg.append('g').attr('class', 'd3-grid')
             .attr('transform', `translate(${margin.left},0)`)
-            .call(d3.axisLeft(y).tickValues([0, 5, 10]).tickSize(-(width - margin.left - margin.right))); /* FIX: Explicitly set 0, 5, 10 ticks */
+            .call(d3.axisLeft(y).tickValues([0, 5, 10]).tickSize(-(width - margin.left - margin.right))); 
         yAxisGroup.select('.domain').remove();
         yAxisGroup.selectAll('line').attr('stroke', '#e2e8f0');
         yAxisGroup.selectAll('text').attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '12px').attr('x', -15);
 
         svg.append('text').attr('x', margin.left - 15).attr('y', margin.top - 15).text('High Tide Floods (Days per Yr)').attr('fill', this.inkSoft).style('font-family', 'var(--font-sans)').style('font-size', '12px');
 
-        // Reporting-gap zone: shaded + hatched from the last real reading
-        // to the present, with its own label, so the absence of recent
-        // bars reads as a documented gap rather than an incomplete chart.
         const gapStartX = (x(lastDataYear) ?? 0) + x.bandwidth() + (x.step() * 0.25);
         const gapEndX = width - margin.right;
         if (gapEndX > gapStartX) {
             svg.append('rect')
                 .attr('x', gapStartX).attr('y', margin.top)
                 .attr('width', gapEndX - gapStartX).attr('height', height - margin.top - margin.bottom)
-                .attr('fill', 'rgba(184, 90, 90, 0.08)'); /* Matches Terracotta */
+                .attr('fill', 'rgba(184, 90, 90, 0.08)'); 
             svg.append('line')
                 .attr('x1', gapStartX).attr('x2', gapStartX)
                 .attr('y1', margin.top).attr('y2', height - margin.bottom)
@@ -505,8 +585,6 @@ const Charts = {
                 .style('font-weight', '500')
                 .attr('fill', this.coralDark);
             const gapWords = `No readings published since ${lastDataYear}`.split(' ');
-            // Wrap onto two short lines so the label never collides with the
-            // chart edge on narrower viewports.
             const mid = Math.ceil(gapWords.length / 2);
             gapLabel.append('tspan').attr('x', (gapStartX + gapEndX) / 2).attr('dy', 0).text(gapWords.slice(0, mid).join(' '));
             gapLabel.append('tspan').attr('x', (gapStartX + gapEndX) / 2).attr('dy', '1.3em').text(gapWords.slice(mid).join(' '));
@@ -518,7 +596,6 @@ const Charts = {
             .attr('y', height - margin.bottom)
             .attr('width', x.bandwidth())
             .attr('height', 0)
-            
             .attr('fill', d => d.year >= 2005 ? this.coral : this.teal)
             .style('cursor', 'pointer')
             .on('mouseenter', (event, d) => Utils.tooltip.show(event, `Year: ${d.year}`, `Floods: ${d.days} days`))
@@ -536,17 +613,7 @@ const Charts = {
             .attr('height', d => height - margin.bottom - y(d.days));
     },
 
-    // The old single-panel chart plotted 0-10cm of real history and a
-    // lone 44-74cm projected dot on the SAME 0-120cm linear axis, which
-    // left ~70% of the chart's vertical space empty (nothing on Earth
-    // sits at 15-40cm on this axis) and stranded the projection as a
-    // single floating point far from any line. This redesign uses a
-    // genuine broken axis: a left panel gives the real 1993-2025 trend
-    // its own detailed 0-12cm scale, a marked "break" shows the axis is
-    // discontinuous, and a right panel shows all three RCP scenarios at
-    // once on their own 40-80cm scale, with the selected one highlighted
-    // rather than swapped in and out.
-initProjection() {
+    initProjection() {
         const container = Utils.select('#projection-canvas');
         if (!container) return;
         container.innerHTML = '';
@@ -566,12 +633,6 @@ initProjection() {
         const lastObserved = histData[histData.length - 1];
         const scenarioKeys = ['lower', 'typical', 'higher'];
         
-        // Each of the three pathways keeps one dedicated color, used
-        // consistently everywhere it shows up (this dot, the pathway
-        // selector below the headline, and the headline number itself):
-        // green for the best case, blue for the middle case, red for the
-        // worst case. No mixed shades of the same hue, no color that
-        // means one thing on the selector and another on the chart.
         const scenarioMeta = {
             lower: { label: 'Lower', code: 'RCP2.6', color: this.success }, 
             typical: { label: 'Typical', code: 'RCP4.5', color: this.teal }, 
@@ -608,7 +669,6 @@ initProjection() {
             .style('font-family', 'var(--font-mono)').style('font-size', '12px').style('font-weight', 700)
             .attr('fill', this.teal).text(`+${lastObserved.val.toFixed(1)}cm`);
 
-        // Interactive Overlay for Left Panel
         const bisectYear = d3.bisector(d => d.year).left;
         const hoverGuide = svg.append('line').attr('y1', plotTop).attr('y2', plotBottom)
             .attr('stroke', this.inkFaint).attr('stroke-width', 1).attr('stroke-dasharray', '2 3').attr('opacity', 0).style('pointer-events', 'none');
@@ -642,7 +702,6 @@ initProjection() {
                 Utils.tooltip.hide();
             });
 
-        // Break marker 
         const breakX = (gap.x0 + gap.x1) / 2;
         svg.append('line').attr('x1', breakX).attr('x2', breakX).attr('y1', plotTop).attr('y2', plotBottom)
             .attr('stroke', 'var(--line)').attr('stroke-width', 1.5).attr('stroke-dasharray', '4 6');
@@ -666,7 +725,6 @@ initProjection() {
             .text('Year 2100 projection, by pathway (cm)').attr('fill', this.ink)
             .style('font-family', 'var(--font-sans)').style('font-size', '12px').style('font-weight', 600);
 
-        // Water Level Fill
         const waterLevel = svg.append('rect')
             .attr('x', panelB.x0)
             .attr('width', panelB.x1 - panelB.x0)
@@ -700,13 +758,11 @@ initProjection() {
             scenarioNodes[key] = { g, guide, nameLabel, val, cx, cy };
         });
 
-        // Initialize to 'typical'
         const initTarget = scenarioNodes['typical'];
         const initMeta = scenarioMeta['typical'];
         
         const activeGroup = svg.append('g').attr('class', 'active-projection-group');
         
-        // Setup Drag Behavior to snap between the 3 scenarios
         const dragBehavior = d3.drag()
             .on('drag', (event) => {
                 let closest = scenarioKeys[0];
@@ -719,7 +775,6 @@ initProjection() {
                     }
                 });
                 
-                // If the user drags closer to a new scenario, trigger the HTML button click
                 if (this.state && this.state.projection && this.state.projection.activeScenario !== closest) {
                     const btn = document.querySelector(`.ruler-step[data-filter="${closest}"]`);
                     if (btn) btn.click();
@@ -728,17 +783,16 @@ initProjection() {
             
         activeGroup.call(dragBehavior);
 
-        // Clean dot without the ship
         const activeDot = activeGroup.append('circle').attr('r', 8).attr('fill', '#fff').attr('stroke-width', 3)
-            .attr('cx', initTarget.cx).attr('cy', initTarget.cy).attr('stroke', initMeta.color);
+            .attr('cx', initTarget.cx).attr('cy', plotBottom).attr('stroke', initMeta.color);
             
         const activeValueLabel = activeGroup.append('text').attr('text-anchor', 'middle')
             .style('font-family', 'var(--font-mono)').style('font-weight', 700).style('font-size', '15px')
-            .attr('x', initTarget.cx).attr('y', initTarget.cy - 16) // Placed perfectly above the dot
+            .attr('x', initTarget.cx).attr('y', plotBottom - 16)
             .attr('fill', initMeta.color)
-            .text(`+${initTarget.val.toFixed(1)}`);
+            .text('+0.0');
             
-        waterLevel.attr('y', initTarget.cy).attr('height', plotBottom - initTarget.cy);
+        waterLevel.attr('y', plotBottom).attr('height', 0);
 
         this.state.projection = {
             svg, xA, yA, xB, yB, panelA, panelB, gap, lastObserved,
@@ -755,13 +809,11 @@ initProjection() {
 
         const dur = this.dur(1000);
 
-        // Animate Dot
         state.activeDot.transition().duration(dur).ease(d3.easeCubicOut)
             .attr('cx', target.cx)
             .attr('cy', target.cy)
             .attr('stroke', meta.color);
 
-        // Animate Label (moves above the dot)
         state.activeValueLabel.transition().duration(dur).ease(d3.easeCubicOut)
             .attr('x', target.cx)
             .attr('y', target.cy - 16) 
@@ -776,11 +828,9 @@ initProjection() {
                 };
             });
 
-        // Use hex colors to generate the correct transparent background shade
         const colorScale = d3.color(meta.color);
         colorScale.opacity = 0.12;
 
-        // Animate Water Level
         state.waterLevel.transition().duration(dur).ease(d3.easeCubicOut)
             .attr('y', target.cy)
             .attr('height', Math.max(0, state.plotBottom - target.cy))
@@ -789,17 +839,6 @@ initProjection() {
         state.activeScenario = scenarioKey;
     },
 
-    // Chapter 05's SOFF pipeline as two simple ranked bar charts —
-    // Readiness Phase Budget and Total incl. Investment Phase Hardware —
-    // instead of one combined dumbbell chart. Splitting the two dollar
-    // figures into separate panels (rather than encoding both on one
-    // shared axis with a connecting line) means each panel gets its own
-    // scale, so the much-smaller Readiness numbers aren't crushed near
-    // zero by the far larger Total figures, and a reader only has to
-    // read "longer bar = more money" once per chart instead of decoding
-    // a two-dot-plus-stick symbol. Every dollar value is printed right
-    // on its bar; hovering only adds the secondary Partner/Entity/Status
-    // detail, so nothing essential is hidden behind a hover state.
     initFunding() {
         const readinessContainer = Utils.select('#funding-readiness-canvas');
         const totalContainer = Utils.select('#funding-total-canvas');
@@ -810,9 +849,6 @@ initProjection() {
         if (srTable) readinessContainer.appendChild(srTable);
         totalContainer.innerHTML = '';
 
-        // Same row order in both panels (ranked by Total) so a given
-        // country sits at the same height in both charts and can be
-        // compared side by side at a glance.
         const data = [...AppData.funding].sort((a, b) => b.total - a.total);
 
         const buildPanel = (container, valueKey, color) => {
@@ -905,10 +941,6 @@ initProjection() {
         });
     },
 
-    // Shows/hides rows in both panels by SOFF phase so a reader can
-    // narrow the list down to just the 4 approved countries or the 10
-    // still in Readiness, the same "filter buttons" pattern used on the
-    // exposure and compliance charts elsewhere in this story.
     applyFundingFilter(filterKey) {
         if (!this.state.funding) return;
         this.state.funding.filter = filterKey;
@@ -924,12 +956,6 @@ initProjection() {
         });
     },
 
-    // Lets the "(Kiribati, Solomon Islands, Samoa, Nauru)" names printed
-    // above the chart — and a click on any bar — act as a spotlight
-    // control: rings the matching bar in both panels and counts its two
-    // dollar figures up from zero in a shared readout, so the "click and
-    // watch the numbers move" moment is explicit instead of a silent
-    // highlight.
     highlightFundingCountry(country) {
         if (!this.state.funding) return;
         const { readinessPanel, totalPanel, data } = this.state.funding;
@@ -988,15 +1014,9 @@ initProjection() {
     }
 };
 
-
 const heroMotion = { current: 0, target: 0, raf: null };
 let radarNodes = [];
 
-// Chapter 05's "X approved" line is computed from AppData.funding on
-// load rather than left as hand-typed HTML, so it can't quietly drift
-// out of sync with the dataset it's describing. Scoped to the 8
-// Pacific countries this story tracks — not SOFF's global portfolio
-// count, which isn't about these countries.
 function syncDynamicStats() {
     const countEl = Utils.select('#dynamic-soff-text');
     const namesEl = Utils.select('#dynamic-soff-names');
@@ -1023,6 +1043,7 @@ document.addEventListener('DOMContentLoaded', () => {
     syncDynamicStats();
     const renderCharts = () => {
         Charts.initCompliance();
+        Charts.initMeteo();
         Charts.initExposure();
         Charts.initFlooding(); 
         Charts.initProjection();
@@ -1120,15 +1141,9 @@ function renderHero(progress) {
         f4.style.opacity = Math.min(1, localP * 2);
         f4.style.transform = reduced ? 'none' : `translateY(${(1 - localP) * 20}px)`;
     }
-
     updateHeroImages(progress);
 }
 
-// Crossfades the 3 hero background images across the same 0-1 scroll
-// progress the text frames use. Image 1 covers the opening (frames
-// 1-2, 0-50%), image 2 the middle (frame 3, 50-75%), image 3 the
-// close (frame 4, 75-100%) — each image gets a clear, uninterrupted
-// moment rather than fighting the text for attention.
 function updateHeroImages(progress) {
     const i1 = Utils.select('#hero-image-1'), i2 = Utils.select('#hero-image-2'), i3 = Utils.select('#hero-image-3');
     if (!i1 || !i2 || !i3) return;
@@ -1143,9 +1158,6 @@ function updateHeroImages(progress) {
 
 function updateRadar(progress) {
     const readout = Utils.select('#radar-readout-value');
-    // Counts from 0 up to the real, sourced GBON figure (AppData.heroCoveragePct
-    // — LDCs & SIDS Surface Stations, WMO GBON Baseline 2023) as the reader
-    // scrolls, instead of two arbitrary hardcoded endpoints.
     if (readout) readout.textContent = `${Utils.padPercent(Utils.lerp(0, AppData.heroCoveragePct, progress), 1, 2)}%`;
     radarNodes.forEach(node => {
         const threshold = parseFloat(node.getAttribute('data-threshold'));
@@ -1176,7 +1188,6 @@ function initScrollytellingObserver() {
 }
 
 function initNavObserver() {
-    /* The '>' ensures we only track the main navigation links, ignoring the mobile sub-menu */
     const navLinks = Utils.selectAll('.nav-links > a[href^="#"]:not([href="#"])');
     const targets = navLinks.map((link) => document.querySelector(link.getAttribute('href'))).filter(Boolean);
     if (!targets.length) return;
@@ -1232,6 +1243,7 @@ function initToastObserver() {
 function triggerChartUpdate(canvas) {
     const scene = canvas.getAttribute('data-scene');
     if (scene === 'compliance') Charts.updateCompliance();
+    if (scene === 'meteo') Charts.updateMeteo();
     if (scene === 'exposure') Charts.updateExposure();
     if (scene === 'flooding') Charts.updateFlooding();
     if (scene === 'projection') Charts.updateProjection('typical');
@@ -1258,22 +1270,9 @@ function updateNavVisibility() {
 }
 
 function initUIElements() {
-    // Lets a reader click any name in "(Kiribati, Solomon Islands, Samoa,
-    // Nauru)" above the funding chart to jump straight to that country's
-    // row instead of scanning all 14 for it.
     document.addEventListener('click', (e) => {
         const link = e.target.closest('.funding-name-link');
         if (link) Charts.highlightFundingCountry(link.dataset.country);
-    });
-
-    Utils.selectAll('.funding-filter-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const targetBtn = e.target.closest('.funding-filter-btn');
-            if(!targetBtn) return;
-            Utils.selectAll('.funding-filter-btn').forEach(b => b.classList.remove('active'));
-            targetBtn.classList.add('active');
-            Charts.applyFundingFilter(targetBtn.getAttribute('data-funding-filter'));
-        });
     });
 
     const toast = Utils.select('#mobile-toast');
@@ -1316,9 +1315,7 @@ function initUIElements() {
 
     const downloadableDatasets = {
         compliance: AppData.compliance,
-        // Chapter 02 now has two verified metrics (per-year affected
-        // persons, and single-figure avgAnnualLoss); both are live
-        // references into AppData, so this always matches what's on screen.
+        meteo: AppData.meteoStations,
         exposure: { affected: AppData.exposure, avgAnnualLoss: AppData.exposureAvgAnnualLoss },
         funding: AppData.funding,
         projections: AppData.projections
@@ -1371,16 +1368,9 @@ function initUIElements() {
             Charts.updateProjection(scenario);
             
             if(dynamicText) {
-                // Read live from AppData (single verified 2100 point per
-                // scenario) instead of a hardcoded duplicate, so a future
-                // correction to data.js doesn't silently go stale here.
                 const targetVal = AppData.projections[scenario][0].val;
                 const currentVal = parseFloat(dynamicText.textContent.replace(/[^0-9.]/g, '')) || 0;
                 
-                // Same three colors as the chart dots and the selector
-                // below: green (lower), blue (typical), red (higher) —
-                // whichever pathway is picked, the number, the dot, and
-                // the selector all agree on its color.
                 const textColors = { lower: 'var(--accent-success)', typical: 'var(--accent-ocean)', higher: 'var(--accent-danger)' };
                 dynamicText.style.color = textColors[scenario] || 'var(--accent-ocean)';
                 
@@ -1394,37 +1384,57 @@ function initUIElements() {
         });
     });
 
-    // --- HTML Ruler Drag/Swipe Logic ---
+    // Handle the inline dropdown for the Chapter 02 Meteo sentence
+    const meteoSelect = Utils.select('#meteo-country-select');
+    const meteoCount = Utils.select('#meteo-dynamic-count');
+    if (meteoSelect && meteoCount && AppData.meteoStations) {
+        meteoSelect.addEventListener('change', (e) => {
+            const country = e.target.value;
+            const stationsArray = AppData.meteoStations[country];
+            let currentCount = 0;
+            
+            // Grab the last entry in the array, which represents the total active stations up to 2026
+            if (stationsArray && stationsArray.length > 0) {
+                currentCount = stationsArray[stationsArray.length - 1].stations;
+            }
+            
+            const previousCount = parseInt(meteoCount.textContent) || 0;
+            
+            Charts.countText(meteoCount, previousCount, currentCount, {
+                decimals: 0,
+                duration: 600
+            });
+        });
+    }
+
     const rulerContainer = Utils.select('.projection-ruler');
     if (rulerContainer) {
         let isDragging = false;
-        rulerContainer.style.touchAction = 'none'; // Prevents page scrolling while swiping slider sideways
+        rulerContainer.style.touchAction = 'none'; 
 
         const scrubRuler = (e) => {
             if (!isDragging) return;
             e.preventDefault(); 
             const rect = rulerContainer.getBoundingClientRect();
-            // Handle both touch and mouse positions
             const clientX = e.clientX ?? (e.touches && e.touches[0] ? e.touches[0].clientX : null);
             if (clientX === null) return;
 
             const ratio = (clientX - rect.left) / rect.width;
             
-            // Divide the ruler into thirds to calculate the closest snap point
             let targetScenario = 'typical';
             if (ratio < 0.33) targetScenario = 'lower';
             else if (ratio > 0.67) targetScenario = 'higher';
             
             const targetBtn = rulerContainer.querySelector(`.ruler-step[data-filter="${targetScenario}"]`);
             if (targetBtn && !targetBtn.classList.contains('active')) {
-                targetBtn.click(); // Fires the click animation sequence instantly
+                targetBtn.click(); 
             }
         };
 
         rulerContainer.addEventListener('pointerdown', (e) => {
             isDragging = true;
             rulerContainer.setPointerCapture(e.pointerId);
-            scrubRuler(e); // Snap immediately if they click directly on the line
+            scrubRuler(e); 
         });
         rulerContainer.addEventListener('pointermove', scrubRuler);
         rulerContainer.addEventListener('pointerup', (e) => {
@@ -1502,7 +1512,7 @@ function initUIElements() {
     const tabs = Utils.selectAll('.citation-tab');
     const citeText = Utils.select('#cite-text');
     const citations = {
-        'APA': 'Dissanayake, C. (2026). The Pacific Blind Spot: Measuring the climate monitoring gap [Data Story]. Updated July 3, 2026. Retrieved from https://chaturadissanayake.vercel.app',
+        'APA': 'Dissanayake, C. (2026). The Pacific Blind Spot: Measuring the climate monitoring gap [Data Story]. Updated August 30, 2026. Retrieved from https://chaturadissanayake.vercel.app',
         'Journalistic': 'Chatura Dissanayake. (2026). The Pacific Blind Spot: Measuring the climate monitoring gap. Retrieved from https://chaturadissanayake.vercel.app',
         'BibTeX': '@article{dissanayake-pacific-blind-spot-2026,\n  title  = {The Pacific Blind Spot: Measuring the climate monitoring gap},\n  author = {Dissanayake, Chatura},\n  year   = {2026},\n  journal = {Data Story},\n  url    = {https://chaturadissanayake.vercel.app}\n}'
     };

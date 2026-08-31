@@ -1,0 +1,296 @@
+{
+  "order": [
+    "Fiji",
+    "French Polynesia",
+    "Papua New Guinea",
+    "Vanuatu",
+    "Kiribati",
+    "New Caledonia",
+    "Tonga",
+    "Micronesia, Federated State of",
+    "Solomon Islands",
+    "Tuvalu",
+    "Cook Islands",
+    "Marshall Islands",
+    "Samoa",
+    "Palau",
+    "Tokelau",
+    "Naoero",
+    "Niue",
+    "Pitcairn"
+  ],
+  "steps": {
+    "Cook Islands": [
+      {
+        "year": 1948,
+        "stations": 1
+      },
+      {
+        "year": 2016,
+        "stations": 2
+      }
+    ],
+    "Fiji": [
+      {
+        "year": 1933,
+        "stations": 1
+      },
+      {
+        "year": 1942,
+        "stations": 2
+      },
+      {
+        "year": 1951,
+        "stations": 3
+      },
+      {
+        "year": 1953,
+        "stations": 4
+      },
+      {
+        "year": 1956,
+        "stations": 5
+      },
+      {
+        "year": 1983,
+        "stations": 6
+      },
+      {
+        "year": 2011,
+        "stations": 7
+      },
+      {
+        "year": 2012,
+        "stations": 8
+      }
+    ],
+    "French Polynesia": [
+      {
+        "year": 1930,
+        "stations": 1
+      },
+      {
+        "year": 1935,
+        "stations": 2
+      },
+      {
+        "year": 1949,
+        "stations": 3
+      },
+      {
+        "year": 1951,
+        "stations": 4
+      },
+      {
+        "year": 1962,
+        "stations": 5
+      },
+      {
+        "year": 2013,
+        "stations": 6
+      },
+      {
+        "year": 2016,
+        "stations": 7
+      }
+    ],
+    "Kiribati": [
+      {
+        "year": 1946,
+        "stations": 1
+      },
+      {
+        "year": 1947,
+        "stations": 2
+      },
+      {
+        "year": 1984,
+        "stations": 3
+      },
+      {
+        "year": 2025,
+        "stations": 4
+      }
+    ],
+    "Marshall Islands": [
+      {
+        "year": 1945,
+        "stations": 1
+      },
+      {
+        "year": 1952,
+        "stations": 2
+      }
+    ],
+    "Micronesia, Federated State of": [
+      {
+        "year": 1941,
+        "stations": 1
+      },
+      {
+        "year": 1948,
+        "stations": 2
+      },
+      {
+        "year": 1952,
+        "stations": 3
+      }
+    ],
+    "Naoero": [
+      {
+        "year": 1889,
+        "stations": 0
+      }
+    ],
+    "New Caledonia": [
+      {
+        "year": 1941,
+        "stations": 1
+      },
+      {
+        "year": 1963,
+        "stations": 2
+      },
+      {
+        "year": 1983,
+        "stations": 3
+      },
+      {
+        "year": 2016,
+        "stations": 4
+      }
+    ],
+    "Niue": [
+      {
+        "year": 1889,
+        "stations": 0
+      }
+    ],
+    "Palau": [
+      {
+        "year": 1948,
+        "stations": 1
+      }
+    ],
+    "Papua New Guinea": [
+      {
+        "year": 1951,
+        "stations": 1
+      },
+      {
+        "year": 1957,
+        "stations": 2
+      },
+      {
+        "year": 1960,
+        "stations": 3
+      },
+      {
+        "year": 1986,
+        "stations": 4
+      },
+      {
+        "year": 1996,
+        "stations": 5
+      },
+      {
+        "year": 1997,
+        "stations": 6
+      }
+    ],
+    "Pitcairn": [
+      {
+        "year": 1889,
+        "stations": 0
+      }
+    ],
+    "Samoa": [
+      {
+        "year": 1889,
+        "stations": 1
+      },
+      {
+        "year": 1969,
+        "stations": 2
+      }
+    ],
+    "Solomon Islands": [
+      {
+        "year": 1950,
+        "stations": 1
+      },
+      {
+        "year": 1962,
+        "stations": 2
+      },
+      {
+        "year": 1975,
+        "stations": 3
+      }
+    ],
+    "Tokelau": [
+      {
+        "year": 2016,
+        "stations": 1
+      }
+    ],
+    "Tonga": [
+      {
+        "year": 1946,
+        "stations": 1
+      },
+      {
+        "year": 1974,
+        "stations": 2
+      },
+      {
+        "year": 1978,
+        "stations": 3
+      },
+      {
+        "year": 1994,
+        "stations": 4
+      }
+    ],
+    "Tuvalu": [
+      {
+        "year": 1932,
+        "stations": 1
+      },
+      {
+        "year": 1941,
+        "stations": 2
+      },
+      {
+        "year": 1947,
+        "stations": 3
+      }
+    ],
+    "Vanuatu": [
+      {
+        "year": 1953,
+        "stations": 1
+      },
+      {
+        "year": 1961,
+        "stations": 2
+      },
+      {
+        "year": 1972,
+        "stations": 3
+      },
+      {
+        "year": 1973,
+        "stations": 4
+      },
+      {
+        "year": 1988,
+        "stations": 5
+      },
+      {
+        "year": 2007,
+        "stations": 6
+      }
+    ]
+  }
+}

@@ -353,7 +353,7 @@
     opacity: 0;
 }
 
-/* Chapter 05 funding — a single proportional strip built in
+/* Chapter 06 funding — a single proportional strip built in
    Charts.initFunding/updateFunding (animations.js). Plain flex/width,
    not SVG: it's one bar sized to the container, so it always fills
    .chart-canvas the same way every other chart's full-width SVG does,
@@ -760,6 +760,9 @@
     #compliance-canvas svg {
         min-width: 900px; /* FIX: Makes Chapter 1 chart larger/legible on mobile */
     }
+    #meteo-canvas svg {
+        min-width: 820px; /* Heatmap has 138 year-columns; needs real width to stay legible while swiping */
+    }
     /* Hide the old fallback blocks completely */
     .mobile-chart-fallback { display: none !important; } 
 
@@ -912,8 +915,15 @@
     .central-figure { padding: 4rem 0 5rem 0; }
     .central-figure-head { padding: 0 1.5rem; }
     .caption-wrapper { padding: 0 1.5rem; }
-    .flip-card { flex: 0 0 88vw; min-height: 460px; height: auto !important; }
-    .flip-card-front, .flip-card-back { padding: 2.5rem 1.5rem; }
+    .flip-card { flex: 0 0 88vw; min-height: 420px; height: auto !important; }
+    .flip-card-front, .flip-card-back { padding: 2.25rem 1.5rem; }
+    /* FIX: base desktop layout top-packs the title/question then shoves
+       .quiz-options to the very bottom via margin-top:auto -- on a short
+       mobile card that leaves a big dead gap in the middle. Center the
+       content with an even gap instead so nothing floats awkwardly. */
+    .flip-card-front { justify-content: center; gap: 1rem; }
+    .flip-card-front .quiz-options { margin-top: 0.5rem; }
+    .flip-card-back { justify-content: center; gap: 0.4rem; }
     .narrative-bridge { padding: 1.5rem; margin: 0.5rem 0; display: flex; align-items: center; justify-content: center; } /* Tighter mobile spacing */
     .narrative-bridge p { font-size: 1.2rem; line-height: 1.4; margin: 0; text-align: center; }
     .narrative-bridge::before { font-size: 10rem; transform: translate(-50%, -50%); }

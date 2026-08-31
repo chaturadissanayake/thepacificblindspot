@@ -45,7 +45,7 @@ const AppData = {
     heroCoveragePct: GBON_SIDS_SURFACE_PCT,
 
     // ---------------------------------------------------------
-    // CHAPTER 01b: METEOROLOGICAL NETWORK GROWTH (NEW, previously unused)
+    // CHAPTER 01b: METEOROLOGICAL NETWORK GROWTH
     // SOURCE: Meteorological_monitoring_network_data.csv (Pacific Data Hub,
     //   SPC:DF_METEO_MONITOR_NET, "Land (fixed)" station type only).
     // Number of active fixed land meteorological stations per country,
@@ -53,34 +53,51 @@ const AppData = {
     // (one row/year from that country's first recorded year to 2026), so
     // this is stored as STEP CHANGES ONLY (59 change-points instead of the
     // source's 1,650 raw rows) to stay compact: each entry's "stations"
-    // count holds from that "year" until the next entry's year (exclusive).
+    // count holds from that "year" until the next entry's year (exclusive);
+    // years before a country's first entry are 0 (no station recorded yet).
     // Countries not present in the source file (e.g. American Samoa) are
-    // omitted rather than fabricated. Added 2026-08-30; not yet wired to
-    // a chart in index.html/animations.js.
+    // omitted rather than fabricated.
+    // Rendered as a heatmap (Chapter 02) since a single-country line chart
+    // couldn't show all 18 countries' trajectories -- and the flat, zero
+    // rows for Naoero/Niue/Pitcairn -- at once.
     // ---------------------------------------------------------
-    meteoNetworkHistory: {
-        "Fiji": [ {"year":1933,"stations":1}, {"year":1942,"stations":2}, {"year":1951,"stations":3}, {"year":1953,"stations":4}, {"year":1956,"stations":5}, {"year":1983,"stations":6}, {"year":2011,"stations":7}, {"year":2012,"stations":8} ], // data through 2026, first recorded 1933
-        "New Caledonia": [ {"year":1941,"stations":1}, {"year":1963,"stations":2}, {"year":1983,"stations":3}, {"year":2016,"stations":4} ], // data through 2026, first recorded 1941
-        "Papua New Guinea": [ {"year":1951,"stations":1}, {"year":1957,"stations":2}, {"year":1960,"stations":3}, {"year":1986,"stations":4}, {"year":1996,"stations":5}, {"year":1997,"stations":6} ], // data through 2026, first recorded 1951
-        "Solomon Islands": [ {"year":1950,"stations":1}, {"year":1962,"stations":2}, {"year":1975,"stations":3} ], // data through 2026, first recorded 1950
-        "Vanuatu": [ {"year":1953,"stations":1}, {"year":1961,"stations":2}, {"year":1972,"stations":3}, {"year":1973,"stations":4}, {"year":1988,"stations":5}, {"year":2007,"stations":6} ], // data through 2026, first recorded 1953
-        "Kiribati": [ {"year":1946,"stations":1}, {"year":1947,"stations":2}, {"year":1984,"stations":3}, {"year":2025,"stations":4} ], // data through 2026, first recorded 1946
-        "Marshall Islands": [ {"year":1945,"stations":1}, {"year":1952,"stations":2} ], // data through 2026, first recorded 1945
-        "Nauru": [ {"year":1889,"stations":0} ], // data through 2026, first recorded 1889
-        "Palau": [ {"year":1948,"stations":1} ], // data through 2026, first recorded 1948
-        "Samoa": [ {"year":1889,"stations":1}, {"year":1969,"stations":2} ], // data through 2026, first recorded 1889
-        "Tonga": [ {"year":1946,"stations":1}, {"year":1974,"stations":2}, {"year":1978,"stations":3}, {"year":1994,"stations":4} ], // data through 2026, first recorded 1946
-        "Tuvalu": [ {"year":1932,"stations":1}, {"year":1941,"stations":2}, {"year":1947,"stations":3} ], // data through 2026, first recorded 1932
-        "Micronesia (Federated States of)": [ {"year":1941,"stations":1}, {"year":1948,"stations":2}, {"year":1952,"stations":3} ], // data through 2026, first recorded 1941
-        "French Polynesia": [ {"year":1930,"stations":1}, {"year":1935,"stations":2}, {"year":1949,"stations":3}, {"year":1951,"stations":4}, {"year":1962,"stations":5}, {"year":2013,"stations":6}, {"year":2016,"stations":7} ], // data through 2026, first recorded 1930
-        "Cook Islands": [ {"year":1948,"stations":1}, {"year":2016,"stations":2} ], // data through 2026, first recorded 1948
-        "Niue": [ {"year":1889,"stations":0} ], // data through 2026, first recorded 1889
-        "Tokelau": [ {"year":2016,"stations":1} ], // data through 2026, first recorded 2016
-        "Pitcairn": [ {"year":1889,"stations":0} ], // data through 2026, first recorded 1889
+    meteoYearRange: [1889, 2026],
+    meteoMaxStations: 8,
+    // Row order for the heatmap: most stations in 2026 (top) to fewest
+    // (bottom), so the ranking itself is part of the chart.
+    meteoCountryOrder: [
+        "Fiji", "French Polynesia", "Papua New Guinea", "Vanuatu", "Kiribati", "New Caledonia", "Tonga", "Micronesia, Federated State of", "Solomon Islands",
+        "Tuvalu", "Cook Islands", "Marshall Islands", "Samoa", "Palau", "Tokelau", "Naoero", "Niue", "Pitcairn"
+    ],
+    // Display-label overrides, matching the renaming already used elsewhere
+    // in this file for the exposure/funding charts.
+    meteoCountryLabels: {
+        "Naoero": "Nauru",
+        "Micronesia, Federated State of": "Micronesia"
+    },
+    meteoStations: {
+        "Fiji": [{ year: 1933, stations: 1 }, { year: 1942, stations: 2 }, { year: 1951, stations: 3 }, { year: 1953, stations: 4 }, { year: 1956, stations: 5 }, { year: 1983, stations: 6 }, { year: 2011, stations: 7 }, { year: 2012, stations: 8 }],
+        "French Polynesia": [{ year: 1930, stations: 1 }, { year: 1935, stations: 2 }, { year: 1949, stations: 3 }, { year: 1951, stations: 4 }, { year: 1962, stations: 5 }, { year: 2013, stations: 6 }, { year: 2016, stations: 7 }],
+        "Papua New Guinea": [{ year: 1951, stations: 1 }, { year: 1957, stations: 2 }, { year: 1960, stations: 3 }, { year: 1986, stations: 4 }, { year: 1996, stations: 5 }, { year: 1997, stations: 6 }],
+        "Vanuatu": [{ year: 1953, stations: 1 }, { year: 1961, stations: 2 }, { year: 1972, stations: 3 }, { year: 1973, stations: 4 }, { year: 1988, stations: 5 }, { year: 2007, stations: 6 }],
+        "Kiribati": [{ year: 1946, stations: 1 }, { year: 1947, stations: 2 }, { year: 1984, stations: 3 }, { year: 2025, stations: 4 }],
+        "New Caledonia": [{ year: 1941, stations: 1 }, { year: 1963, stations: 2 }, { year: 1983, stations: 3 }, { year: 2016, stations: 4 }],
+        "Tonga": [{ year: 1946, stations: 1 }, { year: 1974, stations: 2 }, { year: 1978, stations: 3 }, { year: 1994, stations: 4 }],
+        "Micronesia, Federated State of": [{ year: 1941, stations: 1 }, { year: 1948, stations: 2 }, { year: 1952, stations: 3 }],
+        "Solomon Islands": [{ year: 1950, stations: 1 }, { year: 1962, stations: 2 }, { year: 1975, stations: 3 }],
+        "Tuvalu": [{ year: 1932, stations: 1 }, { year: 1941, stations: 2 }, { year: 1947, stations: 3 }],
+        "Cook Islands": [{ year: 1948, stations: 1 }, { year: 2016, stations: 2 }],
+        "Marshall Islands": [{ year: 1945, stations: 1 }, { year: 1952, stations: 2 }],
+        "Samoa": [{ year: 1889, stations: 1 }, { year: 1969, stations: 2 }],
+        "Palau": [{ year: 1948, stations: 1 }],
+        "Tokelau": [{ year: 2016, stations: 1 }],
+        "Naoero": [{ year: 1889, stations: 0 }],
+        "Niue": [{ year: 1889, stations: 0 }],
+        "Pitcairn": [{ year: 1889, stations: 0 }],
     },
 
     // ---------------------------------------------------------
-    // CHAPTER 02: PACIFIC DISASTER EXPOSURE
+    // CHAPTER 03: PACIFIC DISASTER EXPOSURE
     // SOURCE (affected): Pacific Data Hub SDG 11.5.1 "Number of directly
     //   affected persons attributed to disasters"
     //   (SPC_DF_SDG_11_3_0_filtered_2026-08-26_20-13-27.xlsx)
@@ -232,7 +249,7 @@ const AppData = {
     ],
 
     // ---------------------------------------------------------
-    // CHAPTER 04: HISTORICAL FLOODING (PAGO PAGO STATION)
+    // CHAPTER 05: HISTORICAL FLOODING (PAGO PAGO STATION)
     // SOURCE: high-tide-flooding-days.csv (NOAA). VERIFIED 2026-08-28:
     // exact match, no changes.
     // ---------------------------------------------------------
@@ -250,7 +267,7 @@ const AppData = {
     ],
 
     // ---------------------------------------------------------
-    // CHAPTER 04: HISTORICAL SEA LEVEL (Pago Pago; mm converted to cm)
+    // CHAPTER 05: HISTORICAL SEA LEVEL (Pago Pago; mm converted to cm)
     // SOURCE: total-sea-level-change-b.csv, "Annual Data" column at
     // whole-number years. VERIFIED 2026-08-28: re-derived directly from
     // this column (previous values didn't match any column in the source
@@ -269,7 +286,7 @@ const AppData = {
     ],
 
     // ---------------------------------------------------------
-    // CHAPTER 04: PROJECTED SEA LEVEL RISE (GLOBAL MEAN, not local)
+    // CHAPTER 05: PROJECTED SEA LEVEL RISE (GLOBAL MEAN, not local)
     // SOURCE: World Bank Climate Risk Country Profiles (2021), Table 3/5/6
     // "Estimates of global mean sea-level rise... compared to 1986-2005",
     // IPCC AR5 Ch.13 methodology — identical table cited across all 11
@@ -294,7 +311,7 @@ const AppData = {
     },
 
     // ---------------------------------------------------------
-    // CHAPTER 05: UN SOFF FINANCIAL PIPELINE
+    // CHAPTER 06: UN SOFF FINANCIAL PIPELINE
     // SOURCE: SOFF Partners funding tables (Australia & New Zealand)
     // Extracted exactly from verifiable platform screenshots indicating Readiness
     // Budget vs. Investment Peer Advisory Fee allocations.

@@ -354,7 +354,7 @@
 .quiz-feedback {
     font-family: var(--font-mono);
     font-size: 0.75rem;
-    font-weight: 700;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.15em;
     margin-bottom: 1rem;
@@ -661,6 +661,13 @@ svg text {
     color: var(--ink);
     border-bottom-color: var(--accent-ocean);
 }
+.meteo-cell {
+    cursor: pointer;
+}
+.meteo-cell:hover {
+    stroke: var(--ink);
+    stroke-width: 1px;
+}
 .d3-grid line {
     stroke: var(--line);
     stroke-dasharray: none !important;
@@ -797,11 +804,6 @@ button.download-btn {
     flex-wrap: wrap;
     gap: 0.6rem;
 }
-.download-btn:hover {
-    color: var(--ink);
-    border-color: var(--ink);
-    background: transparent;
-}
 .on-dark .download-btn {
     color: var(--paper-soft);
     background: rgba(255,255,255,0.05);
@@ -907,6 +909,7 @@ button.download-btn {
         text-align: left; 
     }
 }
+
 .radar-readout {
     position: absolute;
     left: 50%;
@@ -968,8 +971,8 @@ button.download-btn {
     color: var(--paper);
 }
 /* FIX: --exposure-color was previously set on the document root, so
-   clicking a metric toggle in Chapter 02 also silently repainted the
-   active toggle buttons in Chapter 01 and Chapter 05 (they share the
+   clicking a metric toggle in Chapter 03 also silently repainted the
+   active toggle buttons in Chapter 01 and Chapter 06 (they share the
    same .metric-toggle-btn class). The color variable is now written to
    the #stakes section only (see animations.js), and this rule is scoped
    to match, so each chart's controls stay visually independent. */

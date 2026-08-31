@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Page not found | The Unfair Climate Price data visualization project.">
+<title>Page Not Found | The Unfair Climate Price</title>
+<link rel="apple-touch-icon" sizes="180x180" href="assets/favicons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicons/favicon-16x16.png">
+<link rel="manifest" href="assets/favicons/site.webmanifest">
+<link rel="mask-icon" href="assets/favicons/safari-pinned-tab.svg" color="#12796f">
+<meta name="msapplication-TileColor" content="#06181d">
+<meta name="theme-color" content="#06181d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<style>
+    /* Force the nav and language switcher to stay visible and in light-mode
+       since this page does not have the dark hero section to scroll past. */
+    .editorial-nav {
+        transform: translateY(0) !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+    }
+    .global-lang-switch .lang-btn {
+        border-color: #cdd8d4 !important;
+        color: var(--ink-soft) !important;
+    }
+    .global-lang-switch .lang-btn.active {
+        background-color: var(--ink) !important;
+        color: var(--paper) !important;
+        border-color: var(--ink) !important;
+    }
+    .global-lang-switch .lang-btn:hover:not(.active) {
+        border-color: var(--ink) !important;
+        color: var(--ink) !important;
+    }
+
+    /* Page-specific: centered error state */
+    .error-canvas {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 140px 1.5rem 4rem 1.5rem;
+    }
+    .error-content {
+        max-width: 38rem;
+        text-align: center;
+    }
+    .error-code {
+        font-family: var(--font-display);
+        font-weight: 500;
+        font-size: clamp(4.5rem, 3rem + 6vw, 8rem);
+        line-height: 1;
+        letter-spacing: -0.02em;
+        color: var(--accent-coral);
+        margin-bottom: 1rem;
+    }
+    .error-title {
+        font-size: clamp(1.6rem, 1.3rem + 1.2vw, 2.4rem);
+        color: var(--ink);
+        margin-bottom: 1rem;
+    }
+    .error-standfirst {
+        font-family: var(--font-display);
+        font-size: clamp(1.05rem, 1rem + 0.3vw, 1.2rem);
+        font-weight: 400;
+        color: var(--ink-soft);
+        line-height: 1.6;
+        max-width: 32rem;
+        margin: 0 auto 2.5rem auto;
+    }
+    .error-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+    }
+    .error-divider {
+        width: 48px;
+        height: 1px;
+        background-color: var(--line);
+        border: none;
+        margin: 2rem auto 2.5rem auto;
+    }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#error-content">Skip to content</a>
+
+<div class="global-lang-switch">
+    <a href="error.html" class="lang-btn active" aria-label="English">EN</a>
+    <a href="index-fr.html" class="lang-btn" aria-label="Français">FR</a>
+</div>
+
+<nav class="editorial-nav">
+    <a href="index.html" class="nav-brand">
+        <img src="assets/pacific_icon.png" alt="Brand Icon" class="brand-icon" width="18" height="18">
+        Pacific Dataviz Challenge <span>2026</span>
+    </a>
+    <button class="mobile-menu-toggle" aria-label="Toggle Menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line class="hbg-line hbg-top" x1="3" y1="6" x2="21" y2="6"></line><line class="hbg-line hbg-mid" x1="3" y1="12" x2="21" y2="12"></line><line class="hbg-line hbg-bottom" x1="3" y1="18" x2="21" y2="18"></line></svg>
+    </button>
+    <div class="nav-links">
+        <a href="index.html" class="nav-link-secondary">Home</a>
+        <a href="index.html#overview" class="nav-link-secondary">Story</a>
+        <a href="index.html#methodology" class="nav-link-secondary">Methodology</a>
+        <a href="privacy.html" class="nav-link-secondary">Privacy</a>
+        <a href="https://medium.com/" target="_blank" rel="noopener" class="nav-link-secondary">Process</a>
+    </div>
+</nav>
+
+<main class="immersive-canvas">
+    <section class="error-canvas" id="error-content">
+        <div class="error-content">
+            <span class="report-eyebrow">Error 404</span>
+            <div class="error-code" aria-hidden="true">404</div>
+            <h1 class="error-title">This page has drifted off the map.</h1>
+            <p class="error-standfirst">The page you're looking for doesn't exist, may have been moved, or the link may be out of date. Try heading back to the story or exploring the methodology behind the data.</p>
+            <hr class="error-divider">
+            <div class="error-actions">
+                <a href="index.html" class="btn-primary">Back to the story</a>
+                <a href="index.html#methodology" class="btn-secondary">View methodology</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="terminal-footer">
+        <svg class="footer-contours" viewBox="0 0 1440 420" preserveAspectRatio="none" aria-hidden="true">
+            <!-- Contour paths handled by main.js if needed, or left empty for static design -->
+        </svg>
+        <div class="footer-main-grid">
+            <div class="footer-col brand-col">
+                <span class="footer-logo">Pacific <span>Dataviz</span></span>
+                <span class="footer-sublogo">Pacific Dataviz Challenge 2026</span>
+            </div>
+
+            <div class="footer-col">
+                <h4 class="footer-heading">About the project</h4>
+                <p class="footer-text">This data story was created for the Pacific Dataviz Challenge 2026, themed around climate change. The visualizations are built to surface structural climate inequality across the Pacific.</p>
+                <p class="footer-text">Sources for each chart sit beneath it. All datasets referenced are open data. <a href="https://github.com/chaturadissanayake/theunfairclimateprice" target="_blank" rel="noopener" class="footer-link">Source code is available on GitHub.</a></p>
+            </div>
+
+            <div class="footer-col">
+                <h4 class="footer-heading">Data sources</h4>
+                <ul class="footer-list">
+                    <li>
+                        <strong>Sea level &amp; sea surface temperature anomalies</strong>
+                        <span>Pacific Data Hub</span>
+                    </li>
+                    <li>
+                        <strong>GHG emissions per capita</strong>
+                        <span>Pacific Data Hub</span>
+                    </li>
+                    <li>
+                        <strong>Disaster economic loss &amp; coastline / land cover index</strong>
+                        <span>Pacific Data Hub</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4 class="footer-heading">Tech &amp; tools used</h4>
+                <p class="footer-text">
+                    D3.js v7, p5.js, RawGraphs, Vanilla JS, Adobe Illustrator, Adobe Photoshop, SDMX / .Stat
+                </p>
+            </div>
+        </div>
+
+        <div class="footer-bottom-bar">
+            <div class="footer-bottom-left">
+                <span>© 2026 Chatura Dissanayake.</span>
+            </div>
+            <div class="footer-bottom-right">
+                <span>Built by <a href="https://chaturadissanayake.vercel.app" target="_blank" rel="noopener" class="footer-creator-link">Chatura Dissanayake</a></span>
+                <a href="https://github.com/chaturadissanayake/theunfairclimateprice" target="_blank" rel="noopener" aria-label="GitHub" class="social-icon">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                        <path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.79-.25.79-.55 0-.27-.01-1.16-.02-2.11-3.2.7-3.88-1.36-3.88-1.36-.52-1.34-1.28-1.7-1.28-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.04 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.64 1.58.24 2.75.12 3.04.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.14 0 1.54-.01 2.79-.01 3.17 0 .3.21.66.8.55A10.52 10.52 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z"/>
+                    </svg>
+                </a>
+                <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn" class="social-icon">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zM7.119 20.452H3.554V9h3.565v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+</main>
+
+<script src="js/utils.js"></script>
+<!-- This page intentionally does not load animations.js: that file's
+     DOMContentLoaded block calls five D3 chart initializers and a hero
+     scroll loop this static page has no elements for, and D3 itself is
+     never loaded here. Wiring up just the mobile menu toggle instead,
+     mirroring animations.js's own logic so behavior matches index.html. -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const menuToggle = document.querySelector('.mobile-menu-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    if (!menuToggle || !navLinks) return;
+    menuToggle.setAttribute('aria-expanded', 'false');
+    const closeMenu = ({ restoreFocus = false } = {}) => {
+        navLinks.classList.remove('nav-open');
+        document.body.style.overflow = '';
+        menuToggle.setAttribute('aria-expanded', 'false');
+        if (restoreFocus) menuToggle.focus();
+    };
+    menuToggle.addEventListener('click', () => {
+        const isOpen = navLinks.classList.toggle('nav-open');
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+        menuToggle.setAttribute('aria-expanded', String(isOpen));
+        if (isOpen) {
+            const firstLink = navLinks.querySelector('a');
+            if (firstLink) firstLink.focus();
+        }
+    });
+    navLinks.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => closeMenu());
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && navLinks.classList.contains('nav-open')) {
+            closeMenu({ restoreFocus: true });
+        }
+    });
+});
+</script>
+</body>
+</html>

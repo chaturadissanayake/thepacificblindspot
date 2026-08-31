@@ -1,66 +1,142 @@
 [
   {
-    "country": "Fiji",
-    "x": 45,
-    "y": 60,
+    "country": "Kiribati",
+    "partner": "Australia",
+    "entity": "UNEP",
+    "phase": "Investment",
     "status": "Approved",
-    "amount": 12.5,
-    "radius": 24
-  },
-  {
-    "country": "Vanuatu",
-    "x": 30,
-    "y": 55,
-    "status": "Provisional",
-    "amount": 8.2,
-    "radius": 18
+    "readiness": 105255,
+    "investment": 535000,
+    "total": 640255
   },
   {
     "country": "Solomon Islands",
-    "x": 20,
-    "y": 45,
-    "status": "Provisional",
-    "amount": 9.1,
-    "radius": 20
-  },
-  {
-    "country": "Kiribati",
-    "x": 65,
-    "y": 35,
-    "status": "Gap",
-    "amount": 0,
-    "radius": 8
+    "partner": "Australia",
+    "entity": "UNDP",
+    "phase": "Investment",
+    "status": "Approved",
+    "readiness": 96905,
+    "investment": 535000,
+    "total": 631905
   },
   {
     "country": "Samoa",
-    "x": 75,
-    "y": 50,
+    "partner": "Australia",
+    "entity": "World Bank",
+    "phase": "Investment",
     "status": "Approved",
-    "amount": 6.4,
-    "radius": 15
-  },
-  {
-    "country": "Tonga",
-    "x": 60,
-    "y": 70,
-    "status": "Pending",
-    "amount": 4.5,
-    "radius": 12
-  },
-  {
-    "country": "Tuvalu",
-    "x": 55,
-    "y": 40,
-    "status": "Gap",
-    "amount": 0,
-    "radius": 8
+    "readiness": 96905,
+    "investment": 332500,
+    "total": 429405
   },
   {
     "country": "Nauru",
-    "x": 40,
-    "y": 30,
-    "status": "Pending",
-    "amount": 2.1,
-    "radius": 10
+    "partner": "Australia",
+    "entity": "UNEP",
+    "phase": "Investment",
+    "status": "Approved",
+    "readiness": 86255,
+    "investment": 262500,
+    "total": 348755
+  },
+  {
+    "country": "Papua New Guinea",
+    "partner": "Australia",
+    "entity": "UNDP",
+    "phase": "Readiness",
+    "status": "Under Review",
+    "readiness": 138601,
+    "investment": 0,
+    "total": 138601
+  },
+  {
+    "country": "Fiji",
+    "partner": "Australia",
+    "entity": "World Bank",
+    "phase": "Readiness",
+    "status": "",
+    "readiness": 96905,
+    "investment": 0,
+    "total": 96905
+  },
+  {
+    "country": "Marshall Islands",
+    "partner": "New Zealand",
+    "entity": "UNEP",
+    "phase": "Readiness",
+    "status": "",
+    "readiness": 154309,
+    "investment": 0,
+    "total": 154309
+  },
+  {
+    "country": "Micronesia (Federated States of)",
+    "partner": "New Zealand",
+    "entity": "UNEP",
+    "phase": "Readiness",
+    "status": "",
+    "readiness": 154309,
+    "investment": 0,
+    "total": 154309
+  },
+  {
+    "country": "Palau",
+    "partner": "New Zealand",
+    "entity": "UNEP",
+    "phase": "Readiness",
+    "status": "",
+    "readiness": 154309,
+    "investment": 0,
+    "total": 154309
+  },
+  {
+    "country": "Vanuatu",
+    "partner": "New Zealand",
+    "entity": "World Bank",
+    "phase": "Readiness",
+    "status": "",
+    "readiness": 103965,
+    "investment": 0,
+    "total": 103965
+  },
+  {
+    "country": "Tonga",
+    "partner": "New Zealand",
+    "entity": "World Bank",
+    "phase": "Readiness",
+    "status": "",
+    "readiness": 99200,
+    "investment": 0,
+    "total": 99200
+  },
+  {
+    "country": "Cook Islands",
+    "partner": "New Zealand",
+    "entity": "UNEP",
+    "phase": "Readiness",
+    "status": "",
+    "readiness": 75415,
+    "investment": 0,
+    "total": 75415
+  },
+  {
+    "country": "Niue",
+    "partner": "New Zealand",
+    "entity": "UNEP",
+    "phase": "Readiness",
+    "status": "",
+    "readiness": 60645,
+    "investment": 0,
+    "total": 60645
+  },
+  {
+    "country": "Tuvalu",
+    "partner": "New Zealand",
+    "entity": "UNEP",
+    "phase": "Readiness",
+    "status": "",
+    "readiness": 39800,
+    "investment": 0,
+    "total": 39800
   }
 ]

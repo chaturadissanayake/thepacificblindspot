@@ -307,11 +307,12 @@
         <!-- Mobile Chapter Links -->
         <div class="mobile-only mobile-chapter-menu">
             <a href="#central-figure" class="sub-nav-link">Chapter 01: The Global Gap</a>
-            <a href="#stakes" class="sub-nav-link">Chapter 02: The Stakes</a>
-            <a href="#human-cost" class="sub-nav-link">Chapter 03: Country by Country</a>
-            <a href="#projections" class="sub-nav-link">Chapter 04: The Horizon</a>
-            <a href="#funding" class="sub-nav-link">Chapter 05: Closing the Gap</a>
-            <a href="#conclusion" class="sub-nav-link">Chapter 06: Conclusion</a>
+            <a href="#meteo-timeline" class="sub-nav-link">Chapter 02: The Stagnation</a>
+            <a href="#stakes" class="sub-nav-link">Chapter 03: The Stakes</a>
+            <a href="#human-cost" class="sub-nav-link">Chapter 04: Country by Country</a>
+            <a href="#projections" class="sub-nav-link">Chapter 05: The Horizon</a>
+            <a href="#funding" class="sub-nav-link">Chapter 06: Closing the Gap</a>
+            <a href="#conclusion" class="sub-nav-link">Chapter 07: Conclusion</a>
         </div>
 
         <a href="#methodology" class="nav-link-secondary">Methodology</a>
@@ -326,7 +327,7 @@
 
     <div class="regional-locator-map" style="position: relative;">
     <div class="editorial-img-container aspect-wide" style="margin: 0; background: transparent; border: none; overflow: visible;">  
-
+  
 <?xml version="1.0" encoding="UTF-8"?>
 <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1640 692.39">
   <defs>
@@ -605,6 +606,8 @@
 </svg>  
     </div>
 
+    </div>
+
     <!-- This is the tooltip that will appear on hover -->
     <div id="map-hover-tooltip" class="map-tooltip">
         <img id="map-tooltip-img" src="" alt="Country view">
@@ -613,7 +616,7 @@
 </div>
 
         <p class="report-standfirst" style="margin: 2.5rem auto 0 auto;">
-            The Pacific Ocean isn't just sinking due to rising seas; parts of it are also vanishing from our measurements. Over six years, this has been a persistent blind spot. The Pacific faces the highest climate risks, yet effective monitoring depends on robust and well-funded data systems, which are currently dangerously insufficient.
+            The Pacific Ocean isn't just sinking due to rising seas; parts of it are also vanishing from our measurements. The Pacific faces the highest climate risks, yet effective monitoring depends on robust and well-funded data systems, which are currently dangerously insufficient.
         </p>
 
         <hr class="hero-divider">
@@ -647,7 +650,7 @@
 
         <div class="swipe-hint mobile-only on-dark">Swipe chart to explore</div>
         <p class="chart-hover-hint on-dark reveal">Hover any bar for its exact coverage and gap percentage.</p>
-        <div class="chart-canvas central-chart-canvas" id="compliance-canvas" data-scene="compliance" style="margin-bottom: 0;">
+        <div class="chart-canvas central-chart-canvas reveal" id="compliance-canvas" data-scene="compliance" style="margin-bottom: 0;">
             <div class="sr-only">
                 <table>
                     <caption>Global Basic Observing Network Compliance Deficits (WMO GBON Baseline 2023)</caption>
@@ -676,11 +679,40 @@
 <div class="central-figure-head reveal" style="text-align: left; max-width: 680px; margin: 1rem auto 0 auto; padding: 0 2rem;">
             <p>Satellites can see a storm system from space, but they can't feel it. Ground-level radar and surface stations supply the "ground truth",  the small, fast-moving shifts in pressure, temperature, and humidity that turn an ordinary squall into a catastrophic cyclone, or a dry spell into a flash drought. Take that ground truth away, and <a href="https://wmo.int/site/early-warnings-all" target="_blank" rel="noopener" class="source-link">early warning systems</a> aren't just weaker,  they're guessing.</p>
         </div>
-    </section>
+        
+        </section>
     
+<section class="article-section" id="meteo-timeline">
+        <div class="article-copy reveal">
+            <span class="editorial-kicker">Chapter 02, The Stagnation</span>
+            <h2 class="editorial-subhead">A century of slow, uneven expansion</h2>
+            <p>If we map exactly when every active land weather station in the Pacific was built, the pattern becomes visually obvious. Infrastructure went in decades ago in bursts, then growth slowed to a crawl for most countries, and for three, Naoero, Niue, and Pitcairn, it never started at all.</p>
+        </div>
+
+        <figure class="article-graphic">
+            <!-- FIX: Removed the empty chart-controls-wrapper that was causing a massive vertical gap on desktop -->
+            <div class="swipe-hint mobile-only reveal" style="width: 100%; max-width: 960px; padding: 0 2rem; margin-bottom: 1rem;">Swipe chart to explore</div>
+
+            <div class="chart-canvas reveal" id="meteo-canvas" data-scene="meteo" style="margin-bottom: 0;"></div>
+
+            <div class="caption-wrapper">
+                <figcaption class="source-caption">
+                    <span class="caption-desc">Active land weather stations per country, 1889–2026. Rows are ranked by 2026 station count; the three flat rows at the bottom have never recorded one.</span>
+                    <span class="source-details"><a href="https://pacificdata.org/data/dataset/meteorological-monitoring-network-df-meteo-monitor-net" target="_blank" rel="noopener" class="source-link">Pacific Data Hub</a>. SPC:DF_METEO_MONITOR_NET(1.0)</span>
+                </figcaption>
+                <div class="caption-actions">
+                    <button type="button" class="download-btn" data-download="meteo">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        Get JSON
+                    </button>
+                </div>
+            </div>
+        </figure>
+    </section>
+
     <section class="article-section" id="stakes">
         <div class="article-copy reveal">
-            <span class="editorial-kicker">Chapter 02, The Stakes</span>
+            <span class="editorial-kicker">Chapter 03, The Stakes</span>
             <h2 class="editorial-subhead">High exposure, low detection</h2>
             <p>Vanuatu is a useful place to see what this gap actually costs. It gets hit by cyclones and floods most years, and most years the damage barely registers. Then, every so often, one storm sweeps through and the number of people affected jumps from a few thousand to hundreds of thousands in a single season. The chart below plays that pattern out year by year,  for Vanuatu, and for every other Pacific country this story tracks.</p>
             <p>That up-and-down pattern is exactly what you'd expect when ground-level data is thin. Without local stations to pin down a storm's path and strength, forecasters have to lean on rougher satellite estimates, and the <a href="https://wmo.int/site/early-warnings-all" target="_blank" rel="noopener" class="source-link">time people have to evacuate</a> shrinks from days to hours.</p>
@@ -727,7 +759,7 @@
                 </div>
             </div>
             <p class="chart-hover-hint reveal">Hover any bar for the exact figure that year.</p>
-        <div class="chart-canvas" id="exposure-canvas" data-scene="exposure" style="margin-bottom: 0;">
+        <div class="chart-canvas reveal" id="exposure-canvas" data-scene="exposure" style="margin-bottom: 0;">
             <div class="sr-only">
                 <table>
                     <caption>Vanuatu: Unified Disaster Impact (Affected Persons & Avg Annual Loss)</caption>
@@ -765,7 +797,7 @@
     
     <section class="article-section" id="human-cost">
         <div class="article-copy reveal">
-            <span class="editorial-kicker">Chapter 03, Country by Country</span>
+            <span class="editorial-kicker">Chapter 04, Country by Country</span>
             <h2 class="editorial-subhead">Guess who's actually funded</h2>
             <p>Regional averages hide how uneven this gap really is. Some island nations are still years from having a single new station funded, while a handful have already broken through to hardware money. That shortage is a real barrier to building resilient infrastructure and taking meaningful climate action,  the two goals the United Nations set for every country under <strong>SDG 9</strong> and <strong>SDG 13</strong>.</p>
             <div class="sdg-container">
@@ -789,20 +821,20 @@
                 <div class="card-map-thumb"><img src="assets/maps/terrain/Kiribati.webp" alt="Kiribati map outline"></div>
                 <span class="card-title" style="white-space: nowrap;">Kiribati</span>
                 <span class="quiz-type">True or False</span>
-                <p class="card-question">Kiribati operates a dense ground network across its 3.5 million km² exclusive economic zone.</p>
+                <p class="card-question">Kiribati has already secured full SOFF Investment Phase funding, worth $11.16 million.</p>
                 <div class="quiz-options">
-                    <button class="quiz-btn" data-correct="false">True</button>
-                    <button class="quiz-btn" data-correct="true">False</button>
+                    <button class="quiz-btn" data-correct="true">True</button>
+                    <button class="quiz-btn" data-correct="false">False</button>
                 </div>
             </div>
             <div class="flip-card-back">
                 <div class="quiz-feedback"></div>
+                <span class="answer">Answer: True</span>
                 <div class="card-score">
                     <span class="score-value">4</span>
                     <span class="score-label">Active Fixed Stations</span>
                 </div>
-                <span class="answer">Answer: False</span>
-                <p>Zero compliant stations against a target of 14. Secured $11.16M in SOFF funding; implementation is underway.</p>
+                <p>None of those 4 stations meet the compliance target of 14, but with $11.16M in Investment Phase funding already secured, new hardware is on the way.</p>
             </div>
         </div>
     </div>
@@ -821,12 +853,12 @@
             </div>
             <div class="flip-card-back">
                 <div class="quiz-feedback"></div>
+                <span class="answer">Answer: False</span>
                 <div class="card-score">
                     <span class="score-value">8</span>
                     <span class="score-label">Active Fixed Stations</span>
                 </div>
-                <span class="answer">Answer: False</span>
-                <p>Serves as a regional meteorological hub, but SOFF investment funding for new hardware is still pending.</p>
+                <p>Fiji serves as the region's forecasting hub with just 8 stations, and SOFF Investment Phase funding for new hardware is still pending.</p>
             </div>
         </div>
     </div>
@@ -845,12 +877,12 @@
             </div>
             <div class="flip-card-back">
                 <div class="quiz-feedback"></div>
+                <span class="answer">Answer: False</span>
                 <div class="card-score">
                     <span class="score-value">3</span>
                     <span class="score-label">Active Fixed Stations</span>
                 </div>
-                <span class="answer">Answer: False</span>
-                <p>Faces extreme exposure to sea-level rise. Despite being a clear priority, funding remains pending.</p>
+                <p>Only 3 stations watch over one of the nations most exposed to sea-level rise, and Investment Phase funding is still pending.</p>
             </div>
         </div>
     </div>
@@ -869,12 +901,12 @@
             </div>
             <div class="flip-card-back">
                 <div class="quiz-feedback"></div>
+                <span class="answer">Answer: True</span>
                 <div class="card-score">
                     <span class="score-value">2</span>
                     <span class="score-label">Active Fixed Stations</span>
                 </div>
-                <span class="answer">Answer: True</span>
-                <p>One of four Pacific nations approved for Investment funding. Relying on satellite feeds until hardware arrives.</p>
+                <p>With just 2 stations, Samoa leans on satellite feeds for now, but it's one of four Pacific nations already approved for Investment Phase funding.</p>
             </div>
         </div>
     </div>
@@ -893,12 +925,12 @@
             </div>
             <div class="flip-card-back">
                 <div class="quiz-feedback"></div>
+                <span class="answer">Answer: False</span>
                 <div class="card-score">
                     <span class="score-value">4</span>
                     <span class="score-label">Active Fixed Stations</span>
                 </div>
-                <span class="answer">Answer: False</span>
-                <p>Completed initial Readiness Phase. Still waiting on Investment Phase funding to buy and install hardware.</p>
+                <p>Just 4 stations remain after recent volcanic and tsunami shocks, and Tonga is still waiting on Investment Phase funding to expand.</p>
             </div>
         </div>
     </div>
@@ -917,12 +949,12 @@
             </div>
             <div class="flip-card-back">
                 <div class="quiz-feedback"></div>
+                <span class="answer">Answer: True</span>
                 <div class="card-score">
                     <span class="score-value">0</span>
                     <span class="score-label">Active Fixed Stations</span>
                 </div>
-                <span class="answer">Answer: True</span>
-                <p>Near-total absence of compliant stations. Approved for hardware funding to close this critical gap.</p>
+                <p>Zero working stations today, but Nauru is approved for Investment Phase funding to close that gap entirely.</p>
             </div>
         </div>
     </div>
@@ -941,12 +973,12 @@
             </div>
             <div class="flip-card-back">
                 <div class="quiz-feedback"></div>
+                <span class="answer">Answer: False</span>
                 <div class="card-score">
                     <span class="score-value">6</span>
                     <span class="score-label">Active Fixed Stations</span>
                 </div>
-                <span class="answer">Answer: False</span>
-                <p>Among the world's most disaster-exposed nations, yet stuck in the Readiness phase with hardware funding pending.</p>
+                <p>One of the world's most disaster-exposed nations runs on just 6 stations, with Investment Phase funding still pending.</p>
             </div>
         </div>
     </div>
@@ -957,20 +989,20 @@
                 <div class="card-map-thumb"><img src="assets/maps/terrain/Solomon Is.webp" alt="Solomon Islands map outline"></div>
                 <span class="card-title" style="white-space: nowrap;"><abbr title="Solomon Islands" class="help-abbr" style="border-bottom: none;">Solomon Is.</abbr></span>
                 <span class="quiz-type">True or False</span>
-                <p class="card-question">The Solomon Islands' expansive territory is monitored by a network of at least 12 fixed stations.</p>
+                <p class="card-question">Despite its scattered, fragmented geography, the Solomon Islands has been approved for full SOFF Investment Phase funding.</p>
                 <div class="quiz-options">
-                    <button class="quiz-btn" data-correct="false">True</button>
-                    <button class="quiz-btn" data-correct="true">False</button>
+                    <button class="quiz-btn" data-correct="true">True</button>
+                    <button class="quiz-btn" data-correct="false">False</button>
                 </div>
             </div>
             <div class="flip-card-back">
                 <div class="quiz-feedback"></div>
+                <span class="answer">Answer: True</span>
                 <div class="card-score">
                     <span class="score-value">3</span>
                     <span class="score-label">Active Fixed Stations</span>
                 </div>
-                <span class="answer">Answer: False</span>
-                <p>Geographical fragmentation creates massive data gaps. Now approved for full Investment Phase funding.</p>
+                <p>Just 3 stations cover this fragmented archipelago, but full Investment Phase funding is now approved to help close the gap.</p>
             </div>
         </div>
     </div>
@@ -992,7 +1024,7 @@
 
 <section class="article-section" id="projections">
         <div class="article-copy reveal" style="margin-bottom: 1rem;">
-            <span class="editorial-kicker">Chapter 04, The Horizon</span>
+            <span class="editorial-kicker">Chapter 05, The Horizon</span>
             <h2 class="editorial-subhead">The compounding sea-level threat</h2>
             <p>Sea-level rise doesn't arrive as a single dramatic flood. It arrives as a road that used to flood only in the worst storms, and now floods on an ordinary high tide. At the Pago Pago gauge, that's a trend visible within a single generation, quietly reshaping what counts as normal weather.</p>
             <p>Where that trend goes next is a matter of how much the world emits between now and the year 2100, the ruler below lays out the range. But for atolls that sit barely three meters above the waterline, even the most optimistic pathway means extreme tides and cyclone-driven storm surges pushing critical infrastructure toward being permanently flood-prone, without rapid adaptation.</p>
@@ -1083,7 +1115,7 @@
             <p class="chart-footnote">The axis below is intentionally broken between 12 cm and 40 cm: the observed trend (left) and the three 2100 scenarios (right) sit at very different scales, so compressing the space between them keeps both legible. Click any scenario dot, or use the pathway selector above.</p>
 
             <div class="swipe-hint mobile-only">Swipe chart to explore</div>
-            <div class="chart-canvas" id="projection-canvas" data-scene="projection" style="margin-bottom: 0;">
+            <div class="chart-canvas reveal" id="projection-canvas" data-scene="projection" style="margin-bottom: 0;">
                 <div class="sr-only">
                     <table>
                         <caption>Observed sea-level rise (Pago Pago) and year 2100 projections by emissions pathway</caption>
@@ -1118,7 +1150,7 @@
 
 <section class="article-section" id="funding">
         <div class="article-copy reveal">
-            <span class="editorial-kicker">Chapter 05, Closing the Gap</span>
+            <span class="editorial-kicker">Chapter 06, Closing the Gap</span>
             <h2 class="editorial-subhead">Financing the Pacific radar grid</h2>
             <p>The <a href="https://www.un-soff.org/" target="_blank" rel="noopener" class="source-link">United Nations set up a fund called SOFF (the Systematic Observations Financing Facility)</a> to pay for exactly this kind of weather equipment on the ground and in the upper air. It's the closest thing this story has to an answer already in motion. The chart below tracks Readiness budgets against Investment Phase advisory fees,  a small slice of the total; full hardware Investment approvals run into the millions of dollars per country once a country clears the pipeline.</p>
             <p>A mechanism to close this gap already exists, backed by partner advisors and implementing entities like UNEP, UNDP, and the World Bank. The work left is not inventing a solution, it is pushing the countries still doing paperwork through to the investment phase. That is a funding and political-will problem, not a technical one.</p>
@@ -1141,7 +1173,7 @@
             </div>
             <div id="funding-spotlight" class="funding-spotlight" aria-live="polite"></div>
 
-            <div class="chart-canvas" id="funding-canvas" data-scene="funding" style="margin-bottom: 0; min-height: auto; align-items: flex-start;">
+            <div class="chart-canvas reveal" id="funding-canvas" data-scene="funding" style="margin-bottom: 0; min-height: auto; align-items: flex-start;">
                 <div class="funding-dual-charts">
                     <div class="funding-chart-col">
                         <div class="mini-chart-title">Readiness Phase Budget</div>
@@ -1196,10 +1228,10 @@
 
     <section class="article-section" id="conclusion">
         <div class="article-copy reveal" style="margin-bottom: 5rem;">
-            <span class="editorial-kicker">Chapter 06, Conclusion</span>
+            <span class="editorial-kicker">Chapter 07, Conclusion</span>
             <h2 class="editorial-subhead">Closing the blind spot</h2>
             <p>The Pacific's monitoring gap isn't a fact of geography. It's a shortage of equipment and funding, and that can be fixed. As the planet keeps warming and extreme weather keeps getting worse, the cost of flying blind,  in lives and in money,  only keeps growing.</p>
-            <p><a href="https://wmo.int/site/early-warnings-all" target="_blank" rel="noopener" class="source-link">Early warning systems</a> are one of the most cost-effective tools humanity has against climate disasters,  studies show every dollar spent on them saves roughly ten in damage. But they only work if there's hardware on the ground, satellites overhead, and steady funding to keep both running.</p>
+            <p><a href="https://wmo.int/site/early-warnings-all" target="_blank" rel="noopener" class="source-link">Early warning systems</a> are one of the most cost-effective tools humanity has against climate disasters,  the <a href="https://wmo.int/topics/early-warning-system" target="_blank" rel="noopener" class="source-link">WMO puts the return at nearly tenfold</a>: roughly ten dollars in avoided damage for every dollar spent. But they only work if there's hardware on the ground, satellites overhead, and steady funding to keep both running.</p>
             <p>Pacific nations are on the front line of a crisis they didn't cause. Giving them the basic tools to see a storm coming is not too much to ask,  it's the least the rest of the world owes them.</p>
         </div>
     </section>
@@ -1226,6 +1258,10 @@
                 </li>
                 <li>
                     <a href="https://pacificdata.org/dashboard/sdg-11-sustainable-cities-and-communities" target="_blank" rel="noopener">Direct Disaster Economic Loss, Average Annual Loss (SDG 11.5.2)</a>
+                    <span class="source-org">Pacific Data Hub</span>
+                </li>
+                <li>
+                    <a href="https://pacificdata.org/data/dataset/meteorological-monitoring-network-df-meteo-monitor-net" target="_blank" rel="noopener">Meteorological Monitoring Network, Land Stations SPC:DF_METEO_MONITOR_NET(1.0)</a>
                     <span class="source-org">Pacific Data Hub</span>
                 </li>
                 <li>
@@ -1307,7 +1343,7 @@
     <p style="text-align:center; padding:2rem; font-family:sans-serif;">This data story relies on JavaScript for its interactive charts. Please turn on JavaScript to see the full experience.</p>
 </noscript>
 <script src="js/utils.js"></script>
-<script src="js/data.js"></script>
+  <script src="js/data.js"></script>
 <script src="js/animations.js"></script>
 
 <script>
