@@ -1465,7 +1465,6 @@ function initUIElements() {
             const titleEl = card.querySelector('.card-title');
             if (!titleEl) return;
             
-            // Use textContent instead of innerText to prevent silent JS errors in some environments
             const countryTitle = titleEl.textContent.trim().toUpperCase();
             
             const filterBtns = Array.from(document.querySelectorAll('.chart-filter-btn'));
@@ -1488,23 +1487,25 @@ function initUIElements() {
         };
 
         card.addEventListener('click', (e) => {
-            // Prevent double-tapping while the card is already animating/shaking
+            // 1. If currently shaking, ignore all clicks so it doesn't glitch
             if (card.classList.contains('shake')) return;
             
+            // 2. IF ALREADY FLIPPED: Any click ANYWHERE on the card unflips it.
+            // (This fixes the 3D-space bug where browsers click invisible buttons on the back)
+            if (card.classList.contains('flipped')) {
+                card.classList.remove('result-correct', 'result-wrong', 'result-skipped');
+                executeFlip(false);
+                return; // Stop right here, do not check for buttons.
+            }
+
+            // 3. IF NOT FLIPPED: Check exactly what they tapped
             const btn = e.target.closest('.quiz-btn');
             
             if (btn) {
-                // Button was clicked (True / False)
+                // They tapped True or False
                 e.preventDefault(); 
+                e.stopPropagation(); // CRITICAL: Stops the click from bubbling and triggering a "Skip"
                 
-                if (card.classList.contains('flipped')) {
-                    card.classList.remove('result-correct', 'result-wrong', 'result-skipped');
-                    executeFlip(false);
-                    return;
-                }
-
-                // Force lowercase to ensure the logic perfectly matches 'true' vs 'false' 
-                // regardless of how it was typed in the HTML
                 const correctAttr = btn.getAttribute('data-correct') || '';
                 const isCorrect = correctAttr.toLowerCase() === 'true';
                 
@@ -1525,16 +1526,11 @@ function initUIElements() {
                     }, 400);
                 }
             } else {
-                // Card itself was clicked (Skip)
-                // Removed the strict gap-check so any non-button click reliably acts as a skip
-                if (!card.classList.contains('flipped')) {
-                    card.classList.add('result-skipped');
-                    if (feedback) feedback.textContent = 'Skipped';
-                    executeFlip(true);
-                } else {
-                    card.classList.remove('result-correct', 'result-wrong', 'result-skipped');
-                    executeFlip(false);
-                }
+                // They tapped the card, but missed the buttons (Skip)
+                card.classList.remove('result-correct', 'result-wrong', 'result-skipped');
+                card.classList.add('result-skipped');
+                if (feedback) feedback.textContent = 'Skipped';
+                executeFlip(true);
             }
         });
 
