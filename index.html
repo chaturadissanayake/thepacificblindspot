@@ -1206,7 +1206,14 @@
     <p style="text-align:center; padding:2rem; font-family:sans-serif;">This data story relies on JavaScript for its interactive charts. Please turn on JavaScript to see the full experience.</p>
 </noscript>
 <script src="js/utils.js"></script>
-  <script src="js/data.js"></script>
+
+<!-- 1. Load Raw Datasets First -->
+<script src="js/meteorological_monitoring_network.js"></script>
+<script src="js/directlyaffectedpersons.js"></script>
+<script src="js/directdisastereconomicloss.js"></script>
+
+<!-- 2. Load Core Application Data and Animations -->
+<script src="js/data.js"></script>
 <script src="js/animations.js"></script>
 
 <script>

@@ -1,4 +1,4 @@
-const weatherData = [
+const rawMeteoData = [
   {
     "Country": "Fiji",
     "StationType": "LAND",
