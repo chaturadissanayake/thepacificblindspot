@@ -595,7 +595,7 @@ const Charts = {
         yAxisGroup.selectAll('line').attr('stroke', '#e2e8f0');
         yAxisGroup.selectAll('text').attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '12px').attr('x', -15);
 
-        svg.append('text').attr('x', margin.left - 15).attr('y', margin.top - 15).text('High Tide Floods (Days per Yr)').attr('fill', this.inkSoft).style('font-family', 'var(--font-sans)').style('font-size', '12px');
+        svg.append('text').attr('x', margin.left - 15).attr('y', margin.top - 15).text('High Tide Floods (Days per Yr)').attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '14px').style('font-weight', '600');
 
         const gapStartX = (x(lastDataYear) ?? 0) + x.bandwidth() + (x.step() * 0.25);
         const gapEndX = width - margin.right;
@@ -657,7 +657,7 @@ const Charts = {
             .call(d3.axisLeft(yA).tickValues([0, 20, 40, 60, 80, 100]).tickSize(-(panelA.x1 - panelA.x0)));
 
         svg.append('text').attr('x', panelA.x0).attr('y', plotTop - 20).text('Observed sea level (cm since 1993)')
-            .attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '12px').style('font-weight', 600);
+            .attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '14px').style('font-weight', '600');
 
         const xAxisA = svg.append('g').attr('class', 'd3-axis').attr('transform', `translate(0,${plotBottom})`)
             .call(d3.axisBottom(xA).tickValues([1993, 2000, 2010, 2020, lastObserved.year]).tickFormat(d3.format('d')).tickSize(0));
@@ -672,8 +672,8 @@ const Charts = {
 
         const lastDot = svg.append('circle').attr('cx', xA(lastObserved.year)).attr('cy', yA(lastObserved.val)).attr('r', 5)
             .attr('fill', 'var(--bg-paper)').attr('stroke', this.teal).attr('stroke-width', 2.5);
-        const lastText = svg.append('text').attr('x', xA(lastObserved.year)).attr('y', yA(lastObserved.val) - 14).attr('text-anchor', 'end')
-            .style('font-family', 'var(--font-mono)').style('font-size', '12px').style('font-weight', 700)
+        const lastText = svg.append('text').attr('x', xA(lastObserved.year)).attr('y', yA(lastObserved.val) - 24).attr('text-anchor', 'end')
+            .style('font-family', 'var(--font-mono)').style('font-size', '15px').style('font-weight', 700)
             .attr('fill', this.teal).text(`+${lastObserved.val.toFixed(1)}cm`);
 
         const bisectYear = d3.bisector(d => d.year).left;
@@ -732,7 +732,7 @@ const Charts = {
 
         svg.append('text').attr('x', panelB.x1).attr('y', plotTop - 20).attr('text-anchor', 'end')
             .text('Year 2100 projection, by pathway (cm)').attr('fill', this.ink)
-            .style('font-family', 'var(--font-sans)').style('font-size', '12px').style('font-weight', 600);
+            .style('font-family', 'var(--font-sans)').style('font-size', '14px').style('font-weight', '600');
 
         const waterLevel = svg.append('rect')
             .attr('x', panelB.x0)
