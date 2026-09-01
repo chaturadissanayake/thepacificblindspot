@@ -1341,12 +1341,13 @@ button.download-btn {
 }
 
 .source-list-title {
-    font-family: var(--font-sans);
-    font-size: var(--text-md);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
     font-weight: 700;
-    color: var(--accent-coral);
-    margin-bottom: var(--space-4);
-    text-transform: none;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: var(--space-5);
 }
 .clean-source-list {
     list-style: none;
@@ -1397,10 +1398,12 @@ button.download-btn {
     padding-bottom: 0;
 }
 .cite-title {
-    font-family: var(--font-sans);
-    font-size: var(--text-md);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
     font-weight: 700;
-    color: var(--accent-coral);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
     margin: 0;
 }
 .citation-tabs {

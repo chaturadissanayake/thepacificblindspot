@@ -253,9 +253,7 @@ const Charts = {
             .attr('y', d => y(d.category))
             .attr('height', y.bandwidth())
             .attr('width', x(100) - x(0))
-            .attr('fill', this.cssVar('--bg-deep-soft', '#161B22'))
-            .attr('stroke', 'rgba(255, 255, 255, 0.12)')
-            .attr('stroke-width', 1);
+            .attr('fill', this.cssVar('--bg-deep-soft', '#161B22'));
 
         row.append('rect')
             .attr('class', 'active-bar')
@@ -276,7 +274,7 @@ const Charts = {
         const legend = svg.append('g').attr('transform', `translate(${margin.left}, 10)`);
         legend.append('rect').attr('x', 0).attr('y', -5).attr('width', 10).attr('height', 10).attr('fill', this.gold);
         legend.append('text').attr('x', 18).attr('y', 4).text('Active Infrastructure').style('font-size', '11px').attr('fill', 'rgba(255,255,255,0.7)');
-        legend.append('rect').attr('x', 160).attr('y', -5).attr('width', 10).attr('height', 10).attr('fill', this.cssVar('--bg-deep-soft', '#161B22')).attr('stroke', 'rgba(255, 255, 255, 0.12)').attr('stroke-width', 1);
+        legend.append('rect').attr('x', 160).attr('y', -5).attr('width', 10).attr('height', 10).attr('fill', this.cssVar('--bg-deep-soft', '#161B22'));
         legend.append('text').attr('x', 178).attr('y', 4).text('Missing Data Gap').style('font-size', '11px').attr('fill', 'rgba(255,255,255,0.7)');
 
         this.state.compliance = { row, x };
