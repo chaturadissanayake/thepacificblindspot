@@ -843,7 +843,7 @@
 
     .integrated-citation { padding: var(--space-8) 0; border-left: none; border-right: none; margin-top: var(--space-8); background: transparent; border-radius: 0; }
     .citation-header-row { flex-direction: column; align-items: flex-start; gap: var(--space-4); margin-bottom: var(--space-6); }
-    .cite-title { margin-bottom: 0; font-size: var(--text-md); }
+    .cite-title { margin-bottom: 0; font-size: var(--text-sm); }
     .citation-tabs { width: 100%; display: flex; border-bottom: 1px solid var(--line); background: transparent; border-radius: 0; gap: var(--space-4); }
     .citation-tab { padding: 0 0 var(--space-2) 0; font-size: var(--text-xs); text-align: left; border-right: none; }
     .citation-content { flex-direction: column; align-items: stretch; gap: var(--space-4); width: 100%; min-width: 0; }

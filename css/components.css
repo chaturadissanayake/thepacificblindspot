@@ -1301,9 +1301,9 @@ button.download-btn {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-4);
-    margin: var(--space-8) 0 var(--space-14) 0;
+    margin: var(--space-8) 0 var(--space-8) 0;
     border-bottom: 1px solid var(--line);
-    padding-bottom: var(--space-10);
+    padding-bottom: var(--space-8);
 }
 .btn-primary, .btn-secondary {
     display: inline-flex;
@@ -1342,50 +1342,33 @@ button.download-btn {
 
 .source-list-title {
     font-family: var(--font-sans);
-    font-size: var(--text-heading-lg);
+    font-size: var(--text-md);
     font-weight: 700;
-    letter-spacing: -0.01em;
-    color: var(--ink);
-    margin-bottom: var(--space-6);
+    color: var(--accent-coral);
+    margin-bottom: var(--space-4);
     text-transform: none;
 }
 .clean-source-list {
     list-style: none;
     padding: 0;
-    margin: 0 0 var(--space-14) 0;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-6);
+    margin: 0 0 var(--space-10) 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
 }
 .clean-source-list li {
     display: block;
-    line-height: 1.5;
-}
-.clean-source-list li a {
+    line-height: 1.6;
     font-family: var(--font-sans);
-    font-size: var(--text-base);
-    font-weight: 600;
+    font-size: var(--text-md);
     color: var(--ink-soft);
-    text-decoration: underline;
-    text-decoration-color: var(--ink-faint);
-    text-decoration-thickness: 1px;
-    text-underline-offset: 3px;
-    display: inline;
-    transition: color 0.2s ease;
-}
-.clean-source-list li a:hover {
-    color: var(--accent-ocean);
-    background-color: transparent;
 }
 .clean-source-list li .doc-title {
-    font-weight: 400;
-    color: var(--ink-soft);
-    transition: all 0.2s ease;
-    cursor: default;
+    margin-right: var(--space-2);
 }
-.clean-source-list li:hover .doc-title {
-    color: var(--accent-ocean);
-    background-color: rgba(10, 108, 144, 0.08);
+.clean-source-list li .source-link {
+    font-size: var(--text-md);
+    font-weight: 600;
 }
 .source-org {
     font-family: var(--font-sans);
@@ -1402,7 +1385,7 @@ button.download-btn {
     border-top: 2px solid var(--ink);
     border-bottom: 1px solid var(--line);
     padding: var(--space-10) 0;
-    margin-top: var(--space-16);
+    margin-top: var(--space-8);
     background: transparent;
 }
 .citation-header-row {
@@ -1417,7 +1400,7 @@ button.download-btn {
     font-family: var(--font-sans);
     font-size: var(--text-md);
     font-weight: 700;
-    color: var(--ink);
+    color: var(--accent-coral);
     margin: 0;
 }
 .citation-tabs {
