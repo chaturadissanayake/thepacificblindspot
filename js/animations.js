@@ -599,31 +599,6 @@ const Charts = {
 
         const gapStartX = (x(lastDataYear) ?? 0) + x.bandwidth() + (x.step() * 0.25);
         const gapEndX = width - margin.right;
-        if (gapEndX > gapStartX) {
-            svg.append('rect')
-                .attr('x', gapStartX).attr('y', margin.top)
-                .attr('width', gapEndX - gapStartX).attr('height', height - margin.top - margin.bottom)
-                .attr('fill', 'rgba(184, 90, 90, 0.08)');
-            svg.append('line')
-                .attr('x1', gapStartX).attr('x2', gapStartX)
-                .attr('y1', margin.top).attr('y2', height - margin.bottom)
-                .attr('stroke', this.coral).attr('stroke-width', 1).attr('stroke-dasharray', '2 3').attr('opacity', 0.5);
-
-            const gapLabel = svg.append('text')
-                .attr('class', 'flood-gap-label')
-                .attr('x', (gapStartX + gapEndX) / 2)
-                .attr('y', margin.top + 24)
-                .attr('text-anchor', 'middle')
-                .style('font-family', 'var(--font-sans)')
-                .style('font-size', '12px')
-                .style('font-style', 'normal')
-                .style('font-weight', '500')
-                .attr('fill', this.coralDark);
-            const gapWords = `No readings published since ${lastDataYear}`.split(' ');
-            const mid = Math.ceil(gapWords.length / 2);
-            gapLabel.append('tspan').attr('x', (gapStartX + gapEndX) / 2).attr('dy', 0).text(gapWords.slice(0, mid).join(' '));
-            gapLabel.append('tspan').attr('x', (gapStartX + gapEndX) / 2).attr('dy', '1.3em').text(gapWords.slice(mid).join(' '));
-        }
 
         const bars = svg.selectAll('.flood-bar').data(data).enter().append('rect')
             .attr('class', 'flood-bar')
@@ -652,8 +627,8 @@ const Charts = {
         const container = Utils.select('#projection-canvas');
         if (!container) return;
         container.innerHTML = '';
-        const width = 960, height = 440;
-        const margin = { top: 30, bottom: 44 };
+        const width = 960, height = 480;
+        const margin = { top: 50, bottom: 44 };
         const plotTop = margin.top, plotBottom = height - margin.bottom;
 
         const panelA = { x0: 76, x1: 528 };
@@ -675,13 +650,13 @@ const Charts = {
         };
 
         const xA = d3.scaleLinear().domain([1993, lastObserved.year]).range([panelA.x0, panelA.x1]);
-        const yA = d3.scaleLinear().domain([0, 80]).range([plotBottom, plotTop]);
+        const yA = d3.scaleLinear().domain([0, 100]).range([plotBottom, plotTop]);
 
         const gridA = svg.append('g').attr('class', 'd3-grid')
             .attr('transform', `translate(${panelA.x0},0)`)
-            .call(d3.axisLeft(yA).tickValues([0, 20, 40, 60, 80]).tickSize(-(panelA.x1 - panelA.x0)));
+            .call(d3.axisLeft(yA).tickValues([0, 20, 40, 60, 80, 100]).tickSize(-(panelA.x1 - panelA.x0)));
 
-        svg.append('text').attr('x', panelA.x0).attr('y', plotTop - 12).text('Observed sea level (cm since 1993)')
+        svg.append('text').attr('x', panelA.x0).attr('y', plotTop - 20).text('Observed sea level (cm since 1993)')
             .attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '12px').style('font-weight', 600);
 
         const xAxisA = svg.append('g').attr('class', 'd3-axis').attr('transform', `translate(0,${plotBottom})`)
@@ -738,24 +713,24 @@ const Charts = {
         svg.append('line').attr('x1', breakX).attr('x2', breakX).attr('y1', plotTop).attr('y2', plotBottom)
             .attr('stroke', 'var(--line)').attr('stroke-width', 1.5);
 
-        svg.append('text').attr('x', breakX).attr('y', plotTop - 12).attr('text-anchor', 'middle')
+        svg.append('text').attr('x', breakX).attr('y', plotTop - 20).attr('text-anchor', 'middle')
             .style('font-family', 'var(--font-mono)').style('font-size', '10px').style('font-weight', '600')
             .style('letter-spacing', '0.05em')
             .attr('fill', this.inkFaint).text('PROJECTION');
 
-        const yB = d3.scaleLinear().domain([40, 80]).range([plotTop + 200, plotTop]);
+        const yB = d3.scaleLinear().domain([40, 100]).range([plotTop + 200, plotTop]);
         const xB = d3.scalePoint().domain(scenarioKeys).range([panelB.x0 + 20, panelB.x1 - 20]).padding(0.6);
 
         const gridB = svg.append('g').attr('class', 'd3-grid')
             .attr('transform', `translate(${panelB.x1},0)`)
-            .call(d3.axisRight(yB).tickValues([40, 50, 60, 70, 80]).tickSize(-(panelB.x1 - panelB.x0)));
+            .call(d3.axisRight(yB).tickValues([40, 60, 80, 100]).tickSize(-(panelB.x1 - panelB.x0)));
         gridB.select('.domain').remove();
         gridB.selectAll('line')
             .attr('stroke', 'var(--line)')
             .attr('opacity', 0.6);
         gridB.selectAll('text').attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '12px').attr('x', 10);
 
-        svg.append('text').attr('x', panelB.x1).attr('y', plotTop - 12).attr('text-anchor', 'end')
+        svg.append('text').attr('x', panelB.x1).attr('y', plotTop - 20).attr('text-anchor', 'end')
             .text('Year 2100 projection, by pathway (cm)').attr('fill', this.ink)
             .style('font-family', 'var(--font-sans)').style('font-size', '12px').style('font-weight', 600);
 
@@ -1629,6 +1604,9 @@ function initUIElements() {
         };
 
         quizButtons.forEach(btn => {
+            btn.addEventListener('pointerdown', (e) => {
+                e.stopPropagation();
+            });
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -1639,6 +1617,9 @@ function initUIElements() {
         card.addEventListener('click', (e) => {
             if (card.classList.contains('shake')) return;
 
+            const targetNode = e.target.nodeType === Node.TEXT_NODE ? e.target.parentNode : e.target;
+            if (targetNode.closest('.quiz-options') || targetNode.closest('.quiz-btn')) return;
+
             if (card.classList.contains('flipped')) {
                 answered = false;
                 card.classList.remove('result-correct', 'result-wrong', 'result-skipped');
@@ -1646,7 +1627,6 @@ function initUIElements() {
                 return;
             }
 
-            if (e.target.closest('.quiz-btn')) return;
             if (answered) return;
 
             answered = true;
@@ -1669,9 +1649,9 @@ function initUIElements() {
     const tabs = Utils.selectAll('.citation-tab');
     const citeText = Utils.select('#cite-text');
     const citations = {
-        'APA': 'Dissanayake, C. (2026). The Pacific Blind Spot: Measuring the climate monitoring gap [Data Story]. Updated August 30, 2026. Retrieved from https://chaturadissanayake.vercel.app',
-        'Journalistic': 'Chatura Dissanayake. (2026). The Pacific Blind Spot: Measuring the climate monitoring gap. Retrieved from https://chaturadissanayake.vercel.app',
-        'BibTeX': '@article{dissanayake-pacific-blind-spot-2026,\n  title  = {The Pacific Blind Spot: Measuring the climate monitoring gap},\n  author = {Dissanayake, Chatura},\n  year   = {2026},\n  journal = {Data Story},\n  url    = {https://chaturadissanayake.vercel.app}\n}'
+        'APA': 'Dissanayake, C. (2026). The Pacific Blind Spot: Measuring the climate monitoring gap [Data Story]. Updated August 30, 2026. Retrieved from https://chaturadissanayake.com',
+        'Journalistic': 'Chatura Dissanayake. (2026). The Pacific Blind Spot: Measuring the climate monitoring gap. Retrieved from https://chaturadissanayake.com',
+        'BibTeX': '@article{dissanayake-pacific-blind-spot-2026,\n  title  = {The Pacific Blind Spot: Measuring the climate monitoring gap},\n  author = {Dissanayake, Chatura},\n  year   = {2026},\n  journal = {Data Story},\n  url    = {https://chaturadissanayake.com}\n}'
     };
 
     if (citeText) citeText.textContent = citations['APA'];

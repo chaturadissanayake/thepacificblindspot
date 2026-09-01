@@ -855,7 +855,7 @@
     .central-figure { padding: var(--space-16) 0 var(--space-20) 0; }
     .central-figure-head { padding: 0 var(--space-6); }
     .caption-wrapper { padding: 0 var(--space-6); }
-    .flip-card { flex: 0 0 88vw; min-height: 320px; height: auto !important; }
+    .flip-card { flex: 0 0 88vw; height: 360px !important; min-height: 360px; }
     .flip-card-front, .flip-card-back { padding: var(--space-9) var(--space-6); }
 
     .flip-card-front { justify-content: flex-start; gap: 0; }
