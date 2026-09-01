@@ -462,7 +462,14 @@ const Charts = {
                 `Total loss: $${Utils.formatNumber(d.usd, 0)}`
             ))
             .on('mousemove', event => Utils.tooltip.move(event))
-            .on('mouseleave', () => Utils.tooltip.hide());
+            .on('mouseleave', () => Utils.tooltip.hide())
+            .on('click', (event, d) => {
+                const btns = document.querySelectorAll('.chart-filter-btn');
+                btns.forEach(b => b.classList.remove('active'));
+                const targetBtn = Array.from(btns).find(b => b.getAttribute('data-country').toLowerCase() === d.country.toLowerCase());
+                if (targetBtn) targetBtn.classList.add('active');
+                Charts.updateExposure(d.country, null);
+            });
 
         bars.transition('grow').duration(this.dur(1000)).ease(d3.easeCubicOut).delay((d, i) => i * 40)
             .attr('width', d => Math.max(0, x(d.usd) - margin.left));
