@@ -45,28 +45,28 @@
 }
 .radar-readout-label {
     font-family: var(--font-mono);
-    font-size: 0.7rem;
+    font-size: var(--text-xs);
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: rgba(255, 255, 255, 0.6);
 }
 .radar-readout-value {
-    font-family: var(--font-display); 
-    font-size: 3rem; 
+    font-family: var(--font-display);
+    font-size: var(--text-display-lg);
     font-weight: 400;
-    color: var(--paper); 
+    color: var(--paper);
     font-variant-numeric: tabular-nums;
     line-height: 1;
-    margin-top: 0.25rem;
+    margin-top: var(--space-1);
 }
 .radar-readout-footnote {
     font-family: var(--font-sans);
-    font-size: 0.75rem; /* Enhanced legibility */
+    font-size: var(--text-sm);
     letter-spacing: 0.02em;
-    color: rgba(255, 255, 255, 0.75); /* Brighter contrast */
+    color: rgba(255, 255, 255, 0.75);
     max-width: 28rem;
     text-align: center;
-    margin-top: 0.75rem;
+    margin-top: var(--space-3);
     line-height: 1.5;
 }
 @media (max-width: 560px) {
@@ -84,7 +84,7 @@
     text-align: center;
     width: 100%;
     max-width: 900px;
-    padding: 0 2rem;
+    padding: 0 var(--space-8);
     color: var(--paper);
     will-change: transform, opacity;
 }
@@ -97,9 +97,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
+    gap: var(--space-4);
     font-family: var(--font-mono);
-    font-size: 0.68rem;
+    font-size: var(--text-xs);
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: rgba(244, 241, 232, 0.65);
@@ -118,27 +118,27 @@
 }
 .report-eyebrow {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: var(--text-sm);
     font-weight: 600;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--accent-coral);
-    margin-bottom: 1.25rem;
+    margin-bottom: var(--space-5);
 }
 .report-main-title {
-    font-size: clamp(2rem, 1.4rem + 2.2vw, 3.6rem);
+    font-size: var(--text-heading-xl);
     color: var(--ink);
-    margin-bottom: 1.25rem;
+    margin-bottom: var(--space-5);
 }
 @media (max-width: 560px) {
     .report-main-title {
-        font-size: 1.9rem; /* FIX: Compact enough to stay on a single line on small viewports */
+        font-size: var(--text-heading-compact);
         white-space: nowrap;
     }
 }
 .report-standfirst {
     font-family: var(--font-display);
-    font-size: clamp(1.1rem, 1rem + 0.4vw, 1.35rem);
+    font-size: var(--text-heading-sm);
     font-weight: 400;
     color: var(--ink-soft);
     line-height: 1.6;
@@ -146,23 +146,23 @@
 }
 .regional-locator-map {
     width: 100%;
-    margin-top: 2rem;
+    margin-top: var(--space-8);
 }
 .hero-divider {
     width: 48px;
     height: 1px;
     background-color: var(--line);
     border: none;
-    margin: 2rem 0 1.5rem 0;
+    margin: var(--space-8) 0 var(--space-6) 0;
 }
 .meta-data-line {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.4rem;
+    gap: var(--space-1-5);
     font-family: var(--font-sans);
-    font-size: 0.95rem;
+    font-size: var(--text-base);
     color: var(--ink-soft);
     text-transform: none;
     margin-top: 0;
@@ -177,7 +177,7 @@
     color: var(--accent-coral);
 }
 .meta-date {
-    font-size: 0.85rem;
+    font-size: var(--text-sm-plus);
     color: var(--ink-faint);
 }
 .meta-divider {
@@ -186,48 +186,53 @@
 .central-figure-head .editorial-kicker { color: var(--accent-gold); }
 .central-figure-head .editorial-subhead { color: var(--paper); }
 .central-figure-head p {
-    font-size: 1.0625rem;
+    font-size: var(--text-md);
     line-height: 1.7;
     color: rgba(244, 241, 232, 0.75);
 }
 .editorial-kicker {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: var(--text-sm);
     font-weight: 600;
     letter-spacing: 0.1em;
     color: var(--accent-coral);
     text-transform: uppercase;
     display: block;
-    margin-bottom: 1rem;
+    margin-bottom: var(--space-4);
 }
 .editorial-subhead {
     font-family: var(--font-sans);
-    font-size: clamp(1.75rem, 1.5rem + 1vw, 2.25rem);
+    font-size: var(--text-heading-lg);
     font-weight: 700;
     letter-spacing: -0.01em;
     color: var(--ink);
-    margin-bottom: 2rem;
+    margin-bottom: var(--space-8);
     line-height: 1.2;
 }
 .article-copy p {
-    font-size: 1.0625rem;
+    font-size: var(--text-md);
     line-height: 1.7;
     color: var(--ink-soft);
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--space-6);
 }
 .article-copy p strong {
     color: var(--ink);
     font-weight: 600;
 }
-/* Polished 3D Flip Cards & Layout (Merged & Cleaned) */
+
 .flip-card-grid {
     width: 100%;
     max-width: 1200px;
-    margin: 0 auto 5rem auto;
-    padding: 0 2rem;
+    margin: 0 auto var(--space-20) auto;
+    padding: 0 var(--space-8);
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-6);
+}
+@media (min-width: 1300px) {
+    .flip-card-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
 }
 .flip-card-grid .flip-card:nth-child(1).reveal { transition-delay: 0s; }
 .flip-card-grid .flip-card:nth-child(2).reveal { transition-delay: 0.08s; }
@@ -240,13 +245,16 @@
 
 .flip-card {
     background-color: transparent;
-    height: 380px;
+    height: clamp(23rem, 20rem + 6vw, 26rem);
     perspective: 1000px;
     cursor: pointer;
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    touch-action: manipulation;
+    transition: transform var(--duration-slow) var(--ease-editorial);
 }
-.flip-card:hover {
-    transform: translateY(-4px);
+@media (hover: hover) and (pointer: fine) {
+    .flip-card:hover {
+        transform: translateY(var(--hover-lift));
+    }
 }
 @keyframes cardShake {
     0%, 100% { transform: translateX(0); }
@@ -256,7 +264,6 @@
 .flip-card.shake {
     animation: cardShake 0.4s cubic-bezier(.36,.07,.19,.97) both;
 }
-/* Accessibility: Keyboard focus visual style */
 .flip-card:focus-visible .flip-card-inner {
     outline: 2px solid var(--accent-coral);
     border-radius: 6px;
@@ -283,34 +290,34 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 1.75rem 1.25rem;
+    padding: var(--space-7) var(--space-5);
     box-shadow: var(--shadow-soft);
     transition: box-shadow 0.3s ease;
 }
-/* Elevation lifts slightly on hover -- a small, honest signal that the
-   card is interactive, echoing the -4px translateY on .flip-card:hover. */
-.flip-card:hover .flip-card-front,
-.flip-card:hover .flip-card-back {
-    box-shadow: var(--shadow-lifted);
+@media (hover: hover) and (pointer: fine) {
+    .flip-card:hover .flip-card-front,
+    .flip-card:hover .flip-card-back {
+        box-shadow: var(--shadow-lifted);
+    }
 }
 .flip-card-front {
     background-color: var(--bg-paper-soft);
     color: var(--ink);
-    overflow: hidden; /* FIX: Clips the background image to the card's rounded corners */
-    justify-content: flex-start; /* Top-aligned so title/question start at the same spot on every card */
-    padding-top: 2.25rem;
+    overflow: hidden;
+    justify-content: flex-start;
+    padding-top: var(--space-9);
 }
 .flip-card-front > *:not(.card-map-thumb) {
     position: relative;
-    z-index: 1; /* FIX: Brings the wording and buttons strictly to the front */
+    z-index: 1;
 }
 .flip-card-front .card-title {
     font-family: var(--font-display);
-    font-size: clamp(1.7rem, 1.4rem + 1vw, 2.2rem);
+    font-size: var(--text-heading-lg);
     line-height: 1.1;
-    margin-bottom: 0.6rem;
+    margin-bottom: var(--space-2-5);
 }
-/* Faint terrain thumbnail sitting behind the front-of-card copy */
+
 .card-map-thumb {
     position: absolute;
     inset: 0;
@@ -332,67 +339,70 @@
     background-color: var(--ink);
     color: var(--paper);
     transform: rotateY(180deg);
-    overflow: hidden; 
-    justify-content: flex-start; /* FIX: Aligns content from the top so badges are in the exact same place across all cards */
-    padding: 2.5rem 1.75rem;
-    gap: 1.25rem; /* Creates a clean, consistent space between header and text */
-    /* Subtle inset frame -- a quiet editorial touch instead of a hard border */
+    overflow: hidden;
+    justify-content: flex-start;
+    padding: var(--space-10) var(--space-7);
+    gap: var(--space-5);
+
     box-shadow: var(--shadow-soft), inset 0 0 0 1px rgba(255, 255, 255, 0.14);
 }
 .flip-card-back p {
-    font-size: 0.95rem;
+    font-size: var(--text-base);
     line-height: 1.6;
     color: var(--paper-soft);
     text-align: center;
     margin: 0;
     padding: 0;
-    font-weight: 400; /* Consistent across all result states */
+    font-weight: 400;
 }
 
-/* Quiz Buttons & Layout */
 .quiz-options {
     display: flex;
-    gap: 0.6rem;
+    gap: var(--space-2-5);
     justify-content: center;
     width: 100%;
     margin-top: auto;
+    flex-shrink: 0;
 }
 .quiz-btn {
     background: transparent;
     border: 1px solid var(--ink);
     color: var(--ink);
-    padding: 0.65rem 0.8rem; /* Comfortable tap target (Fitts's Law) */
+    padding: var(--space-3) var(--space-3-5);
+    min-height: 44px;
     font-family: var(--font-mono);
-    font-size: 0.85rem;
+    font-size: var(--text-sm-plus);
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+    touch-action: manipulation;
+    transition: background-color var(--duration-fast) ease, color var(--duration-fast) ease, transform var(--duration-fast) ease;
     flex: 1;
 }
-.quiz-btn:hover {
-    background: var(--ink);
-    color: var(--paper);
-    border-color: var(--ink);
+@media (hover: hover) and (pointer: fine) {
+    .quiz-btn:hover {
+        background: var(--ink);
+        color: var(--paper);
+        border-color: var(--ink);
+    }
 }
 .quiz-btn:active {
-    transform: scale(0.97); /* Quick tactile press feedback, no bounce */
+    transform: scale(0.97);
+    background: var(--ink);
+    color: var(--paper);
 }
 @keyframes feedbackPop {
     0% { opacity: 0; transform: scale(0.85) translateY(4px); }
     100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-/* Verdict badge -- matches the small bordered, uppercase-mono chip
-   language already used for .quiz-type on the card front, instead of
-   standing alone as oversized bold caps. */
 .quiz-feedback {
     font-family: var(--font-mono);
-    font-size: 0.72rem;
+    font-size: var(--text-xs);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     margin-bottom: 0;
-    padding: 0.4rem 0.9rem;
+    padding: var(--space-1-5) var(--space-3-5);
     height: auto;
     border: 1px solid currentColor;
     background: transparent;
@@ -400,35 +410,29 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    opacity: 0; 
+    opacity: 0;
 }
 
-/* Trigger a calm, quick fade/settle when the card flips -- no elastic
-   overshoot, which read as a bit too playful for the editorial tone. */
 .flip-card.result-correct .quiz-feedback,
 .flip-card.result-wrong .quiz-feedback,
 .flip-card.result-skipped .quiz-feedback {
     animation: feedbackPop 0.3s var(--ease-editorial) forwards;
-    animation-delay: 0.15s; 
+    animation-delay: 0.15s;
 }
 
-/* Add intuitive game icons */
-.flip-card.result-correct .quiz-feedback::before { content: '✓'; margin-right: 0.35rem; font-size: 0.8rem; }
-.flip-card.result-wrong .quiz-feedback::before { content: '✕'; margin-right: 0.35rem; font-size: 0.8rem; }
-/* Skipped icon intentionally removed to keep the interface clean */
+.flip-card.result-correct .quiz-feedback::before { content: '✓'; margin-right: var(--space-1-5); font-size: var(--text-sm); }
+.flip-card.result-wrong .quiz-feedback::before { content: '✕'; margin-right: var(--space-1-5); font-size: var(--text-sm); }
 
-/* Interactive Green (Correct) / Red (Wrong) Backgrounds */
 .flip-card.result-correct .flip-card-back {
-    background-color: var(--accent-success); /* Psychological Green */
+    background-color: var(--accent-success);
 }
 .flip-card.result-wrong .flip-card-back {
-    background-color: var(--accent-danger); /* Psychological Red */
+    background-color: var(--accent-danger);
 }
 .flip-card.result-skipped .flip-card-back {
     background-color: var(--bg-deep-soft);
 }
 
-/* Contrast Handling for the Backgrounds */
 .flip-card.result-correct .flip-card-back .score-value,
 .flip-card.result-correct .flip-card-back .answer,
 .flip-card.result-correct .flip-card-back p {
@@ -443,7 +447,7 @@
 
 .flip-card.result-wrong .flip-card-back p {
     color: var(--paper);
-    font-weight: 400 !important; /* Ensures text weight is consistent across all cards */
+    font-weight: 400 !important;
 }
 .flip-card.result-wrong .flip-card-back .score-label {
     color: rgba(255,255,255,0.7);
@@ -464,13 +468,13 @@
     color: rgba(255, 255, 255, 0.6);
 }
 
-.methodology-section .editorial-kicker { margin-bottom: 1rem; }
-.methodology-section .editorial-subhead { margin-bottom: 1.5rem; }
+.methodology-section .editorial-kicker { margin-bottom: var(--space-4); }
+.methodology-section .editorial-subhead { margin-bottom: var(--space-6); }
 .methodology-section p {
-    font-size: 1rem;
+    font-size: var(--text-base-lg);
     line-height: 1.75;
     color: var(--ink-soft);
-    margin-bottom: 1.25rem;
+    margin-bottom: var(--space-5);
 }
 .methodology-section p strong {
     color: var(--ink);
@@ -482,37 +486,37 @@
     justify-content: flex-start;
 }
 .brand-col {
-    gap: 0.25rem;
-    margin-top: -0.4rem;
+    gap: var(--space-1);
+    margin-top: calc(-1 * var(--space-1-5));
 }
 .footer-logo {
     font-family: var(--font-display);
-    font-size: 1.75rem;
+    font-size: var(--text-2xl);
     font-weight: 700;
     color: var(--paper);
     letter-spacing: -0.02em;
-    line-height: 1; 
+    line-height: 1;
 }
 .footer-logo span { color: var(--accent-coral); }
 .footer-sublogo {
     font-family: var(--font-sans);
-    font-size: 0.9rem;
+    font-size: var(--text-base);
     color: var(--paper-soft);
 }
 .footer-heading {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: var(--text-sm);
     font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: rgba(244, 241, 232, 0.45);
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--space-6);
 }
 .footer-text {
-    font-size: 0.9rem;
+    font-size: var(--text-base);
     line-height: 1.6;
     color: var(--paper-soft);
-    margin-bottom: 1rem;
+    margin-bottom: var(--space-4);
 }
 .footer-link {
     color: var(--paper);
@@ -527,15 +531,15 @@
 .footer-list li {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: var(--space-1);
 }
 .footer-list strong {
-    font-size: 0.87rem;
+    font-size: var(--text-sm-plus);
     color: var(--accent-teal-soft);
     font-weight: 500;
 }
 .footer-list span {
-    font-size: 0.8rem;
+    font-size: var(--text-sm);
     color: rgba(244, 241, 232, 0.5);
 }
 .social-icon {
@@ -550,9 +554,9 @@
 .data-tooltip {
     position: absolute;
     background: var(--bg-paper);
-    padding: 0.85rem 1.15rem;
+    padding: var(--space-3-5) var(--space-5);
     font-family: var(--font-sans);
-    font-size: 0.8rem;
+    font-size: var(--text-sm);
     line-height: 1.6;
     color: var(--ink);
     pointer-events: none;
@@ -566,22 +570,22 @@
 }
 
 .source-link {
-    color: var(--ink-soft); 
+    color: var(--ink-soft);
     font-weight: 500;
     text-decoration: underline;
-    text-decoration-color: var(--ink-faint); 
+    text-decoration-color: var(--ink-faint);
     text-underline-offset: 3px;
     text-decoration-thickness: 1px;
     transition: all 0.2s ease;
     border-radius: 0;
-    padding: 0; /* FIX: Removed horizontal padding causing text gaps */
-    margin: 0; /* FIX: Removed negative margins causing text gaps */
+    padding: 0;
+    margin: 0;
 }
 .source-link:hover, .source-link:focus-visible {
     color: var(--accent-ocean);
     text-decoration-color: var(--accent-ocean);
     text-decoration-thickness: 2px;
-    background-color: rgba(10, 108, 144, 0.08); /* Flat shade restored, no curves */
+    background-color: rgba(10, 108, 144, 0.08);
 }
 .on-dark .source-link {
     color: var(--paper-soft);
@@ -602,9 +606,9 @@
     border-color: rgba(255, 255, 255, 0.15);
 }
 .on-dark .metric-toggle-btn {
-    color: rgba(255, 255, 255, 0.85); /* Much higher contrast */
+    color: rgba(255, 255, 255, 0.85);
     border-color: rgba(255, 255, 255, 0.25);
-    background: rgba(255, 255, 255, 0.05); /* Slight fill so it looks like a button */
+    background: rgba(255, 255, 255, 0.05);
 }
 .on-dark .metric-toggle-btn:hover {
     background: rgba(255, 255, 255, 0.15);
@@ -620,8 +624,8 @@
     color: var(--ink);
     font-weight: 600;
     display: block;
-    margin-bottom: 0.25rem;
-    font-size: 0.8rem;
+    margin-bottom: var(--space-1);
+    font-size: var(--text-sm);
 }
 svg text {
     font-family: var(--font-sans);
@@ -633,28 +637,28 @@ svg text {
 .chart-filters {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.6rem 1.25rem;
+    gap: var(--space-2-5) var(--space-5);
     justify-content: center;
-    margin-bottom: 2.5rem;
+    margin-bottom: var(--space-10);
     width: 100%;
     max-width: 900px;
 }
 .chart-filter-btn {
     background: transparent;
     border: none;
-    border-bottom: 2px solid transparent; 
+    border-bottom: 2px solid transparent;
     color: var(--ink-soft);
-    padding: 0.4rem 0.5rem;
+    padding: var(--space-1-5) var(--space-2);
     border-radius: 0;
     font-family: var(--font-sans);
-    font-size: 0.8rem;
+    font-size: var(--text-sm);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: none;
-    white-space: nowrap; /* FIX: Keeps country names on one line */
+    white-space: nowrap;
 }
 .chart-filter-btn:hover {
     color: var(--ink);
@@ -662,18 +666,19 @@ svg text {
 .chart-filter-btn.active {
     background: transparent;
     color: var(--ink);
-    border-bottom-color: var(--exposure-color, var(--accent-coral)); /* UX FIX: Matches active metric color */
+    border-bottom-color: var(--exposure-color, var(--accent-coral));
     box-shadow: none;
 }
+
 .funding-filter-btn {
     background: transparent;
     border: none;
     border-bottom: 2px solid transparent;
     color: var(--ink-soft);
-    padding: 0.4rem 0.5rem;
+    padding: var(--space-1-5) var(--space-2);
     border-radius: 0;
     font-family: var(--font-sans);
-    font-size: 0.8rem;
+    font-size: var(--text-sm);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-weight: 600;
@@ -708,7 +713,7 @@ svg text {
 .d3-axis text {
     fill: var(--ink-soft);
 }
-/* UX FIX: Ensures axis titles (like Global Average) are readable against dark backgrounds */
+
 .on-dark .d3-axis text {
     fill: rgba(255, 255, 255, 0.65);
 }
@@ -720,19 +725,19 @@ svg text {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
-    margin-top: 3rem;
+    gap: var(--space-4);
+    margin-top: var(--space-12);
 }
 .sdg-label {
     font-family: var(--font-mono);
-    font-size: 0.65rem;
+    font-size: var(--text-2xs);
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--ink-faint);
 }
 .sdg-icons {
     display: flex;
-    gap: 1.25rem;
+    gap: var(--space-5);
 }
 .sdg-badge {
     opacity: 1;
@@ -742,29 +747,29 @@ svg text {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 1.2rem;
+    gap: var(--space-5);
     width: 100%;
     max-width: 960px;
-    margin: 0 auto 1.5rem auto;
-    padding: 0 2rem;
+    margin: 0 auto var(--space-6) auto;
+    padding: 0 var(--space-8);
     border: none;
     color: var(--ink);
 }
 .instruction-badge {
     font-family: var(--font-mono);
-    font-size: 0.6rem;
+    font-size: var(--text-2xs);
     font-weight: 600;
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--accent-coral);
     background-color: transparent;
     border: 1px solid var(--accent-coral);
-    padding: 0.25rem 0.6rem;
+    padding: var(--space-1) var(--space-2-5);
     pointer-events: none;
 }
 .instruction-text {
     font-family: var(--font-sans);
-    font-size: 0.95rem;
+    font-size: var(--text-base);
     font-weight: 500;
 }
 .on-dark .instruction-text {
@@ -780,12 +785,12 @@ svg text {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    align-items: center; 
-    gap: 1.5rem;
+    align-items: center;
+    gap: var(--space-6);
     width: 100%;
     max-width: 960px;
-    margin: 1.5rem auto 0 auto;
-    padding: 0.75rem 2rem 0 2rem; /* FIX: Halved the top padding to pull source text closer to the divider line */
+    margin: var(--space-6) auto 0 auto;
+    padding: var(--space-3) var(--space-8) 0 var(--space-8);
     border-top: 1px solid var(--line);
 }
 .on-dark .caption-wrapper {
@@ -800,16 +805,16 @@ svg text {
 .download-btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--space-2);
     font-family: var(--font-sans);
-    font-size: 0.7rem;
+    font-size: var(--text-xs);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--ink-soft);
     background: transparent;
-    border: 1px solid var(--line); /* FIX: Soft ash border */
-    padding: 0.4rem 0.8rem;
+    border: 1px solid var(--line);
+    padding: var(--space-1-5) var(--space-3);
     border-radius: 4px;
     transition: all 0.2s ease;
     white-space: nowrap;
@@ -819,8 +824,7 @@ svg text {
     color: var(--paper);
     background: var(--ink);
 }
-/* Some download-btn instances are now real <button> elements (JSON
-   downloads) rather than <a> tags; keep them visually identical. */
+
 button.download-btn {
     font-family: var(--font-mono);
     appearance: none;
@@ -829,7 +833,7 @@ button.download-btn {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 0.6rem;
+    gap: var(--space-2-5);
 }
 .on-dark .download-btn {
     color: var(--paper-soft);
@@ -854,38 +858,29 @@ button.download-btn {
     color: var(--accent-gold);
     text-decoration-color: var(--accent-gold);
 }
-/* FIX: consolidated a duplicate .footer-list rule that lived earlier in
-   this file (it was fully overridden anyway; merged the remaining
-   list-style reset in here). */
+
 .footer-list {
     list-style: none;
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1.25rem;
+    gap: var(--space-5);
     border-top: 1px solid var(--line-on-dark);
-    padding-top: 1.25rem;
+    padding-top: var(--space-5);
 }
 
-/* FIX: this rule used to be duplicated (with a conflicting font-mono
-   version) elsewhere in this file; consolidated into one definition. */
 .source-caption {
     display: block;
     width: 100%;
     font-family: var(--font-sans);
-    font-size: 0.75rem;
+    font-size: var(--text-sm);
     color: var(--ink-faint);
     line-height: 1.6;
     letter-spacing: 0.01em;
-    padding-top: 0; /* FIX: Removed redundant inner padding */
+    padding-top: 0;
     max-width: 960px;
     text-align: left;
 }
-/* Unified figure/photo/chart labeling system: every visual gets a short
-   bold type+number tag, followed by a one-line plain description, with
-   the Source: line always broken onto its own row below (never merged
-   into the same sentence as the description, and never appearing alone
-   without a description above it). */
-/* Unified chart labeling system: description and source flow seamlessly inline */
+
 .caption-desc {
     color: var(--ink-soft);
 }
@@ -894,7 +889,7 @@ button.download-btn {
 }
 .source-details {
     display: inline;
-    margin-left: 0.35rem;
+    margin-left: var(--space-1-5);
     color: var(--ink-soft);
 }
 .on-dark .source-details {
@@ -902,38 +897,38 @@ button.download-btn {
 }
 .chart-footnote {
     width: 100%;
-    max-width: 680px; /* Aligns identically with .article-copy width */
-    margin: 1.25rem auto 3.5rem auto; 
-    padding: 0 2rem;
+    max-width: 680px;
+    margin: var(--space-5) auto var(--space-14) auto;
+    padding: 0 var(--space-8);
     font-family: var(--font-sans);
-    font-size: 0.95rem; 
+    font-size: var(--text-base);
     line-height: 1.7;
     color: var(--ink-soft);
-    font-style: normal; /* Matches article text */
+    font-style: normal;
     text-align: center;
 }
 .on-dark.chart-footnote, .chart-footnote.on-dark {
     color: rgba(255, 255, 255, 0.6);
 }
 @media (max-width: 560px) {
-    .chart-footnote { padding: 0 1.5rem; font-size: 0.78rem; text-align: center; }
+    .chart-footnote { padding: 0 var(--space-6); font-size: var(--text-sm); text-align: center; }
 }
 
 .dynamic-stat-callout {
     width: 100%;
-    max-width: 680px; 
-    margin: 0 auto 2.5rem auto; 
-    padding: 0 2rem;
+    max-width: 680px;
+    margin: 0 auto var(--space-10) auto;
+    padding: 0 var(--space-8);
     font-family: var(--font-display);
-    font-size: clamp(1.15rem, 1rem + 1vw, 1.4rem);
+    font-size: var(--text-heading-sm);
     color: var(--ink);
     text-align: center;
     line-height: 1.5;
 }
 @media (max-width: 560px) {
-    .dynamic-stat-callout { 
-        padding: 0 1.5rem; 
-        text-align: left; 
+    .dynamic-stat-callout {
+        padding: 0 var(--space-6);
+        text-align: left;
     }
 }
 
@@ -943,27 +938,26 @@ button.download-btn {
     bottom: 20vh;
     transform: translateX(-50%);
     display: flex;
-    flex-direction: column; /* FIX: Stacks the label, percentage, and footnote vertically */
-    align-items: center; /* FIX: Centers the stack perfectly */
+    flex-direction: column;
+    align-items: center;
     gap: 0;
     font-family: var(--font-sans);
     z-index: 2;
     width: 100%;
-    padding-bottom: 2rem;
+    padding-bottom: var(--space-8);
 }
 .chart-controls-wrapper {
     display: flex;
     flex-direction: column;
-    align-items: center; 
+    align-items: center;
     justify-content: center;
     width: 100%;
     max-width: 960px;
-    gap: 1.25rem;
-    margin: 3rem auto 2.5rem auto; /* FIX: Added 3rem top margin to prevent collision with paragraphs above */
-    padding: 0 2rem;
+    gap: var(--space-5);
+    margin: var(--space-12) auto var(--space-10) auto;
+    padding: 0 var(--space-8);
 }
 
-/* UX FIX: Tabular numerals ensures digits don't shift sideways as they count */
 .slr-counter {
     font-variant-numeric: tabular-nums;
 }
@@ -977,14 +971,14 @@ button.download-btn {
 .metric-toggle-btn {
     background: transparent;
     border: none;
-    padding: 0.4rem 1rem;
+    padding: var(--space-1-5) var(--space-4);
     font-family: var(--font-sans);
-    font-size: 0.75rem;
+    font-size: var(--text-sm);
     font-weight: 600;
     color: var(--ink-soft);
     cursor: pointer;
     transition: all 0.2s ease;
-    white-space: nowrap; /* FIX: Prevents text from breaking onto two lines */
+    white-space: nowrap;
 }
 .metric-toggle-btn:not(:last-child) {
     border-right: 1px solid var(--line);
@@ -997,12 +991,7 @@ button.download-btn {
     background: var(--ink);
     color: var(--paper);
 }
-/* FIX: --exposure-color was previously set on the document root, so
-   clicking a metric toggle in Chapter 03 also silently repainted the
-   active toggle buttons in Chapter 01 and Chapter 06 (they share the
-   same .metric-toggle-btn class). The color variable is now written to
-   the #stakes section only (see animations.js), and this rule is scoped
-   to match, so each chart's controls stay visually independent. */
+
 #stakes .metric-toggle-btn.active {
     background: var(--exposure-color, var(--ink));
     color: var(--exposure-text, var(--paper));
@@ -1014,33 +1003,32 @@ button.download-btn {
 
 .card-question {
     font-family: var(--font-sans);
-    font-size: 1.05rem;
-    font-weight: 500; /* Softened to Medium/Semibold */
+    font-size: var(--text-md);
+    font-weight: 500;
     line-height: 1.45;
-    color: var(--ink); /* FIX: Darker ink for maximum contrast */
+    color: var(--ink);
     text-align: center;
-    /* FIX: was "margin: auto 0", which vertically centers this paragraph
-       in whatever space is left over -- since every question is a
-       different length, that made the title/badge/question block start
-       at a different height on every card. Anchoring it right after the
-       badge keeps that block consistent across all cards; only the
-       button row (via .quiz-options's own margin-top: auto) floats to
-       the bottom, where the varying leftover space belongs. */
-    margin: 0 0 1rem 0;
-    padding: 0.5rem;
+    margin: 0 0 var(--space-4) 0;
+    padding: var(--space-2);
     transition: color 0.3s ease;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    overflow: hidden;
+    min-height: calc(1.45em * 4);
+    flex-shrink: 0;
 }
 .quiz-type {
     font-family: var(--font-mono);
-    font-size: 0.65rem;
+    font-size: var(--text-2xs);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--accent-coral);
-    margin-bottom: 0.75rem;
+    margin-bottom: var(--space-3);
     display: inline-block;
     border: 1px solid var(--accent-coral-soft);
-    padding: 0.2rem 0.5rem;
+    padding: var(--space-1) var(--space-2);
 }
 .flip-card:hover .quiz-type {
     background-color: var(--accent-coral);
@@ -1052,11 +1040,11 @@ button.download-btn {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--space-6);
 }
 .score-value {
     font-family: var(--font-mono);
-    font-size: 4.5rem;
+    font-size: var(--text-display-xl);
     font-weight: 500;
     color: var(--ink);
     line-height: 1;
@@ -1064,53 +1052,53 @@ button.download-btn {
 
 .score-label {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: var(--text-sm);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--ink-soft);
-    margin-top: 0.5rem;
+    margin-top: var(--space-2);
 }
 
 .card-action-hint {
     position: absolute;
     bottom: 2.5rem;
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: var(--text-sm);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--accent-coral);
     display: flex;
     align-items: center;
-    opacity: 0.8; 
+    opacity: 0.8;
 }
 @keyframes hintPulse {
     0%, 100% { transform: translateX(0); }
     50% { transform: translateX(6px); }
 }
 .card-action-hint::after {
-    content: '\2192'; 
+    content: '\2192';
     display: inline-block;
-    margin-left: 0.6rem;
+    margin-left: var(--space-2-5);
     animation: hintPulse 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 .projection-ruler-wrapper {
     width: 100%;
     max-width: 600px;
-    margin: 0 auto 1.5rem auto; 
+    margin: 0 auto var(--space-6) auto;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 .ruler-title {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: var(--text-sm);
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--ink-soft);
-    margin-bottom: 2rem;
+    margin-bottom: var(--space-8);
 }
 .projection-ruler {
     display: flex;
@@ -1123,15 +1111,15 @@ button.download-btn {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.75rem;
+    gap: var(--space-3);
     cursor: pointer;
     z-index: 1;
-    flex: 1 1 0%; 
+    flex: 1 1 0%;
     padding: 0;
     margin: 0;
     position: relative;
 }
-/* UX FIX: Bulletproof line connecting exactly from center to center */
+
 .ruler-step::before {
     content: '';
     position: absolute;
@@ -1147,22 +1135,22 @@ button.download-btn {
 }
 .step-name {
     font-family: var(--font-sans);
-    font-size: 0.85rem;
+    font-size: var(--text-sm-plus);
     font-weight: 500;
     color: var(--ink-soft);
     transition: color 0.2s;
     height: 1.2rem;
-    white-space: nowrap; /* Prevents text wrap breaking flexbox */
+    white-space: nowrap;
 }
 .step-name.worst {
-    font-size: 0.65rem;
+    font-size: var(--text-2xs);
     color: var(--accent-coral);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    /* Removed the negative margin so it stops pulling the circle upwards */
+
 }
 .step-indicator {
-    position: relative; /* Fixed layer interaction with connecting line */
+    position: relative;
     z-index: 2;
     width: 14px;
     height: 14px;
@@ -1173,22 +1161,18 @@ button.download-btn {
 }
 .step-value {
     font-family: var(--font-mono);
-    font-size: 0.7rem;
+    font-size: var(--text-xs);
     color: var(--ink-faint);
 }
 .ruler-step:hover .step-name { color: var(--ink); }
 .ruler-step:hover .step-indicator { border-color: var(--ink-soft); }
 .ruler-step.active .step-name { color: var(--ink); font-weight: 600; }
-.ruler-step.active .step-indicator { 
-    border-color: var(--ink); 
+.ruler-step.active .step-indicator {
+    border-color: var(--ink);
     background: var(--ink);
     transform: scale(1.3);
 }
 
-/* Each pathway keeps one dedicated color — green (lower), blue
-   (typical), red (higher) — matched exactly to the chart's scenario
-   dots and the headline number, so the same tier never appears in two
-   different shades across the selector, the chart, and the text. */
 .ruler-step[data-filter="lower"].active .step-indicator {
     border-color: var(--accent-success);
     background: var(--accent-success);
@@ -1230,10 +1214,10 @@ button.download-btn {
 }
 .chart-hover-hint {
     font-family: var(--font-sans);
-    font-size: 0.8rem;
+    font-size: var(--text-sm);
     color: var(--ink-faint);
     text-align: center;
-    margin: 0 auto 1.25rem auto;
+    margin: 0 auto var(--space-5) auto;
     max-width: 640px;
 }
 .chart-hover-hint.on-dark {
@@ -1242,7 +1226,7 @@ button.download-btn {
 .funding-dual-charts {
     display: flex;
     flex-wrap: nowrap;
-    gap: 1.5rem;
+    gap: var(--space-6);
     width: 100%;
     max-width: 1100px;
     margin: 0 auto;
@@ -1255,22 +1239,22 @@ button.download-btn {
 }
 .mini-chart-title {
     font-family: var(--font-sans);
-    font-size: 0.85rem;
+    font-size: var(--text-sm-plus);
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--ink);
     text-align: center;
-    margin-bottom: 1rem;
+    margin-bottom: var(--space-4);
 }
 .funding-mini-canvas {
     max-width: 100%;
-    padding: 0 0.5rem;
+    padding: 0 var(--space-2);
 }
-/* Restore normal breathing room, but prevent the 600px centering bug */
+
 #funding .chart-controls-wrapper {
-    margin-top: 0 !important; /* FIX: Removes the global 3rem gap for this specific section */
-    margin-bottom: 2rem !important;
+    margin-top: 0 !important;
+    margin-bottom: var(--space-8) !important;
     padding-bottom: 0 !important;
 }
 #funding .chart-filters {
@@ -1285,10 +1269,10 @@ button.download-btn {
 .funding-spotlight {
     text-align: center;
     font-family: var(--font-mono);
-    font-size: 0.95rem;
+    font-size: var(--text-base);
     font-weight: 600;
     color: var(--ink);
-    margin: 0 auto 1.5rem auto !important;
+    margin: 0 auto var(--space-6) auto !important;
     max-width: 640px;
     opacity: 0;
     min-height: 1.5rem;
@@ -1303,29 +1287,29 @@ button.download-btn {
 }
 @media (max-width: 420px) {
     .funding-dual-charts {
-        gap: 0.75rem;
+        gap: var(--space-3);
     }
 }
 .help-abbr {
-    text-decoration: none; /* FIX: Removes the distracting dotted line */
+    text-decoration: none;
     cursor: help;
 }
-/* --- Methodology Dashboard Updates --- */
+
 .data-download-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
-    margin: 2rem 0 3.5rem 0;
+    gap: var(--space-4);
+    margin: var(--space-8) 0 var(--space-14) 0;
     border-bottom: 1px solid var(--line);
-    padding-bottom: 2.5rem;
+    padding-bottom: var(--space-10);
 }
 .btn-primary, .btn-secondary {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.6rem 1.25rem;
+    padding: var(--space-2-5) var(--space-5);
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: var(--text-sm);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -1337,7 +1321,7 @@ button.download-btn {
 .btn-primary {
     background-color: transparent;
     color: var(--ink);
-    border: 1px solid var(--line); /* FIX: Soft ash border */
+    border: 1px solid var(--line);
 }
 .btn-primary:hover {
     background-color: var(--ink);
@@ -1353,43 +1337,37 @@ button.download-btn {
     color: var(--ink);
     border-color: var(--ink);
 }
-/* Ensure Copy button clearly fills on hover */
-.btn-secondary.copy-cite-btn:hover {
-    background-color: var(--ink);
-    color: var(--paper);
-}
 
-/* 1-Column Inline Source List (Matches Screenshot) */
 .source-list-title {
-    font-family: var(--font-sans); 
-    font-size: 1.05rem;
+    font-family: var(--font-sans);
+    font-size: var(--text-md);
     font-weight: 600;
     color: var(--accent-coral);
-    margin-bottom: 1.5rem;
-    text-transform: none; /* Removed uppercase to match image */
+    margin-bottom: var(--space-6);
+    text-transform: none;
 }
 .clean-source-list {
     list-style: none;
     padding: 0;
-    margin: 0 0 3.5rem 0;
+    margin: 0 0 var(--space-14) 0;
     display: grid;
-    grid-template-columns: 1fr; /* Single column */
-    gap: 1.5rem; 
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
 }
 .clean-source-list li {
-    display: block; /* Flow naturally inline */
+    display: block;
     line-height: 1.5;
 }
 .clean-source-list li a {
     font-family: var(--font-sans);
-    font-size: 0.95rem;
-    font-weight: 600; /* Bold link */
+    font-size: var(--text-base);
+    font-weight: 600;
     color: var(--ink-soft);
-    text-decoration: underline; 
+    text-decoration: underline;
     text-decoration-color: var(--ink-faint);
     text-decoration-thickness: 1px;
     text-underline-offset: 3px;
-    display: inline; /* Keep on same line */
+    display: inline;
     transition: color 0.2s ease;
 }
 .clean-source-list li a:hover {
@@ -1398,53 +1376,52 @@ button.download-btn {
 }
 .source-org {
     font-family: var(--font-sans);
-    font-size: 0.95rem;
-    color: var(--ink-soft); 
-    display: inline; /* Keep on same line */
-    margin-left: 0.25rem;
-    text-decoration: underline; 
+    font-size: var(--text-base);
+    color: var(--ink-soft);
+    display: inline;
+    margin-left: var(--space-1);
+    text-decoration: underline;
     text-decoration-color: var(--ink-faint);
     text-underline-offset: 3px;
 }
 
-/* Citation Box Layout (Polished Editorial Style) */
 .integrated-citation {
     border-top: 2px solid var(--ink);
     border-bottom: 1px solid var(--line);
-    padding: 2.5rem 0;
-    margin-top: 4rem;
+    padding: var(--space-10) 0;
+    margin-top: var(--space-16);
     background: transparent;
 }
 .citation-header-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--space-6);
     border-bottom: none;
     padding-bottom: 0;
 }
 .cite-title {
     font-family: var(--font-sans);
-    font-size: 1.1rem;
+    font-size: var(--text-md);
     font-weight: 700;
     color: var(--ink);
     margin: 0;
 }
 .citation-tabs {
     display: flex;
-    gap: 1rem;
+    gap: var(--space-4);
     background: transparent;
     border: none;
 }
 .citation-tab {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: var(--text-sm);
     font-weight: 600;
     color: var(--ink-soft);
     background: transparent;
     border: none;
     cursor: pointer;
-    padding: 0 0 0.2rem 0;
+    padding: 0 0 var(--space-1) 0;
     border-bottom: 2px solid transparent;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -1463,19 +1440,19 @@ button.download-btn {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 1.5rem;
+    gap: var(--space-6);
     width: 100%;
     min-width: 0;
 }
 #cite-text {
     font-family: var(--font-mono);
-    font-size: 0.85rem;
+    font-size: var(--text-sm-plus);
     line-height: 1.7;
     color: var(--ink-soft);
     margin: 0;
     width: 100%;
     background-color: var(--bg-paper-soft);
-    padding: 1.5rem;
+    padding: var(--space-6);
     border-radius: 4px;
     white-space: pre-wrap;
     word-break: break-word;
@@ -1487,26 +1464,31 @@ button.download-btn {
 .copy-cite-btn {
     background: transparent;
     color: var(--ink);
-    border: 1px solid var(--line); /* FIX: Soft ash border */
-    padding: 0.6rem 1.25rem;
+    border: 1px solid var(--line);
+    padding: var(--space-2-5) var(--space-5);
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: var(--text-sm);
     font-weight: 600;
     text-transform: uppercase;
     cursor: pointer;
-    transition: all 0.2s ease;
+    touch-action: manipulation;
+    transition: background-color var(--duration-base) ease, color var(--duration-base) ease, border-color var(--duration-base) ease;
     border-radius: 2px;
 }
-.copy-cite-btn:hover {
-    background: var(--ink) !important;
-    color: var(--paper) !important;
+@media (hover: hover) and (pointer: fine) {
+    .copy-cite-btn:hover {
+        background: var(--ink);
+        color: var(--paper);
+        border-color: var(--ink);
+    }
+}
+.copy-cite-btn:active {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
 }
 
-/* index.html's footer only has 3 columns (no "Data sources" column),
-   while layout.css's base .footer-main-grid assumes 4 (as on privacy.html).
-   Scoped modifier instead of a duplicate selector so the two pages don't
-   fight over the same class. */
 .footer-main-grid.footer-grid--3col {
     grid-template-columns: 1.5fr 2fr 1.5fr;
-    gap: 4rem;
+    gap: var(--space-16);
 }

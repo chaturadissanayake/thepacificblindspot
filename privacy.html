@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="css/layout.css">
 <link rel="stylesheet" href="css/components.css">
 <style>
-    /* Force the nav and language switcher to stay visible and in light-mode 
+    /* Force the nav and language switcher to stay visible and in light-mode
        since this page does not have the dark hero section to scroll past. */
     .editorial-nav {
         transform: translateY(0) !important;
@@ -46,7 +46,7 @@
 
 <div class="global-lang-switch">
     <a href="privacy.html" class="lang-btn active" aria-label="English">EN</a>
-    <!-- Assuming you will create a privacy-fr.html, otherwise link back to index-fr.html -->
+
     <a href="index-fr.html" class="lang-btn" aria-label="Français">FR</a>
 </div>
 
@@ -68,7 +68,7 @@
 </nav>
 
 <main class="immersive-canvas" style="padding-top: 100px;">
-    
+
     <header class="report-header" id="policy-content" style="padding-bottom: 2rem;">
         <span class="report-eyebrow">Legal & Compliance</span>
         <h1 class="report-main-title">Privacy Policy</h1>
@@ -88,13 +88,12 @@
 
             <h2 class="editorial-subhead">3. External Links</h2>
             <p>This site contains links to the Pacific Data Hub and other external resources for citation purposes. Once you click a link and leave this site, you are governed by the privacy policies and data collection practices of those specific platforms.</p>
-            
+
             <h2 class="editorial-subhead">4. Open Source</h2>
             <p>The code for this project is open-source. Any interactions you have with the underlying repository (e.g., GitHub) are governed by that platform's respective privacy policy.</p>
         </div>
     </section>
 
-    <!-- ============ FOOTER ============ -->
     <footer class="terminal-footer">
         <svg class="footer-contours" viewBox="0 0 1440 420" preserveAspectRatio="none" aria-hidden="true">
             <g class="contour-set" id="footer-contours"></g>
@@ -134,11 +133,7 @@
 </main>
 
 <script src="js/utils.js"></script>
-<!-- This page intentionally does not load animations.js: that file's
-     DOMContentLoaded block calls five D3 chart initializers and a hero
-     scroll loop this static page has no elements for, and D3 itself is
-     never loaded here. Wiring up just the mobile menu toggle instead,
-     mirroring animations.js's own logic so behavior matches index.html. -->
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const menuToggle = document.querySelector('.mobile-menu-toggle');

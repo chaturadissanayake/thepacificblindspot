@@ -36,7 +36,7 @@ const Charts = {
                 };
             });
     },
-    
+
     initRadarGrid(selector) {
         const host = Utils.select(selector);
         if (!host) return;
@@ -55,7 +55,7 @@ const Charts = {
             host.appendChild(line);
         }
     },
-    
+
     initRadarNodes(selector) {
         const host = Utils.select(selector);
         if (!host) return;
@@ -64,14 +64,14 @@ const Charts = {
             const node = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
             const r = Math.abs(station.lat) * 600 + 50;
             const angle = station.lon * Math.PI;
-            
-            node.setAttribute('cx', 720 + Math.cos(angle) * r); 
+
+            node.setAttribute('cx', 720 + Math.cos(angle) * r);
             node.setAttribute('cy', 450 + Math.sin(angle) * r);
-            node.setAttribute('r', 3); 
-            node.setAttribute('class', 'inactive'); 
+            node.setAttribute('r', 3);
+            node.setAttribute('class', 'inactive');
             node.setAttribute('data-threshold', station.threshold);
             node.setAttribute('data-active', station.isActive);
-            
+
             node.style.cursor = 'pointer';
             node.addEventListener('mouseenter', (e) => {
                 const status = station.isActive ? 'Active Station' : 'Silent Gap (Unfunded)';
@@ -80,12 +80,12 @@ const Charts = {
             });
             node.addEventListener('mousemove', (e) => Utils.tooltip.move(e));
             node.addEventListener('mouseleave', () => Utils.tooltip.hide());
-            
+
             host.appendChild(node);
         });
     },
 
-initMeteo() {
+    initMeteo() {
         const container = Utils.select('#meteo-canvas');
         if (!container) return;
         container.innerHTML = '';
@@ -94,9 +94,7 @@ initMeteo() {
         const [yearStart, yearEnd] = AppData.meteoYearRange;
         const years = d3.range(yearStart, yearEnd + 1);
 
-        // FIX: Oversizing the cell height to 30px so it remains thick after the SVG scales down.
         const cellW = 6, cellH = 30, rowGap = 4;
-        // FIX: Widened margins even more to accommodate the 15px text below.
         const margin = { top: 40, right: 200, bottom: 40, left: 200 };
         const width = margin.left + years.length * cellW + margin.right;
         const height = margin.top + countries.length * (cellH + rowGap) + margin.bottom;
@@ -119,7 +117,7 @@ initMeteo() {
                 .attr('dy', '0.35em')
                 .attr('text-anchor', 'end')
                 .style('font-family', 'var(--font-sans)')
-                .style('font-size', '15px') /* Bumped to 15px so it scales down to ~12px visually */
+                .style('font-size', '15px')
                 .style('font-weight', '500')
                 .attr('fill', this.inkSoft)
                 .text(label);
@@ -169,24 +167,19 @@ initMeteo() {
             .attr('y', 18)
             .attr('text-anchor', 'middle')
             .style('font-family', 'var(--font-mono)')
-            .style('font-size', '14px') /* Oversized for scaling */
+            .style('font-size', '14px')
             .attr('fill', this.inkSoft)
             .text(y => y);
 
-        // Legend: 0 stations (gap) through meteoMaxStations. Placed in its
-        // own row above the grid -- putting it at the bottom (where the
-        // x-axis decade labels also live) made it collide with the 1900/
-        // 1920 tick labels near the left edge.
         const legendSteps = [0, 2, 4, 6, AppData.meteoMaxStations];
-        // FIX: Increased width and box size again for the 14px text
-        const legendItemW = 75; 
+        const legendItemW = 75;
         const legendWidth = legendSteps.length * legendItemW;
         const legend = svg.append('g').attr('transform', `translate(${width - margin.right - legendWidth + 20}, 16)`);
         legendSteps.forEach((v, i) => {
             legend.append('rect').attr('x', i * legendItemW).attr('y', -12).attr('width', 16).attr('height', 16).attr('fill', color(v));
             legend.append('text').attr('x', i * legendItemW + 24).attr('y', 2)
                 .style('font-family', 'var(--font-sans)')
-                .style('font-size', '14px') /* Oversized for scaling */
+                .style('font-size', '14px')
                 .attr('fill', this.inkSoft)
                 .text(v === 0 ? 'None' : v);
         });
@@ -195,38 +188,33 @@ initMeteo() {
     },
 
     updateMeteo() {
-        // All 18 countries render in initMeteo(); nothing to filter or
-        // swap per-country now that this is a heatmap, not a line chart.
-        // Kept as a no-op so the scene-trigger call site (see the
-        // IntersectionObserver switch near the bottom of this file)
-        // doesn't need a special case.
     },
-    
+
     initCompliance() {
         const container = Utils.select('#compliance-canvas');
         if (!container) return;
         container.innerHTML = '';
-        const width = 960, height = 280; 
-        const margin = { top: 75, right: 200, bottom: 20, left: 200 }; 
+        const width = 960, height = 280;
+        const margin = { top: 75, right: 200, bottom: 20, left: 200 };
         const svg = d3.select(container).append('svg')
             .attr('viewBox', `0 0 ${width} ${height}`)
             .attr('preserveAspectRatio', 'xMidYMid meet');
-            
+
         const x = d3.scaleLinear().domain([0, 100]).range([margin.left, width - margin.right]);
-        const y = d3.scaleBand().domain(AppData.compliance.map(d => d.category)).range([margin.top, height - margin.bottom]).padding(0.12); 
-        
+        const y = d3.scaleBand().domain(AppData.compliance.map(d => d.category)).range([margin.top, height - margin.bottom]).padding(0.12);
+
         const xAxis = svg.append('g').attr('class', 'd3-axis')
             .attr('transform', `translate(0,${margin.top - 15})`)
             .call(d3.axisTop(x).tickSize(- (height - margin.top - margin.bottom)).ticks(5).tickFormat(d => d + '%'));
-            
+
         xAxis.select('.domain').remove();
         xAxis.selectAll('text').style('fill', '#ffffff').style('font-family', 'var(--font-sans)').style('font-size', '12px');
         xAxis.selectAll('line').attr('stroke', 'rgba(255, 255, 255, 0.15)');
-            
+
         const yAxis = svg.append('g').attr('class', 'd3-axis')
             .attr('transform', `translate(${margin.left},0)`)
             .call(d3.axisLeft(y).tickSize(0));
-            
+
         yAxis.select('.domain').remove();
         yAxis.selectAll('text')
             .style('fill', '#ffffff')
@@ -250,41 +238,33 @@ initMeteo() {
                 if (d.includes('LMICs')) Utils.tooltip.show(event, 'Lower-Middle Income Countries', 'Nations lacking the financial capacity to maintain advanced meteorological hardware.');
             })
             .on('mousemove', event => Utils.tooltip.move(event))
-            .on('mouseleave', () => Utils.tooltip.hide()); 
-            
+            .on('mouseleave', () => Utils.tooltip.hide());
+
         const row = svg.selectAll('.row')
             .data(AppData.compliance).enter().append('g').attr('class', 'row')
             .style('cursor', 'pointer')
             .on('mouseenter', (event, d) => Utils.tooltip.show(event, d.category, `Active: ${d.value}%`, `Critical Gap: ${100 - d.value}%`))
             .on('mousemove', event => Utils.tooltip.move(event))
             .on('mouseleave', () => Utils.tooltip.hide());
-            
+
             row.append('rect')
             .attr('class', 'deficit-bar')
             .attr('x', x(0))
             .attr('y', d => y(d.category))
             .attr('height', y.bandwidth())
             .attr('width', x(100) - x(0))
-            // Solid, near-opaque track instead of translucent white -- on the
-            // photographic dark background, translucent white let the terrain
-            // texture bleed through and muddy the "gap" reading. A flat panel
-            // with a hairline edge reads cleanly at any texture underneath.
             .attr('fill', this.cssVar('--bg-deep-soft', '#161B22'))
             .attr('stroke', 'rgba(255, 255, 255, 0.12)')
             .attr('stroke-width', 1);
-            
+
         row.append('rect')
             .attr('class', 'active-bar')
             .attr('x', x(0))
             .attr('y', d => y(d.category))
             .attr('height', y.bandwidth())
             .attr('width', 0)
-            // Gold (--accent-warning) instead of the base --accent-ocean --
-            // it's already this chapter's accent color (the kicker text
-            // above the chart) and reads with far more contrast against
-            // the near-black background than the muted marine blue did.
             .attr('fill', this.gold);
-            
+
         row.append('text')
             .attr('class', 'value-text')
             .attr('y', d => y(d.category) + y.bandwidth() / 2)
@@ -292,41 +272,41 @@ initMeteo() {
             .text(d => d.label)
             .style('font-size', '12px').style('font-weight', '700').style('font-family', 'var(--font-mono)')
             .attr('opacity', 0);
-            
+
         const legend = svg.append('g').attr('transform', `translate(${margin.left}, 10)`);
         legend.append('rect').attr('x', 0).attr('y', -5).attr('width', 10).attr('height', 10).attr('fill', this.gold);
         legend.append('text').attr('x', 18).attr('y', 4).text('Active Infrastructure').style('font-size', '11px').attr('fill', 'rgba(255,255,255,0.7)');
         legend.append('rect').attr('x', 160).attr('y', -5).attr('width', 10).attr('height', 10).attr('fill', this.cssVar('--bg-deep-soft', '#161B22')).attr('stroke', 'rgba(255, 255, 255, 0.12)').attr('stroke-width', 1);
         legend.append('text').attr('x', 178).attr('y', 4).text('Missing Data Gap').style('font-size', '11px').attr('fill', 'rgba(255,255,255,0.7)');
-            
+
         this.state.compliance = { row, x };
     },
 
     updateCompliance(filterType = null) {
         if (!this.state.compliance) return;
         const { row, x } = this.state.compliance;
-        
+
         if (filterType) {
             if (filterType === 'sids') {
                 row.transition().duration(this.dur(400)).ease(d3.easeCubicOut)
-                    .style('opacity', d => (d.group === 'sids' || d.group === 'pacific') ? 1 : 0.25); 
+                    .style('opacity', d => (d.group === 'sids' || d.group === 'pacific') ? 1 : 0.25);
             } else {
                 row.transition().duration(this.dur(400)).ease(d3.easeCubicOut).style('opacity', 1);
             }
         } else if (!this.state.compliance.animated) {
             this.state.compliance.animated = true;
-            
+
             row.select('.active-bar').transition().duration(this.dur(1200)).ease(d3.easeCubicOut)
                 .attr('width', d => x(d.value) - x(0));
-                
+
             row.select('.value-text').transition().delay(this.dur(1000)).duration(this.dur(500))
-                .attr('x', d => x(d.value) + 10) /* Pushes all text just outside the right edge of the bar */
-                .attr('text-anchor', 'start') /* Left-aligns the text so it flows outward */
-                .attr('fill', this.gold) /* Uses the theme's yellow/gold color */
+                .attr('x', d => x(d.value) + 10)
+                .attr('text-anchor', 'start')
+                .attr('fill', this.gold)
                 .attr('opacity', 1);
         }
     },
-    
+
     initExposure() {
         const container = Utils.select('#exposure-canvas');
         if (!container) return;
@@ -340,15 +320,15 @@ initMeteo() {
 
     renderExposureAffected(container, country, animate = true) {
         container.innerHTML = '';
-        const width = 960, height = 400;
-        const margin = { top: 50, right: 60, bottom: 40, left: 80 }; 
+        const width = 960, height = 500;
+        const margin = { top: 70, right: 60, bottom: 40, left: 80 };
         const svg = d3.select(container).append('svg')
             .attr('viewBox', `0 0 ${width} ${height}`)
             .attr('preserveAspectRatio', 'xMidYMid meet');
 
         const data = AppData.exposure[country] || [];
 
-        const x = d3.scaleBand().domain(data.map(d => d.year)).range([margin.left, width - margin.right]).padding(0.6);
+        const x = d3.scaleBand().domain(data.map(d => d.year)).range([margin.left, width - margin.right]).padding(0.2);
         const y = d3.scaleLinear().domain([0, (d3.max(data, d => d.affected) || 0) * 1.15]).range([height - margin.bottom, margin.top]);
 
         const yAxisGroup = svg.append('g').attr('class', 'd3-grid y-grid')
@@ -358,8 +338,9 @@ initMeteo() {
             .selectAll('text').attr('fill', this.inkSoft).attr('x', -8).attr('dy', -4).style('font-family', 'var(--font-mono)').style('font-size', '11px');
 
         svg.append('text').text('Total People Affected')
-            .attr('x', margin.left).attr('y', margin.top - 20)
-            .attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '12px').style('font-weight', '600');
+            .attr('x', width / 2).attr('y', 24)
+            .attr('text-anchor', 'middle')
+            .attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '14px').style('font-weight', '600');
 
         svg.append('g').attr('class', 'd3-axis x-axis')
             .attr('transform', `translate(0,${height - margin.bottom})`)
@@ -373,7 +354,7 @@ initMeteo() {
             .attr('width', x.bandwidth())
             .attr('y', height - margin.bottom)
             .attr('height', 0)
-            .attr('fill', this.coral) 
+            .attr('fill', this.coral)
             .style('cursor', 'pointer')
             .on('mouseenter', (event, d) => Utils.tooltip.show(
                 event,
@@ -387,6 +368,30 @@ initMeteo() {
             bars.transition('grow').duration(this.dur(800)).ease(d3.easeCubicOut).delay((d,i) => i * 50)
                 .attr('y', d => y(d.affected || 0))
                 .attr('height', d => Math.max(0, height - margin.bottom - y(d.affected || 0)));
+        } else {
+            bars.attr('y', d => y(d.affected || 0))
+                .attr('height', d => Math.max(0, height - margin.bottom - y(d.affected || 0)));
+        }
+
+        const labels = svg.selectAll('.affected-label').data(data).enter().append('text')
+            .attr('class', 'affected-label')
+            .attr('x', d => x(d.year) + x.bandwidth() / 2)
+            .attr('y', height - margin.bottom)
+            .attr('text-anchor', 'middle')
+            .attr('fill', this.ink)
+            .style('font-family', 'var(--font-mono)')
+            .style('font-size', '11px')
+            .style('font-weight', '600')
+            .style('opacity', 0)
+            .style('pointer-events', 'none')
+            .text(d => d.affected !== null && d.affected !== undefined ? Utils.formatNumber(d.affected, 0) : '');
+
+        if (animate) {
+            labels.transition('fade').duration(this.dur(800)).ease(d3.easeCubicOut).delay((d, i) => i * 50)
+                .attr('y', d => y(d.affected || 0) - 8)
+                .style('opacity', 1);
+        } else {
+            labels.attr('y', d => y(d.affected || 0) - 8).style('opacity', 1);
         }
 
         const stakesSection = document.getElementById('stakes');
@@ -407,16 +412,26 @@ initMeteo() {
 
     renderExposureAvgAnnualLoss(container) {
         container.innerHTML = '';
-        const width = 960, height = 440;
-        const margin = { top: 40, right: 90, bottom: 50, left: 190 };
+        const width = 960, height = 500;
+        const margin = { top: 70, right: 90, bottom: 50, left: 190 };
         const svg = d3.select(container).append('svg')
             .attr('viewBox', `0 0 ${width} ${height}`)
             .attr('preserveAspectRatio', 'xMidYMid meet');
 
-        const data = [...AppData.exposureAvgAnnualLoss].sort((a, b) => b.usd - a.usd);
+        const countryMap = {};
+        AppData.exposureAvgAnnualLoss.forEach(d => {
+            if (!countryMap[d.country]) countryMap[d.country] = { country: d.country, usd: 0 };
+            countryMap[d.country].usd += (d.usd || 0);
+        });
+        const data = Object.values(countryMap).filter(d => d.usd > 0).sort((a, b) => b.usd - a.usd);
 
         const x = d3.scaleLinear().domain([0, d3.max(data, d => d.usd) * 1.08]).range([margin.left, width - margin.right]);
-        const y = d3.scaleBand().domain(data.map(d => d.country)).range([margin.top, height - margin.bottom]).padding(0.6);
+
+        const y = d3.scaleBand().domain(data.map(d => d.country)).range([margin.top, height - margin.bottom]).padding(0.15);
+
+        const colorScale = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.usd)])
+            .range([this.cssVar('--accent-coral-light', '#E8705F'), this.coralDark]);
 
         const xAxisGroup = svg.append('g').attr('class', 'd3-grid')
             .attr('transform', `translate(0,${height - margin.bottom})`)
@@ -425,9 +440,9 @@ initMeteo() {
         xAxisGroup.selectAll('text').attr('fill', this.inkSoft).attr('dy', '1em').style('font-family', 'var(--font-mono)').style('font-size', '11px');
 
         svg.append('text').text('Average Annual Economic Loss (USD)')
-            .attr('x', width - margin.right).attr('y', height - 10)
-            .attr('text-anchor', 'end')
-            .attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '12px').style('font-weight', '600');
+            .attr('x', width / 2).attr('y', 24)
+            .attr('text-anchor', 'middle')
+            .attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '14px').style('font-weight', '600');
 
         const yAxisGroup = svg.append('g').attr('class', 'd3-axis')
             .attr('transform', `translate(${margin.left},0)`)
@@ -441,13 +456,12 @@ initMeteo() {
             .attr('y', d => y(d.country))
             .attr('height', y.bandwidth())
             .attr('width', 0)
-            .attr('fill', this.coral) 
+            .attr('fill', d => colorScale(d.usd))
             .style('cursor', 'pointer')
             .on('mouseenter', (event, d) => Utils.tooltip.show(
                 event,
                 d.country,
-                `Avg. annual loss: $${Utils.formatNumber(d.usd, 0)}`,
-                `Reference year: ${d.year}`
+                `Total loss: $${Utils.formatNumber(d.usd, 0)}`
             ))
             .on('mousemove', event => Utils.tooltip.move(event))
             .on('mouseleave', () => Utils.tooltip.hide());
@@ -468,9 +482,18 @@ initMeteo() {
     highlightExposureAvgAnnualLoss(country) {
         const { avgBars } = this.state.exposure || {};
         if (!avgBars) return;
+
+        const countryMap = {};
+        AppData.exposureAvgAnnualLoss.forEach(d => {
+            if (!countryMap[d.country]) countryMap[d.country] = { country: d.country, usd: 0 };
+            countryMap[d.country].usd += (d.usd || 0);
+        });
+        const data = Object.values(countryMap).filter(d => d.usd > 0).sort((a, b) => b.usd - a.usd);
+        const colorScale = d3.scaleLinear().domain([0, d3.max(data, d => d.usd)]).range([this.cssVar('--accent-coral-light', '#E8705F'), this.coralDark]);
+
         avgBars.transition('highlight').duration(300)
-            .attr('fill', this.coral)
-            .attr('opacity', d => d.country === country ? 1 : 0.25); 
+            .attr('fill', d => colorScale(d.usd))
+            .attr('opacity', d => (d.country.trim().toLowerCase() === country.trim().toLowerCase()) ? 1 : 0.25);
     },
 
     updateExposure(country, metric) {
@@ -482,7 +505,7 @@ initMeteo() {
         if (country) state.currentCountry = country;
         if (metric) state.currentMetric = metric;
 
-        container.style.minHeight = '440px';
+        container.style.minHeight = '500px';
 
         if (state.currentMetric === 'avgAnnualLoss') {
             if (state.mode !== 'avgAnnualLoss') {
@@ -523,7 +546,7 @@ initMeteo() {
             .style('font-size', '11px');
 
         const barsJoin = d3.select(container).select('svg').selectAll('.bar').data(data);
-        
+
         barsJoin.transition('grow').duration(this.dur(800)).ease(d3.easeCubicOut)
             .attr('y', d => state.y(d.affected || 0))
             .attr('height', d => Math.max(0, state.height - state.margin.bottom - state.y(d.affected || 0)))
@@ -534,14 +557,19 @@ initMeteo() {
             `Year: ${d.year}`,
             d.affected !== null && d.affected !== undefined ? `Affected: ${Utils.formatNumber(d.affected, 0)}` : 'Affected: Data Unavailable'
         ));
+
+        const labelsJoin = d3.select(container).select('svg').selectAll('.affected-label').data(data);
+        labelsJoin.transition('grow').duration(this.dur(800)).ease(d3.easeCubicOut)
+            .attr('y', d => state.y(d.affected || 0) - 8)
+            .text(d => d.affected !== null && d.affected !== undefined ? Utils.formatNumber(d.affected, 0) : '');
     },
 
     initFlooding() {
         const container = Utils.select('#flooding-canvas');
-        if (!container) return; 
+        if (!container) return;
         container.innerHTML = '';
         const width = 960, height = 260;
-        const margin = { top: 30, right: 40, bottom: 45, left: 100 }; 
+        const margin = { top: 30, right: 40, bottom: 45, left: 100 };
         const svg = d3.select(container).append('svg')
             .attr('viewBox', `0 0 ${width} ${height}`)
             .attr('preserveAspectRatio', 'xMidYMid meet');
@@ -562,7 +590,7 @@ initMeteo() {
 
         const yAxisGroup = svg.append('g').attr('class', 'd3-grid')
             .attr('transform', `translate(${margin.left},0)`)
-            .call(d3.axisLeft(y).tickValues([0, 5, 10]).tickSize(-(width - margin.left - margin.right))); 
+            .call(d3.axisLeft(y).tickValues([0, 5, 10]).tickSize(-(width - margin.left - margin.right)));
         yAxisGroup.select('.domain').remove();
         yAxisGroup.selectAll('line').attr('stroke', '#e2e8f0');
         yAxisGroup.selectAll('text').attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '12px').attr('x', -15);
@@ -575,7 +603,7 @@ initMeteo() {
             svg.append('rect')
                 .attr('x', gapStartX).attr('y', margin.top)
                 .attr('width', gapEndX - gapStartX).attr('height', height - margin.top - margin.bottom)
-                .attr('fill', 'rgba(184, 90, 90, 0.08)'); 
+                .attr('fill', 'rgba(184, 90, 90, 0.08)');
             svg.append('line')
                 .attr('x1', gapStartX).attr('x2', gapStartX)
                 .attr('y1', margin.top).attr('y2', height - margin.bottom)
@@ -608,10 +636,10 @@ initMeteo() {
             .on('mouseenter', (event, d) => Utils.tooltip.show(event, `Year: ${d.year}`, `Floods: ${d.days} days`))
             .on('mousemove', event => Utils.tooltip.move(event))
             .on('mouseleave', () => Utils.tooltip.hide());
-            
+
         this.state.flooding = { svg, bars, x, y, height, margin };
     },
-    
+
     updateFlooding() {
         if (!this.state.flooding) return;
         const { bars, y, height, margin } = this.state.flooding;
@@ -639,20 +667,18 @@ initMeteo() {
         const histData = AppData.historicalSeaLevel;
         const lastObserved = histData[histData.length - 1];
         const scenarioKeys = ['lower', 'typical', 'higher'];
-        
+
         const scenarioMeta = {
-            lower: { label: 'Lower', code: 'RCP2.6', color: this.success }, 
-            typical: { label: 'Typical', code: 'RCP4.5', color: this.teal }, 
-            higher: { label: 'High', code: 'RCP8.5', color: this.coral } 
+            lower: { label: 'Lower', code: 'RCP2.6', color: this.success },
+            typical: { label: 'Typical', code: 'RCP4.5', color: this.teal },
+            higher: { label: 'High', code: 'RCP8.5', color: this.coral }
         };
 
-const xA = d3.scaleLinear().domain([1993, lastObserved.year]).range([panelA.x0, panelA.x1]);
-        // FIX: Scaled the observed Y-axis up to 80 to match the absolute height of the right side.
+        const xA = d3.scaleLinear().domain([1993, lastObserved.year]).range([panelA.x0, panelA.x1]);
         const yA = d3.scaleLinear().domain([0, 80]).range([plotBottom, plotTop]);
 
         const gridA = svg.append('g').attr('class', 'd3-grid')
             .attr('transform', `translate(${panelA.x0},0)`)
-            // FIX: Updated tick marks to match the new 0-80 scale
             .call(d3.axisLeft(yA).tickValues([0, 20, 40, 60, 80]).tickSize(-(panelA.x1 - panelA.x0)));
 
         svg.append('text').attr('x', panelA.x0).attr('y', plotTop - 12).text('Observed sea level (cm since 1993)')
@@ -689,16 +715,16 @@ const xA = d3.scaleLinear().domain([1993, lastObserved.year]).range([panelA.x0, 
                 const d0 = histData[i - 1], d1 = histData[i];
                 if (!d0 || !d1) return;
                 const d = x0 - d0.year > d1.year - x0 ? d1 : d0;
-                
+
                 hoverGuide.attr('x1', xA(d.year)).attr('x2', xA(d.year)).attr('opacity', 0.5);
                 hoverDot.attr('cx', xA(d.year)).attr('cy', yA(d.val)).attr('opacity', 1);
-                
+
                 if (d.year === lastObserved.year) {
                     lastDot.attr('opacity', 0); lastText.attr('opacity', 0);
                 } else {
                     lastDot.attr('opacity', 1); lastText.attr('opacity', 1);
                 }
-                
+
                 Utils.tooltip.show(event, `Year: ${d.year}`, `Observed: +${d.val.toFixed(1)} cm`);
             })
             .on('mouseleave', () => {
@@ -711,14 +737,12 @@ const xA = d3.scaleLinear().domain([1993, lastObserved.year]).range([panelA.x0, 
         const breakX = (gap.x0 + gap.x1) / 2;
         svg.append('line').attr('x1', breakX).attr('x2', breakX).attr('y1', plotTop).attr('y2', plotBottom)
             .attr('stroke', 'var(--line)').attr('stroke-width', 1.5);
-        
+
         svg.append('text').attr('x', breakX).attr('y', plotTop - 12).attr('text-anchor', 'middle')
             .style('font-family', 'var(--font-mono)').style('font-size', '10px').style('font-weight', '600')
             .style('letter-spacing', '0.05em')
             .attr('fill', this.inkFaint).text('PROJECTION');
 
-        // FIX: Lifted the projection Y-axis to the top portion of the chart (200px tall),
-        // leaving a physical gap between Y=276 (12cm) and Y=230 (40cm) to enforce the broken axis.
         const yB = d3.scaleLinear().domain([40, 80]).range([plotTop + 200, plotTop]);
         const xB = d3.scalePoint().domain(scenarioKeys).range([panelB.x0 + 20, panelB.x1 - 20]).padding(0.6);
 
@@ -740,7 +764,7 @@ const xA = d3.scaleLinear().domain([1993, lastObserved.year]).range([panelA.x0, 
             .attr('width', panelB.x1 - panelB.x0)
             .attr('y', plotBottom)
             .attr('height', 0)
-            .attr('fill', 'rgba(10, 108, 144, 0.12)') 
+            .attr('fill', 'rgba(10, 108, 144, 0.12)')
             .attr('opacity', 1);
 
         const scenarioNodes = {};
@@ -760,7 +784,7 @@ const xA = d3.scaleLinear().domain([1993, lastObserved.year]).range([panelA.x0, 
         const nameLabel = g.append('text').attr('x', cx).attr('y', cy + 24).attr('text-anchor', 'middle')
                 .style('font-family', 'var(--font-sans)').style('font-size', '10.5px').style('font-weight', 600)
                 .attr('fill', this.inkSoft).text(meta.label).attr('opacity', 0.65);
-            g.append('circle').attr('cx', cx).attr('cy', cy).attr('r', 20).attr('fill', 'transparent'); 
+            g.append('circle').attr('cx', cx).attr('cy', cy).attr('r', 20).attr('fill', 'transparent');
 
             scenarioNodes[key] = { g, nameLabel, val, cx, cy };
         });
@@ -769,7 +793,7 @@ const xA = d3.scaleLinear().domain([1993, lastObserved.year]).range([panelA.x0, 
         const initMeta = scenarioMeta['typical'];
 
         const activeGroup = svg.append('g').attr('class', 'active-projection-group');
-        
+
         const dragBehavior = d3.drag()
             .on('drag', (event) => {
                 let closest = scenarioKeys[0];
@@ -781,24 +805,24 @@ const xA = d3.scaleLinear().domain([1993, lastObserved.year]).range([panelA.x0, 
                         closest = key;
                     }
                 });
-                
+
                 if (this.state && this.state.projection && this.state.projection.activeScenario !== closest) {
                     const btn = document.querySelector(`.ruler-step[data-filter="${closest}"]`);
                     if (btn) btn.click();
                 }
             });
-            
+
         activeGroup.call(dragBehavior);
 
         const activeDot = activeGroup.append('circle').attr('r', 8).attr('fill', 'var(--bg-paper)').attr('stroke-width', 3)
             .attr('cx', initTarget.cx).attr('cy', plotBottom).attr('stroke', initMeta.color);
-            
+
         const activeValueLabel = activeGroup.append('text').attr('text-anchor', 'middle')
             .style('font-family', 'var(--font-mono)').style('font-weight', 700).style('font-size', '15px')
             .attr('x', initTarget.cx).attr('y', plotBottom - 16)
             .attr('fill', initMeta.color)
             .text('+0.0');
-            
+
         waterLevel.attr('y', plotBottom).attr('height', 0);
 
         this.state.projection = {
@@ -823,7 +847,7 @@ const xA = d3.scaleLinear().domain([1993, lastObserved.year]).range([panelA.x0, 
 
         state.activeValueLabel.transition().duration(dur).ease(d3.easeCubicOut)
             .attr('x', target.cx)
-            .attr('y', target.cy - 16) 
+            .attr('y', target.cy - 16)
             .attr('fill', meta.color)
             .tween('text', function() {
                 const i = d3.interpolateNumber(
@@ -1039,22 +1063,113 @@ function syncDynamicStats() {
     }
 }
 
+function renderAccessibleTables() {
+    const addRow = (tbody, cells) => {
+        if (!tbody) return;
+        const tr = document.createElement('tr');
+        cells.forEach(text => {
+            const td = document.createElement('td');
+            td.textContent = text;
+            tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+    };
+
+    const complianceBody = Utils.select('#sr-table-compliance');
+    if (complianceBody && AppData.compliance) {
+        AppData.compliance.forEach(d => {
+            addRow(complianceBody, [d.category, `${d.value}%`, `${d.target}%`]);
+        });
+    }
+
+    const floodingBody = Utils.select('#sr-table-flooding');
+    if (floodingBody && AppData.historicalFlooding) {
+        AppData.historicalFlooding.forEach(d => {
+            addRow(floodingBody, [d.year, d.days]);
+        });
+    }
+
+    const projectionBody = Utils.select('#sr-table-projection');
+    if (projectionBody && AppData.historicalSeaLevel && AppData.projections) {
+        const series = AppData.historicalSeaLevel;
+        const first = series[0];
+        const last = series[series.length - 1];
+        const fmtCm = (v) => `${v >= 0 ? '+' : ''}${v.toFixed(1)} cm`;
+        if (first) addRow(projectionBody, [`Observed, ${first.year}`, fmtCm(first.val)]);
+        if (last) addRow(projectionBody, [`Observed, ${last.year} (latest)`, fmtCm(last.val)]);
+        const pathwayLabels = { lower: 'RCP2.6 (Lower)', typical: 'RCP4.5 (Typical)', higher: 'RCP8.5 (High Emissions)' };
+        ['lower', 'typical', 'higher'].forEach(key => {
+            const entry = AppData.projections[key] && AppData.projections[key][0];
+            if (entry) addRow(projectionBody, [`Year ${entry.year}, ${pathwayLabels[key]}`, fmtCm(entry.val)]);
+        });
+    }
+
+    const exposureBody = Utils.select('#sr-table-exposure');
+    const exposureLoss = Utils.select('#sr-table-exposure-loss');
+    if (exposureBody && AppData.exposure) {
+        const country = 'Vanuatu';
+        const rows = AppData.exposure[country] || [];
+        rows.forEach(d => {
+            const val = (d.affected === null || d.affected === undefined) ? 'Data unavailable' : Utils.formatNumber(d.affected, 0);
+            addRow(exposureBody, [d.year, val]);
+        });
+        if (exposureLoss && AppData.exposureAvgAnnualLoss) {
+            const lossEntry = AppData.exposureAvgAnnualLoss.find(d => d.country === country);
+            if (lossEntry) {
+                exposureLoss.textContent = `${country}'s average annual economic loss to disasters: US$${Utils.formatNumber(lossEntry.usd, 0)} (${lossEntry.year} reference year, Pacific Data Hub SDG 11.5.2).`;
+            }
+        }
+    }
+
+    const fundingBody = Utils.select('#sr-table-funding');
+    if (fundingBody && AppData.funding) {
+        AppData.funding.forEach(d => {
+            addRow(fundingBody, [
+                d.country,
+                d.phase,
+                d.entity,
+                d.partner,
+                d.status || 'Pending',
+                `$${Utils.formatNumber(d.readiness, 0)}`,
+                `$${Utils.formatNumber(d.investment, 0)}`,
+                `$${Utils.formatNumber(d.total, 0)}`
+            ]);
+        });
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     calculateNavTrigger();
     Utils.wireImageFallbacks();
     syncDynamicStats();
+    renderAccessibleTables();
+    const chartInits = [
+        () => Charts.initCompliance(),
+        () => Charts.initMeteo(),
+        () => Charts.initExposure(),
+        () => Charts.initFlooding(),
+        () => Charts.initProjection(),
+        () => Charts.initFunding(),
+        () => Charts.initRadarGrid('#radar-grid-lines'),
+        () => Charts.initRadarNodes('#hero-radar-nodes')
+    ];
     const renderCharts = () => {
-        Charts.initCompliance();
-        Charts.initMeteo();
-        Charts.initExposure();
-        Charts.initFlooding(); 
-        Charts.initProjection();
-        Charts.initFunding();
-        Charts.initRadarGrid('#radar-grid-lines');
-        Charts.initRadarNodes('#hero-radar-nodes');
+        chartInits.forEach((init) => {
+            try {
+                init();
+            } catch (err) {
+                console.error('Chart init failed:', err);
+            }
+        });
         radarNodes = Utils.selectAll('#hero-radar-nodes circle');
         Utils.selectAll('.chart-canvas').forEach(c => {
-            if (c.dataset.hasAnimated === 'true') triggerChartUpdate(c);
+            if (c.dataset.hasAnimated === 'true') {
+                try {
+                    triggerChartUpdate(c);
+                } catch (err) {
+                    console.error('Chart update failed:', err);
+                }
+            }
         });
     };
     renderCharts();
@@ -1107,6 +1222,7 @@ function updateHeroTarget() {
 }
 
 function startHeroLoop() {
+    if (!Utils.select('#kinetic-hero')) return;
     const reduced = Utils.prefersReducedMotion();
     const tick = () => {
         heroMotion.current = reduced ? heroMotion.target : Utils.lerp(heroMotion.current, heroMotion.target, 0.12);
@@ -1121,7 +1237,7 @@ function renderHero(progress) {
     const f1 = Utils.select('#hero-frame-1'), f2 = Utils.select('#hero-frame-2'), f3 = Utils.select('#hero-frame-3'), f4 = Utils.select('#hero-frame-4');
     if (!f1 || !f2 || !f3 || !f4) return;
     const reduced = Utils.prefersReducedMotion();
-    
+
     if (progress < 0.25) {
         const localP = progress / 0.25;
         f1.style.opacity = 1 - localP; f1.style.transform = reduced ? 'none' : `scale(${1 + localP * 0.1})`;
@@ -1133,7 +1249,7 @@ function renderHero(progress) {
         f3.style.opacity = 0; f4.style.opacity = 0;
     } else if (progress < 0.75) {
         const localP = (progress - 0.50) / 0.25;
-        f1.style.opacity = 0; f2.style.opacity = 0; 
+        f1.style.opacity = 0; f2.style.opacity = 0;
         f3.style.opacity = Math.sin(localP * Math.PI);
         f3.style.transform = reduced ? 'none' : `translateY(${(1 - localP) * 20}px)`;
         f4.style.opacity = 0;
@@ -1164,13 +1280,13 @@ function updateRadar(progress) {
     radarNodes.forEach(node => {
         const threshold = parseFloat(node.getAttribute('data-threshold'));
         const isActive = node.getAttribute('data-active') === 'true';
-        
+
         if (progress > threshold && progress < threshold + 0.3) {
             node.setAttribute('class', 'active');
-            node.style.fill = isActive ? 'var(--accent-ocean-soft)' : 'var(--accent-ocean-dark)'; 
+            node.style.fill = isActive ? 'var(--accent-ocean-soft)' : 'var(--accent-ocean-dark)';
         } else {
             node.setAttribute('class', 'inactive');
-            node.style.fill = ''; 
+            node.style.fill = '';
         }
     });
 }
@@ -1254,7 +1370,7 @@ function triggerChartUpdate(canvas) {
 
 let navTriggerPoint = 0;
 function calculateNavTrigger() {
-    navTriggerPoint = window.innerHeight * 0.75; 
+    navTriggerPoint = window.innerHeight * 0.75;
 }
 
 function updateNavVisibility() {
@@ -1298,7 +1414,7 @@ function initUIElements() {
         menuToggle.setAttribute('aria-expanded', 'false');
         menuToggle.addEventListener('click', () => {
             const isOpen = navLinks.classList.toggle('nav-open');
-            document.body.style.overflow = isOpen ? 'hidden' : ''; 
+            document.body.style.overflow = isOpen ? 'hidden' : '';
             menuToggle.setAttribute('aria-expanded', String(isOpen));
             if (isOpen) {
                 const firstLink = navLinks.querySelector('a');
@@ -1372,20 +1488,21 @@ function initUIElements() {
     Utils.selectAll('.ruler-step').forEach((btn) => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
-            Utils.selectAll('.ruler-step').forEach(b => b.classList.remove('active'));
             const targetBtn = e.target.closest('.ruler-step');
+            if (!targetBtn) return;
+            Utils.selectAll('.ruler-step').forEach(b => b.classList.remove('active'));
             targetBtn.classList.add('active');
-            
+
             const scenario = targetBtn.getAttribute('data-filter');
             Charts.updateProjection(scenario);
-            
+
             if(dynamicText) {
                 const targetVal = AppData.projections[scenario][0].val;
                 const currentVal = parseFloat(dynamicText.textContent.replace(/[^0-9.]/g, '')) || 0;
-                
+
                 const textColors = { lower: 'var(--accent-success)', typical: 'var(--accent-ocean)', higher: 'var(--accent-danger)' };
                 dynamicText.style.color = textColors[scenario] || 'var(--accent-ocean)';
-                
+
                 Charts.countText(dynamicText, currentVal, targetVal, {
                     prefix: '+',
                     suffix: ' cm',
@@ -1396,7 +1513,6 @@ function initUIElements() {
         });
     });
 
-    // Handle the inline dropdown for the Chapter 02 Meteo sentence
     const meteoSelect = Utils.select('#meteo-country-select');
     const meteoCount = Utils.select('#meteo-dynamic-count');
     if (meteoSelect && meteoCount && AppData.meteoStations) {
@@ -1404,14 +1520,13 @@ function initUIElements() {
             const country = e.target.value;
             const stationsArray = AppData.meteoStations[country];
             let currentCount = 0;
-            
-            // Grab the last entry in the array, which represents the total active stations up to 2026
+
             if (stationsArray && stationsArray.length > 0) {
                 currentCount = stationsArray[stationsArray.length - 1].stations;
             }
-            
+
             const previousCount = parseInt(meteoCount.textContent) || 0;
-            
+
             Charts.countText(meteoCount, previousCount, currentCount, {
                 decimals: 0,
                 duration: 600
@@ -1422,31 +1537,31 @@ function initUIElements() {
     const rulerContainer = Utils.select('.projection-ruler');
     if (rulerContainer) {
         let isDragging = false;
-        rulerContainer.style.touchAction = 'none'; 
+        rulerContainer.style.touchAction = 'none';
 
         const scrubRuler = (e) => {
             if (!isDragging) return;
-            e.preventDefault(); 
+            e.preventDefault();
             const rect = rulerContainer.getBoundingClientRect();
             const clientX = e.clientX ?? (e.touches && e.touches[0] ? e.touches[0].clientX : null);
             if (clientX === null) return;
 
             const ratio = (clientX - rect.left) / rect.width;
-            
+
             let targetScenario = 'typical';
             if (ratio < 0.33) targetScenario = 'lower';
             else if (ratio > 0.67) targetScenario = 'higher';
-            
+
             const targetBtn = rulerContainer.querySelector(`.ruler-step[data-filter="${targetScenario}"]`);
             if (targetBtn && !targetBtn.classList.contains('active')) {
-                targetBtn.click(); 
+                targetBtn.click();
             }
         };
 
         rulerContainer.addEventListener('pointerdown', (e) => {
             isDragging = true;
             rulerContainer.setPointerCapture(e.pointerId);
-            scrubRuler(e); 
+            scrubRuler(e);
         });
         rulerContainer.addEventListener('pointermove', scrubRuler);
         rulerContainer.addEventListener('pointerup', (e) => {
@@ -1460,19 +1575,21 @@ function initUIElements() {
 
     Utils.selectAll('.flip-card').forEach(card => {
         const feedback = card.querySelector('.quiz-feedback');
-        
+        const quizButtons = Utils.selectAll('.quiz-btn', card);
+        let answered = false;
+
         const triggerChartUpdate = () => {
             const titleEl = card.querySelector('.card-title');
             if (!titleEl) return;
-            
+
             const countryTitle = titleEl.textContent.trim().toUpperCase();
-            
+
             const filterBtns = Array.from(document.querySelectorAll('.chart-filter-btn'));
             const matchingBtn = filterBtns.find(b => {
                 const btnCountry = (b.getAttribute('data-country') || '').toUpperCase();
                 return btnCountry === countryTitle || btnCountry.includes(countryTitle.replace('.', ''));
             });
-            
+
             if (matchingBtn) {
                 filterBtns.forEach(b => b.classList.remove('active'));
                 matchingBtn.classList.add('active');
@@ -1486,66 +1603,69 @@ function initUIElements() {
             if (isFlipped) triggerChartUpdate();
         };
 
+        const showResult = (state, label) => {
+            card.classList.remove('result-correct', 'result-wrong', 'result-skipped');
+            card.classList.add(state);
+            if (feedback) feedback.textContent = label;
+        };
+
+        const answerWith = (btn) => {
+            if (answered) return;
+            answered = true;
+
+            const isCorrect = (btn.getAttribute('data-correct') || '').toLowerCase() === 'true';
+
+            if (isCorrect) {
+                showResult('result-correct', 'Correct');
+                executeFlip(true);
+            } else {
+                showResult('result-wrong', 'Incorrect');
+                card.classList.add('shake');
+                setTimeout(() => {
+                    card.classList.remove('shake');
+                    executeFlip(true);
+                }, 400);
+            }
+        };
+
+        quizButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                answerWith(btn);
+            });
+        });
+
         card.addEventListener('click', (e) => {
-            // 1. If currently shaking, ignore all clicks so it doesn't glitch
             if (card.classList.contains('shake')) return;
-            
-            // 2. IF ALREADY FLIPPED: Any click ANYWHERE on the card unflips it.
-            // (This fixes the 3D-space bug where browsers click invisible buttons on the back)
+
             if (card.classList.contains('flipped')) {
+                answered = false;
                 card.classList.remove('result-correct', 'result-wrong', 'result-skipped');
                 executeFlip(false);
-                return; // Stop right here, do not check for buttons.
+                return;
             }
 
-            // 3. IF NOT FLIPPED: Check exactly what they tapped
-            const btn = e.target.closest('.quiz-btn');
-            
-            if (btn) {
-                // They tapped True or False
-                e.preventDefault(); 
-                e.stopPropagation(); // CRITICAL: Stops the click from bubbling and triggering a "Skip"
-                
-                const correctAttr = btn.getAttribute('data-correct') || '';
-                const isCorrect = correctAttr.toLowerCase() === 'true';
-                
-                card.classList.remove('result-correct', 'result-wrong', 'result-skipped');
-                
-                if (isCorrect) {
-                    card.classList.add('result-correct');
-                    if (feedback) feedback.textContent = 'Correct';
-                    executeFlip(true);
-                } else {
-                    card.classList.add('result-wrong');
-                    if (feedback) feedback.textContent = 'Incorrect';
-                    
-                    card.classList.add('shake');
-                    setTimeout(() => {
-                        card.classList.remove('shake');
-                        executeFlip(true);
-                    }, 400);
-                }
-            } else {
-                // They tapped the card, but missed the buttons (Skip)
-                card.classList.remove('result-correct', 'result-wrong', 'result-skipped');
-                card.classList.add('result-skipped');
-                if (feedback) feedback.textContent = 'Skipped';
-                executeFlip(true);
-            }
+            if (e.target.closest('.quiz-btn')) return;
+            if (answered) return;
+
+            answered = true;
+            showResult('result-skipped', 'Skipped');
+            executeFlip(true);
         });
 
         card.addEventListener('keydown', e => {
-            if (e.key === 'Enter' || e.key === ' ') { 
-                e.preventDefault(); 
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
                 if (e.target.classList.contains('quiz-btn')) {
                     e.target.click();
                 } else {
-                    card.click(); 
+                    card.click();
                 }
             }
         });
     });
-    
+
     const tabs = Utils.selectAll('.citation-tab');
     const citeText = Utils.select('#cite-text');
     const citations = {
@@ -1553,20 +1673,20 @@ function initUIElements() {
         'Journalistic': 'Chatura Dissanayake. (2026). The Pacific Blind Spot: Measuring the climate monitoring gap. Retrieved from https://chaturadissanayake.vercel.app',
         'BibTeX': '@article{dissanayake-pacific-blind-spot-2026,\n  title  = {The Pacific Blind Spot: Measuring the climate monitoring gap},\n  author = {Dissanayake, Chatura},\n  year   = {2026},\n  journal = {Data Story},\n  url    = {https://chaturadissanayake.vercel.app}\n}'
     };
-    
+
     if (citeText) citeText.textContent = citations['APA'];
 
     tabs.forEach(tab => {
         const selectTab = () => {
-            tabs.forEach(t => { 
-                t.classList.remove('active'); 
-                t.setAttribute('aria-selected', 'false'); 
-                t.setAttribute('tabindex', '-1'); 
+            tabs.forEach(t => {
+                t.classList.remove('active');
+                t.setAttribute('aria-selected', 'false');
+                t.setAttribute('tabindex', '-1');
             });
-            tab.classList.add('active'); 
-            tab.setAttribute('aria-selected', 'true'); 
+            tab.classList.add('active');
+            tab.setAttribute('aria-selected', 'true');
             tab.setAttribute('tabindex', '0');
-            
+
             const key = tab.getAttribute('data-cite');
             if (citeText && citations[key]) {
                 citeText.style.opacity = 0;
@@ -1579,16 +1699,41 @@ function initUIElements() {
         tab.addEventListener('click', selectTab);
         tab.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectTab(); } });
     });
-    
+
     const copyCiteBtn = Utils.select('.copy-cite-btn');
     if (copyCiteBtn && citeText) {
         copyCiteBtn.addEventListener('click', () => {
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(citeText.textContent).then(() => {
-                    const originalText = copyCiteBtn.textContent;
-                    copyCiteBtn.textContent = 'COPIED!';
-                    setTimeout(() => copyCiteBtn.textContent = originalText, 2000);
-                });
+            const originalText = copyCiteBtn.textContent;
+            const showResult = (label) => {
+                copyCiteBtn.textContent = label;
+                copyCiteBtn.disabled = true;
+                setTimeout(() => {
+                    copyCiteBtn.textContent = originalText;
+                    copyCiteBtn.disabled = false;
+                }, 2000);
+            };
+            const fallbackCopy = () => {
+                const textarea = document.createElement('textarea');
+                textarea.value = citeText.textContent;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                let ok = false;
+                try {
+                    ok = document.execCommand('copy');
+                } catch (err) {
+                    ok = false;
+                }
+                document.body.removeChild(textarea);
+                showResult(ok ? 'COPIED!' : 'COPY FAILED');
+            };
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(citeText.textContent)
+                    .then(() => showResult('COPIED!'))
+                    .catch(fallbackCopy);
+            } else {
+                fallbackCopy();
             }
         });
     }

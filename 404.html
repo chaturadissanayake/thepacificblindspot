@@ -130,7 +130,6 @@
         </div>
     </section>
 
-    <!-- ============ FOOTER ============ -->
     <footer class="terminal-footer">
         <svg class="footer-contours" viewBox="0 0 1440 420" preserveAspectRatio="none" aria-hidden="true">
             <g class="contour-set" id="footer-contours"></g>
@@ -170,11 +169,7 @@
 </main>
 
 <script src="js/utils.js"></script>
-<!-- This page intentionally does not load animations.js: that file's
-     DOMContentLoaded block calls five D3 chart initializers and a hero
-     scroll loop this static page has no elements for, and D3 itself is
-     never loaded here. Wiring up just the mobile menu toggle instead,
-     mirroring animations.js's own logic so behavior matches index.html. -->
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const menuToggle = document.querySelector('.mobile-menu-toggle');

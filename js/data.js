@@ -41,7 +41,7 @@ const AppData = {
         id: `station-${i}`,
         isActive: Math.random() < (GBON_SIDS_SURFACE_PCT / 100),
         threshold: Math.random(),
-        lat: Math.random() * 2 - 1, 
+        lat: Math.random() * 2 - 1,
         lon: Math.random() * 2 - 1
     })),
 
@@ -58,7 +58,7 @@ const AppData = {
         "Naoero": "Nauru",
         "Micronesia, Federated State of": "Micronesia"
     },
-    
+
     meteoStations: groupedMeteo,
 
     exposure: groupedExposure,
@@ -66,41 +66,42 @@ const AppData = {
     exposureAvgAnnualLoss: mappedLoss,
 
     historicalFlooding: [
-        {"year": 1979, "days": 0}, {"year": 1980, "days": 0}, {"year": 1981, "days": 0}, {"year": 1982, "days": 0}, 
-        {"year": 1983, "days": 1}, {"year": 1984, "days": 0}, {"year": 1985, "days": 0}, {"year": 1986, "days": 0}, 
-        {"year": 1987, "days": 1}, {"year": 1988, "days": 0}, {"year": 1989, "days": 0}, {"year": 1990, "days": 0}, 
-        {"year": 1991, "days": 0}, {"year": 1992, "days": 0}, {"year": 1993, "days": 0}, {"year": 1994, "days": 0}, 
-        {"year": 1995, "days": 0}, {"year": 1996, "days": 0}, {"year": 1997, "days": 3}, {"year": 1998, "days": 0}, 
-        {"year": 1999, "days": 0}, {"year": 2000, "days": 2}, {"year": 2001, "days": 3}, {"year": 2002, "days": 1}, 
-        {"year": 2003, "days": 0}, {"year": 2004, "days": 1}, {"year": 2005, "days": 2}, {"year": 2006, "days": 2}, 
-        {"year": 2007, "days": 2}, {"year": 2008, "days": 5}, {"year": 2009, "days": 10}, {"year": 2010, "days": 2}, 
-        {"year": 2011, "days": 4}, {"year": 2012, "days": 4}, {"year": 2013, "days": 4}, {"year": 2014, "days": 7}, 
-        {"year": 2015, "days": 2}
+        {"year": 1979, "days": 0}, {"year": 1980, "days": 0}, {"year": 1981, "days": 0}, {"year": 1982, "days": 0},
+        {"year": 1983, "days": 0}, {"year": 1984, "days": 0}, {"year": 1985, "days": 0}, {"year": 1986, "days": 0},
+        {"year": 1987, "days": 0}, {"year": 1988, "days": 0}, {"year": 1989, "days": 0}, {"year": 1990, "days": 0},
+        {"year": 1991, "days": 0}, {"year": 1992, "days": 0}, {"year": 1993, "days": 0}, {"year": 1994, "days": 0},
+        {"year": 1995, "days": 0}, {"year": 1996, "days": 0}, {"year": 1997, "days": 0}, {"year": 1998, "days": 0},
+        {"year": 1999, "days": 0}, {"year": 2000, "days": 0}, {"year": 2001, "days": 0}, {"year": 2002, "days": 0},
+        {"year": 2003, "days": 0}, {"year": 2004, "days": 0}, {"year": 2005, "days": 0}, {"year": 2006, "days": 0},
+        {"year": 2007, "days": 0}, {"year": 2008, "days": 0}, {"year": 2009, "days": 0}, {"year": 2010, "days": 0},
+        {"year": 2011, "days": 1}, {"year": 2012, "days": 0}, {"year": 2013, "days": 0}, {"year": 2014, "days": 0},
+        {"year": 2016, "days": 3}, {"year": 2017, "days": 2}, {"year": 2018, "days": 3}, {"year": 2019, "days": 14},
+        {"year": 2020, "days": 0}, {"year": 2021, "days": 1}, {"year": 2022, "days": 9}, {"year": 2023, "days": 4},
+        {"year": 2024, "days": 0}, {"year": 2025, "days": 6}, {"year": 2026, "days": 9},
     ],
 
-    historicalSeaLevel: [
-        {"year": 1993, "val": 0.00}, {"year": 1994, "val": 0.77}, {"year": 1995, "val": 1.33}, {"year": 1996, "val": 1.64}, 
-        {"year": 1997, "val": 1.42}, {"year": 1998, "val": 1.84}, {"year": 1999, "val": 1.67}, {"year": 2000, "val": 2.39}, 
-        {"year": 2001, "val": 2.95}, {"year": 2002, "val": 3.12}, {"year": 2003, "val": 2.96}, {"year": 2004, "val": 3.32}, 
-        {"year": 2005, "val": 3.63}, {"year": 2006, "val": 3.96}, {"year": 2007, "val": 3.94}, {"year": 2008, "val": 4.05}, 
-        {"year": 2009, "val": 4.39}, {"year": 2010, "val": 5.09}, {"year": 2011, "val": 4.94}, {"year": 2012, "val": 5.53}, 
-        {"year": 2013, "val": 6.29}, {"year": 2014, "val": 6.27}, {"year": 2015, "val": 6.72}, {"year": 2016, "val": 7.27}, 
-        {"year": 2017, "val": 7.34}, {"year": 2018, "val": 7.62}, {"year": 2019, "val": 7.94}, {"year": 2020, "val": 8.45}, 
-        {"year": 2021, "val": 9.00}, {"year": 2022, "val": 9.35}, {"year": 2023, "val": 9.69}, {"year": 2024, "val": 10.18}, 
-        {"year": 2025, "val": 10.49}
-    ],
+historicalSeaLevel: [
+    {"year": 1993, "val": 1.36}, {"year": 1994, "val": 0.95}, {"year": 1995, "val": 3.92}, {"year": 1996, "val": 3.30},
+    {"year": 1997, "val": -1.44}, {"year": 1998, "val": -4.88}, {"year": 1999, "val": 5.16}, {"year": 2000, "val": 8.28},
+    {"year": 2001, "val": 3.41}, {"year": 2002, "val": 4.87}, {"year": 2003, "val": 4.70}, {"year": 2004, "val": 5.75},
+    {"year": 2005, "val": 11.47}, {"year": 2006, "val": 3.23}, {"year": 2007, "val": 5.76}, {"year": 2008, "val": 8.67},
+    {"year": 2009, "val": 1.41}, {"year": 2010, "val": 12.73}, {"year": 2011, "val": 9.17}, {"year": 2012, "val": 2.24},
+    {"year": 2013, "val": 3.48}, {"year": 2014, "val": 6.88}, {"year": 2015, "val": 5.73}, {"year": 2016, "val": 13.38},
+    {"year": 2017, "val": 11.43}, {"year": 2018, "val": 13.95}, {"year": 2019, "val": 10.77}, {"year": 2020, "val": 15.64},
+    {"year": 2021, "val": 14.78}, {"year": 2022, "val": 12.83}, {"year": 2023, "val": 4.82}, {"year": 2024, "val": 9.73}
+],
 
-    projections: {
-        lower: [
-            { year: 2100, val: 44.00 }
-        ],
-        typical: [
-            { year: 2100, val: 53.00 }
-        ],
-        higher: [
-            { year: 2100, val: 74.00 }
-        ]
-    },
+projections: {
+    lower: [
+        { year: 2100, val: 44.00 }
+    ],
+    typical: [
+        { year: 2100, val: 55.00 }
+    ],
+    higher: [
+        { year: 2100, val: 77.00 }
+    ]
+},
 
     funding: [
         { country: 'Kiribati', partner: 'Australia', entity: 'UNEP', phase: 'Investment', status: 'Approved', readiness: 105255, investment: 535000, total: 640255 },

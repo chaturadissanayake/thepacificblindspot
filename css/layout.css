@@ -14,7 +14,6 @@
     transition: width 0.1s ease-out;
 }
 
-/* Mobile Toast Notification (Hidden on Desktop) */
 .mobile-toast {
     display: none;
 }
@@ -27,9 +26,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 3rem;
+    padding: 0 var(--space-12);
     font-family: var(--font-sans);
-    font-size: 0.78rem;
+    font-size: var(--text-sm);
     font-weight: 600;
     letter-spacing: 0.04em;
     z-index: 1000;
@@ -47,8 +46,7 @@
     transform: translateY(0);
     opacity: 1;
     pointer-events: auto;
-    /* Elevation cue: a soft, wide shadow signals the nav now sits above
-       scrolling content rather than being just another flat bar. */
+
     box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
 }
 .nav-brand {
@@ -58,7 +56,7 @@
     color: var(--ink);
     display: flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: var(--space-2-5);
 }
 .nav-brand span {
     color: var(--accent-coral);
@@ -71,12 +69,12 @@
 }
 .nav-links {
     display: flex;
-    gap: 1.5rem;
+    gap: var(--space-6);
     align-items: center;
     padding-right: 120px;
 }
 .nav-links a {
-    padding: 0.4rem 0;
+    padding: var(--space-1-5) 0;
     position: relative;
     transition: opacity 0.2s, color 0.2s;
 }
@@ -99,7 +97,7 @@
     width: 1px;
     height: 14px;
     background-color: var(--line);
-    margin: 0 0.5rem;
+    margin: 0 var(--space-2);
 }
 .global-lang-switch {
     position: fixed;
@@ -108,10 +106,10 @@
     height: 64px;
     z-index: 1001;
     display: flex;
-    gap: 0.6rem;
+    gap: var(--space-2-5);
     align-items: center;
     font-family: var(--font-sans);
-    font-size: 0.75rem;
+    font-size: var(--text-sm);
     letter-spacing: 0.03em;
 }
 .lang-btn {
@@ -174,13 +172,7 @@
     height: 100%;
     z-index: 1;
 }
-/* 3-image scroll sequence, sitting between the base map and the radar
-   overlay. Crossfaded by JS (see renderHero) across the same scroll
-   progress bands that already drive the text frames, so image and
-   text pace together. Reduced opacity so the radar dots/readout and
-   text frames on top stay legible — this is atmosphere, not the
-   primary focal layer. Placeholder-holder pattern means dropping real
-   photos into assets/photos/hero-*.jpg later needs no markup change. */
+
 .hero-image-sequence {
     position: absolute;
     inset: 0;
@@ -206,7 +198,7 @@
     opacity: 0.55;
 }
 .hero-image-layer::before {
-    font-size: 0.7rem;
+    font-size: var(--text-xs);
     color: var(--ink-faint);
     background: repeating-linear-gradient(135deg, var(--bg-deep-soft), var(--bg-deep-soft) 10px, var(--bg-deep) 10px, var(--bg-deep) 20px);
 }
@@ -222,32 +214,32 @@
     bottom: 20vh;
     transform: translateX(-50%);
     display: flex;
-    flex-direction: column; /* Stacks the label, percentage, and footnote vertically */
-    align-items: center; /* Centers the stack */
+    flex-direction: column;
+    align-items: center;
     gap: 0;
     font-family: var(--font-sans);
     z-index: 2;
     width: 100%;
-    padding-bottom: 2rem;
+    padding-bottom: var(--space-8);
 }
 .report-header {
     width: 100%;
-    max-width: 1200px; /* FIX: Widened from 780px so the map can stretch */
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 7rem 2rem 5rem 2rem;
+    padding: var(--space-28) var(--space-8) var(--space-20) var(--space-8);
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
 }
 .central-figure {
-    position: relative; 
-    overflow: hidden; 
+    position: relative;
+    overflow: hidden;
     width: 100%;
     background: var(--bg-deep);
     color: var(--paper);
-    padding: 6rem 2rem 5rem 2rem; 
-    margin-bottom: 3.5rem; 
+    padding: var(--space-24) var(--space-8) var(--space-20) var(--space-8);
+    margin-bottom: var(--space-14);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -270,13 +262,13 @@
     width: 100%;
     max-width: 680px;
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: var(--space-12);
 }
 .central-chart-canvas {
     width: 100%;
     max-width: 960px;
     height: auto;
-    padding: 0 2rem; 
+    padding: 0 var(--space-8);
     margin: 0 auto;
     display: flex;
     align-items: center;
@@ -287,14 +279,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 5rem;
+    margin-bottom: var(--space-20);
     position: relative;
 }
 .article-copy {
     width: 100%;
     max-width: 680px;
-    margin-bottom: 3rem;
-    padding: 0 2rem;
+    margin-bottom: var(--space-12);
+    padding: 0 var(--space-8);
 }
 .article-graphic {
     width: 100%;
@@ -303,13 +295,6 @@
     align-items: center;
 }
 
-/* ---------------------------------------------------------------
-   IMAGE PLACEHOLDER / FALLBACK SYSTEM
-   utils.js:wireImageFallbacks() toggles these classes on the closest
-   [data-img-holder] (or the <img>'s parent) when a real asset is
-   missing or has loaded. Keeps layout/spacing identical either way,
-   so dropping a real photo in later never causes a layout shift.
-   --------------------------------------------------------------- */
 .img-placeholder-holder {
     position: relative;
     width: 100%;
@@ -333,31 +318,26 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1.5rem;
+    padding: var(--space-6);
     text-align: center;
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: var(--text-sm);
     letter-spacing: 0.04em;
     color: var(--ink-faint);
     background: repeating-linear-gradient(135deg, var(--bg-paper-soft), var(--bg-paper-soft) 10px, var(--bg-paper) 10px, var(--bg-paper) 20px);
     opacity: 1;
     transition: opacity 0.3s ease;
 }
-/* Real image loaded: hide the placeholder pattern/label */
+
 .img-placeholder-holder.img-fallback-loaded::before {
     opacity: 0;
     pointer-events: none;
 }
-/* Load failed (or no src yet): keep the placeholder visible, hide the broken <img> glyph */
+
 .img-placeholder-holder.img-fallback-active img {
     opacity: 0;
 }
 
-/* Chapter 06 funding — a single proportional strip built in
-   Charts.initFunding/updateFunding (animations.js). Plain flex/width,
-   not SVG: it's one bar sized to the container, so it always fills
-   .chart-canvas the same way every other chart's full-width SVG does,
-   with no fixed viewBox aspect ratio to look small or off-center at. */
 .funding-proportional {
     width: 100%;
 }
@@ -368,14 +348,14 @@
     border-radius: 6px;
     overflow: hidden;
     background: var(--bg-paper-soft);
-    margin-bottom: 1.75rem;
+    margin-bottom: var(--space-7);
 }
 .funding-bar-segment {
     display: flex;
     align-items: center;
     justify-content: center;
     height: 100%;
-    min-width: 28px; /* keeps the 1-country "Gap" segment legible even at its true 12.5% share */
+    min-width: 28px;
     cursor: pointer;
 }
 .funding-bar-segment:not(:last-child) {
@@ -384,48 +364,44 @@
 .funding-segment-count {
     font-family: var(--font-display);
     font-weight: 600;
-    font-size: 1.3rem;
+    font-size: var(--text-lg);
 }
 .funding-bar-labels {
     display: flex;
     align-items: flex-start;
-    gap: 1.5rem;
+    gap: var(--space-6);
     width: 100%;
 }
 .funding-label-col {
-    flex-grow: 1; /* overridden inline per-column to match its segment's share */
+    flex-grow: 1;
     flex-basis: 0;
     min-width: 0;
 }
 .funding-label-title {
     font-family: var(--font-sans);
-    font-size: 0.95rem;
+    font-size: var(--text-base);
     font-weight: 700;
     letter-spacing: -0.01em;
     color: var(--ink);
-    margin-bottom: 0.2rem;
+    margin-bottom: var(--space-1);
 }
 .funding-label-sub {
     font-family: var(--font-sans);
-    font-size: 0.8rem;
+    font-size: var(--text-sm);
     color: var(--ink-soft);
-    margin-bottom: 0.45rem;
+    margin-bottom: var(--space-2);
 }
 .funding-label-countries {
     font-family: var(--font-sans);
-    font-size: 0.78rem;
+    font-size: var(--text-sm);
     color: var(--ink-faint);
     line-height: 1.5;
 }
 @media (max-width: 560px) {
-    /* Text columns matching the bar's proportional widths get too
-       narrow to read once the row is this tight (the Gap column would
-       be ~12% of a ~300px screen). The bar itself stays proportional —
-       it reads fine at any width — but the supporting text below it
-       drops to a normal, fully-legible vertical stack. */
+
     .funding-bar-labels {
         flex-direction: column;
-        gap: 1.25rem;
+        gap: var(--space-5);
     }
     .funding-label-col {
         flex-grow: 0 !important;
@@ -437,11 +413,11 @@
     position: absolute;
     max-width: 200px;
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: var(--text-sm);
     line-height: 1.4;
     color: var(--ink);
     background: var(--paper-soft);
-    padding: 0.5rem 0.7rem;
+    padding: var(--space-2) var(--space-3);
     border-radius: 2px;
     box-shadow: var(--shadow-soft);
     pointer-events: none;
@@ -449,7 +425,7 @@
 .annotated-callout .callout-label {
     display: block;
     font-weight: 700;
-    margin-bottom: 0.2rem;
+    margin-bottom: var(--space-1);
     color: var(--accent-ocean);
 }
 
@@ -457,12 +433,12 @@
     width: 100%;
     max-width: 960px;
     height: auto;
-    min-height: 260px; 
+    min-height: 260px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 2.5rem auto; /* FIX: Restored to standard 2.5rem spacing so it is consistent globally */
-    padding: 0 2rem; 
+    margin: 0 auto var(--space-10) auto;
+    padding: 0 var(--space-8);
 }
 .chart-canvas.full-bleed-canvas {
     max-width: none;
@@ -471,7 +447,7 @@
     min-height: 0;
     position: relative;
     background: var(--bg-paper-soft);
-    padding: 3rem 0;
+    padding: var(--space-12) 0;
 }
 .chart-canvas svg {
     width: 100%;
@@ -483,8 +459,8 @@
 .bleed-media {
     width: 100%;
     position: relative;
-    margin-top: 3rem;
-    margin-bottom: 4rem;
+    margin-top: var(--space-12);
+    margin-bottom: var(--space-16);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -498,12 +474,12 @@
 .media-gallery {
     width: 100%;
     max-width: 1000px;
-    margin: 0 auto 5rem auto;
-    padding: 0 2rem;
+    margin: 0 auto var(--space-20) auto;
+    padding: 0 var(--space-8);
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     grid-auto-rows: 11vw;
-    gap: 0.85rem;
+    gap: var(--space-3-5);
 }
 .media-gallery .media-tile:nth-child(1) { grid-column: span 4; grid-row: span 2; }
 .media-gallery .media-tile:nth-child(2) { grid-column: span 2; grid-row: span 1; }
@@ -515,8 +491,8 @@
     width: 100%;
     background: transparent;
     color: var(--ink);
-    padding: 5rem 2rem;
-    margin: 3rem 0;
+    padding: var(--space-20) var(--space-8);
+    margin: var(--space-12) 0;
     display: flex;
     justify-content: center;
     overflow: hidden;
@@ -526,9 +502,9 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); /* Perfectly centers the quote marks vertically */
+    transform: translate(-50%, -50%);
     font-family: var(--font-display);
-    font-size: 20rem;
+    font-size: var(--text-display-giant);
     color: var(--accent-gold);
     opacity: 0.12;
     z-index: 0;
@@ -541,21 +517,21 @@
     text-align: center;
     font-family: var(--font-display);
     font-style: italic;
-    font-size: clamp(1.5rem, 1.1rem + 1.2vw, 2.1rem);
+    font-size: var(--text-heading-md);
     line-height: 1.55;
 }
 .methodology-section {
     width: 100%;
     max-width: 780px;
-    margin: 0 auto 6rem auto;
-    padding: 0 2rem;
+    margin: 0 auto var(--space-24) auto;
+    padding: 0 var(--space-8);
 }
 .terminal-footer {
     position: relative;
     width: 100%;
     background-color: var(--bg-deep);
     color: var(--paper);
-    padding: 5rem 4rem 2rem 4rem;
+    padding: var(--space-20) var(--space-16) var(--space-8) var(--space-16);
     overflow: hidden;
 }
 .footer-main-grid {
@@ -563,43 +539,49 @@
     z-index: 1;
     display: grid;
     grid-template-columns: 1.5fr 2fr 2fr 1.5fr;
-    gap: 3rem;
+    gap: var(--space-12);
     max-width: 1400px;
-    margin: 0 auto 4rem auto;
+    margin: 0 auto var(--space-16) auto;
 }
 .footer-bottom-bar {
     position: relative;
     z-index: 1;
     max-width: 1400px;
     margin: 0 auto;
-    padding-top: 2rem;
+    padding-top: var(--space-8);
     border-top: 1px solid var(--line-on-dark);
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-family: var(--font-sans);
-    font-size: 0.8rem;
+    font-size: var(--text-sm);
     color: var(--ink-faint);
 }
 .footer-bottom-right {
     display: flex;
     align-items: center;
-    gap: 0.9rem;
+    gap: var(--space-3-5);
 }
 
-/* --- Mobile Menu Button Base --- */
 .mobile-menu-toggle {
     display: none;
     background: transparent;
     border: none;
+    border-radius: var(--radius-sm);
     color: var(--ink);
     cursor: pointer;
-    padding: 0.5rem;
+    padding: var(--space-2);
+    transition: opacity var(--duration-fast) ease;
 }
-/* Hamburger → X animation, driven purely by the aria-expanded state the
-   existing JS already sets — no extra script needed. Gives clear
-   "system status" feedback that the menu is open (Nielsen heuristic #1),
-   instead of an icon that looks identical whether the panel is open or not. */
+@media (hover: hover) and (pointer: fine) {
+    .mobile-menu-toggle:hover {
+        opacity: 0.65;
+    }
+}
+.mobile-menu-toggle:active {
+    opacity: 0.5;
+}
+
 .hbg-line {
     transform-origin: 12px 12px;
     transition: transform 0.3s var(--ease-editorial), opacity 0.2s ease;
@@ -614,29 +596,22 @@
     transform: translateY(-6px) rotate(-45deg);
 }
 
-/* --- TABLET & MOBILE OVERHAUL --- */
 @media (max-width: 1024px) {
-    /* Toast Notification. FIX: this used to be "display: flex" unconditionally,
-       so it rendered the instant the page loaded -- a grey strip pinned right
-       under the nav, above the hero, before the user had scrolled to any
-       chart it could plausibly refer to ("Some charts are best explored on
-       a larger screen" made no sense yet). It's now hidden by default and
-       only reveals itself (via animations.js) once the first chart scrolls
-       into view. */
+
     .mobile-toast {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        background: #2a2a2a; 
+        background: #2a2a2a;
         color: var(--paper);
-        padding: 0.8rem 1.5rem;
+        padding: var(--space-3) var(--space-6);
         position: fixed;
-        top: 64px; 
+        top: 64px;
         left: 0;
         width: 100%;
         z-index: 998;
         font-family: var(--font-sans);
-        font-size: 0.8rem;
+        font-size: var(--text-sm);
         font-weight: 500;
         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         transform: translateY(-100%);
@@ -650,12 +625,11 @@
         pointer-events: auto;
     }
     .mobile-toast button {
-        background: none; border: none; color: inherit; font-size: 1.5rem; cursor: pointer; line-height: 1; padding: 0 0.5rem;
+        background: none; border: none; color: inherit; font-size: var(--text-xl); cursor: pointer; line-height: 1; padding: 0 var(--space-2);
     }
 
-    /* Navbar & Mobile Hamburger Menu (Clean Divider Look) */
     .mobile-menu-toggle { display: block; }
-    .editorial-nav { padding: 0.5rem 1.5rem; height: 64px; }
+    .editorial-nav { padding: var(--space-2) var(--space-6); height: 64px; }
     .nav-links {
         position: fixed;
         top: 64px;
@@ -665,20 +639,20 @@
         background: var(--bg-paper);
         flex-direction: column;
         align-items: flex-start;
-        padding: 2rem 3rem;
+        padding: var(--space-8) var(--space-12);
         gap: 0;
         transform: translateX(100%);
         transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         z-index: 999;
     }
     .nav-links.nav-open { transform: translateX(0); }
-    .nav-links a { 
+    .nav-links a {
         display: block;
         width: 100%;
-        font-size: 1.3rem; 
-        font-weight: 500; 
+        font-size: var(--text-lg);
+        font-weight: 500;
         color: var(--ink);
-        padding: 1.25rem 0;
+        padding: var(--space-5) 0;
         border-bottom: 1px solid var(--line);
     }
     .mobile-chapter-menu {
@@ -691,29 +665,28 @@
     .nav-links .sub-nav-link {
         display: block;
         width: 100%;
-        font-size: 1.15rem;
+        font-size: var(--text-md-lg);
         font-weight: 400;
         color: var(--ink-soft);
-        padding: 0.8rem 0 0.8rem 1.5rem; /* Clean indent, no bullet space */
+        padding: var(--space-3) 0 var(--space-3) var(--space-6);
         border-bottom: none;
     }
     .global-lang-switch { right: 4.5rem; top: 16px; height: auto; }
 
-    /* Interactive Cards: Horizontal Swipe Carousel */
     .flip-card-grid {
         display: flex !important;
         flex-wrap: nowrap;
         overflow-x: auto;
         scroll-snap-type: x mandatory;
         -webkit-overflow-scrolling: touch;
-        gap: 1rem;
-        padding-bottom: 2rem;
-        margin-left: 0; 
+        gap: var(--space-4);
+        padding-bottom: var(--space-8);
+        margin-left: 0;
         margin-right: 0;
-        padding-left: 1.5rem;
-        padding-right: 1.5rem;
-        scrollbar-width: none; 
-        width: 100%; /* FIX: Keeps the carousel strictly inside the screen limits */
+        padding-left: var(--space-6);
+        padding-right: var(--space-6);
+        scrollbar-width: none;
+        width: 100%;
     }
     .flip-card-grid::-webkit-scrollbar { display: none; }
     .flip-card {
@@ -723,76 +696,60 @@
         min-height: auto;
     }
 
-    /* Horizontal Swipeable Charts */
     .chart-canvas {
         display: flex !important;
         overflow-x: auto !important;
         overflow-y: hidden;
         -webkit-overflow-scrolling: touch;
-        padding-left: 1.5rem;
-        padding-right: 1.5rem;
-        padding-bottom: 1.5rem; /* Space for the scrollbar */
+        padding-left: var(--space-6);
+        padding-right: var(--space-6);
+        padding-bottom: var(--space-6);
         justify-content: flex-start !important;
-        margin-bottom: 2.5rem !important;
-        
-        /* Force scrollbars visible */
-        scrollbar-width: thin; 
-        scrollbar-color: var(--accent-coral) var(--line); 
+        margin-bottom: var(--space-10) !important;
+
+        scrollbar-width: thin;
+        scrollbar-color: var(--accent-coral) var(--line);
     }
-    .chart-canvas::-webkit-scrollbar { 
-        display: block; 
+    .chart-canvas::-webkit-scrollbar {
+        display: block;
         height: 6px;
         -webkit-appearance: none;
     }
     .chart-canvas::-webkit-scrollbar-track {
-        background: var(--line); 
+        background: var(--line);
         border-radius: 4px;
-        margin: 0 1.5rem;
+        margin: 0 var(--space-6);
     }
     .chart-canvas::-webkit-scrollbar-thumb {
         background-color: var(--accent-coral);
         border-radius: 4px;
     }
     .chart-canvas svg {
-        min-width: 760px; 
+        min-width: 760px;
         height: auto;
     }
     #compliance-canvas svg {
-        min-width: 900px; /* FIX: Makes Chapter 1 chart larger/legible on mobile */
+        min-width: 900px;
     }
     #meteo-canvas svg {
-        min-width: 820px; /* Heatmap has 138 year-columns; needs real width to stay legible while swiping */
+        min-width: 820px;
     }
-    /* Hide the old fallback blocks completely */
-    .mobile-chart-fallback { display: none !important; } 
 
-    /* Footer Cleanup: stack columns. NOTE: this used to also set
-       "#footer-sources, .footer-col:nth-child(2) { display: none; }",
-       which hid the Data Sources column on any screen under 1024px.
-       That column is exactly what the nav's "Data" link
-       (href="#footer-sources") scrolls to, so on mobile that link led
-       to an invisible, zero-height target -- tapping it appeared to do
-       nothing. Keeping both columns visible (restyled for mobile below)
-       fixes that broken destination and keeps citations visible, which
-       matters on a data-journalism site. */
-    .footer-main-grid, .footer-main-grid.footer-grid--3col { display: flex; flex-direction: column; gap: 2.5rem; }
-    .footer-col:nth-child(2) .footer-text { font-size: 0.85rem; }
-    
-    .article-section { margin: 0 auto 5rem auto; }
-    .article-copy { padding: 0 1.5rem; }
-    .narrative-bridge { padding: 3.5rem 1.5rem; margin: 2.5rem 0; }
+    .mobile-chart-fallback { display: none !important; }
 
-    /* FIX: .media-gallery had no mobile rules at all. Its base layout is a
-       6-column mosaic with 11vw row heights, tuned for desktop image
-       proportions -- on a phone that squeezes every tile into a thin,
-       barely-there sliver instead of a photo. Simplify to a clean 2-column
-       grid with a fixed, legible tile height. */
+    .footer-main-grid, .footer-main-grid.footer-grid--3col { display: flex; flex-direction: column; gap: var(--space-10); }
+    .footer-col:nth-child(2) .footer-text { font-size: var(--text-sm-plus); }
+
+    .article-section { margin: 0 auto var(--space-20) auto; }
+    .article-copy { padding: 0 var(--space-6); }
+    .narrative-bridge { padding: var(--space-14) var(--space-6); margin: var(--space-10) 0; }
+
     .media-gallery {
         grid-template-columns: repeat(2, 1fr);
         grid-auto-rows: 34vw;
-        gap: 0.6rem;
-        padding: 0 1.5rem;
-        margin-bottom: 3.5rem;
+        gap: var(--space-2-5);
+        padding: 0 var(--space-6);
+        margin-bottom: var(--space-14);
     }
     .media-gallery .media-tile:nth-child(1) { grid-column: span 2; grid-row: span 1; }
     .media-gallery .media-tile:nth-child(2) { grid-column: span 1; grid-row: span 1; }
@@ -801,139 +758,119 @@
     .media-gallery .media-tile:nth-child(5) { grid-column: span 1; grid-row: span 1; }
 }
 
-/* Mobile Only Utility */
 .mobile-only { display: none; }
 
 @media (max-width: 560px) {
     .mobile-only { display: block; }
-    
-    /* FIX: Pristine Nav Alignment & EN/FR button fix */
-    .editorial-nav { height: 60px; padding: 0 1rem; display: flex; align-items: center; justify-content: space-between; }
-    .nav-brand { font-size: 0.68rem; max-width: 50%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; z-index: 1002; }
-    .nav-brand span { display: none; } 
-    
-    .global-lang-switch { position: fixed; top: 0; right: 4rem; height: 60px; display: flex; align-items: center; gap: 0.4rem; z-index: 1001; margin: 0; }
+
+    .editorial-nav { height: 60px; padding: 0 var(--space-4); display: flex; align-items: center; justify-content: space-between; }
+    .nav-brand { font-size: var(--text-xs); max-width: 50%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; z-index: 1002; }
+    .nav-brand span { display: none; }
+
+    .global-lang-switch { position: fixed; top: 0; right: 4rem; height: 60px; display: flex; align-items: center; gap: var(--space-1-5); z-index: 1001; margin: 0; }
     .mobile-menu-toggle { position: absolute; right: 0.5rem; top: 50%; transform: translateY(-50%); display: flex; align-items: center; justify-content: center; z-index: 1002; }
-    
+
     .mobile-toast { top: 60px; }
-    .nav-links { top: 60px; height: calc(100vh - 60px); padding: 2rem; }
-    
-    /* Typography & Hero */
-    .hero-kicker { white-space: normal; font-size: 0.65rem; letter-spacing: 0.1em; line-height: 1.4; }
-    .hero-title { font-size: clamp(1.4rem, 7.2vw, 2.3rem); white-space: nowrap !important; } /* FIX: Scaled down safely to guarantee single line */
-    .hero-dek { font-size: 1.15rem; padding: 0 1rem; max-width: 100%; } 
-    .radar-readout-value { font-size: 2.2rem; }
-    
-    /* Header Metadata */
-    .report-header { padding: 5rem 1.5rem 3.5rem 1.5rem; }
+    .nav-links { top: 60px; height: calc(100vh - 60px); padding: var(--space-8); }
+
+    .hero-kicker { white-space: normal; font-size: var(--text-2xs); letter-spacing: 0.1em; line-height: 1.4; }
+    .hero-title { font-size: clamp(1.4rem, 7.2vw, 2.3rem); white-space: nowrap !important; }
+    .hero-dek { font-size: var(--text-md-lg); padding: 0 var(--space-4); max-width: 100%; }
+    .radar-readout-value { font-size: var(--text-display-md); }
+
+    .report-header { padding: var(--space-20) var(--space-6) var(--space-14) var(--space-6); }
     .source-link, .footer-link { text-decoration: none !important; border-bottom: 1px solid rgba(178, 96, 117, 0.4); padding-bottom: 2px; }
     .on-dark .source-link { border-bottom-color: rgba(126, 178, 168, 0.4); }
 
-    /* Chart download / source-data actions: kept visible on mobile (a data
-       story's core CTA shouldn't disappear for the majority of visitors),
-       stacked full-width to match the other mobile button groups. */
-    .caption-actions { flex-direction: column; align-items: stretch; width: 100%; gap: 0.6rem; }
+    .caption-actions { flex-direction: column; align-items: stretch; width: 100%; gap: var(--space-2-5); }
     .caption-actions .download-btn { width: 100%; justify-content: center; }
 
-    /* FIX: .editorial-instruction had no mobile rules -- its desktop layout
-       centers a badge next to a full sentence, which crowds together and
-       wraps unevenly on a narrow phone. Stack and left-align instead. */
-    .editorial-instruction { flex-direction: column; align-items: flex-start; text-align: left; gap: 0.6rem; padding: 0 1.5rem; margin-bottom: 1.75rem; }
+    .editorial-instruction { flex-direction: column; align-items: flex-start; text-align: left; gap: var(--space-2-5); padding: 0 var(--space-6); margin-bottom: var(--space-7); }
 
-    /* Swipe Hint Styling */
-    .swipe-hint { font-family: var(--font-sans); font-size: 0.8rem; font-weight: 500; color: var(--ink-soft); text-align: left; margin-bottom: 0.75rem; padding: 0 1.5rem; opacity: 0.7; }
+    .swipe-hint { font-family: var(--font-sans); font-size: var(--text-sm); font-weight: 500; color: var(--ink-soft); text-align: left; margin-bottom: var(--space-3); padding: 0 var(--space-6); opacity: 0.7; }
     .swipe-hint.on-dark { color: var(--paper-soft); }
 
-    /* Clean Button Scrolling (No Cutoffs, No Shadows) */
     .chart-controls-wrapper { padding: 0 !important; width: 100%; background: transparent !important; box-shadow: none !important; border: none !important; }
-    
+
     .chart-filters {
         display: flex; flex-wrap: nowrap !important; overflow-x: auto !important;
         justify-content: flex-start; width: 100%; margin: 0;
-        padding: 0 1.5rem 1.5rem 1.5rem; 
-        -webkit-overflow-scrolling: touch; scrollbar-width: thin; 
+        padding: 0 var(--space-6) var(--space-6) var(--space-6);
+        -webkit-overflow-scrolling: touch; scrollbar-width: thin;
         scrollbar-color: var(--accent-coral) var(--line);
-        scroll-snap-type: x mandatory; /* FIX: Snaps items cleanly into view */
+        scroll-snap-type: x mandatory;
         background: transparent !important; box-shadow: none !important; border: none !important;
     }
-    .chart-filter-btn { 
-        flex: 0 0 auto; 
-        white-space: nowrap !important; 
-        background: transparent !important; 
-        box-shadow: none !important; 
-        margin-right: 0.5rem; 
-        padding: 0.65rem 1rem; 
-        border: 1px solid var(--line); 
-        border-radius: 4px; 
-        scroll-snap-align: start; /* FIX: Forces the first item (Vanuatu) to align at the start */
+    .chart-filter-btn {
+        flex: 0 0 auto;
+        white-space: nowrap !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        margin-right: var(--space-2);
+        padding: var(--space-2-5) var(--space-4);
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        scroll-snap-align: start;
     }
-    
-    /* Adds a styled scrollbar so users know they can swipe */
+
     .chart-filters::-webkit-scrollbar { display: block; height: 4px; -webkit-appearance: none; }
-    .chart-filters::-webkit-scrollbar-track { background: var(--line); border-radius: 4px; margin: 0 1.5rem; }
+    .chart-filters::-webkit-scrollbar-track { background: var(--line); border-radius: 4px; margin: 0 var(--space-6); }
     .chart-filters::-webkit-scrollbar-thumb { background-color: var(--accent-coral); border-radius: 4px; }
-    .chart-filters::after { content: ''; flex: 0 0 1.5rem; } /* Ensures right-side isn't clipped */
-    .chart-filter-btn { flex: 0 0 auto; white-space: nowrap !important; background: transparent !important; box-shadow: none !important; margin-right: 0.5rem; padding: 0.65rem 1rem; border: 1px solid var(--line); border-radius: 4px; }
+    .chart-filters::after { content: ''; flex: 0 0 1.5rem; }
+    .chart-filter-btn { flex: 0 0 auto; white-space: nowrap !important; background: transparent !important; box-shadow: none !important; margin-right: var(--space-2); padding: var(--space-2-5) var(--space-4); border: 1px solid var(--line); border-radius: 4px; }
     .chart-filter-btn.active { background: var(--ink) !important; color: var(--paper) !important; border-color: var(--ink) !important; }
-    
+
     .metric-toggles {
         display: flex; flex-wrap: nowrap !important; overflow-x: auto !important;
-        justify-content: flex-start; width: calc(100% - 3rem); 
-        margin: 0 1.5rem; padding: 0.5rem 0 1rem 0;
+        justify-content: flex-start; width: calc(100% - 3rem);
+        margin: 0 var(--space-6); padding: var(--space-2) 0 var(--space-4) 0;
         -webkit-overflow-scrolling: touch; scrollbar-width: none;
         border: none !important; background: transparent !important; box-shadow: none !important;
     }
     .metric-toggles::after { content: ''; flex: 0 0 1.5rem; }
-    .metric-toggles::-webkit-scrollbar { display: none; } /* Keep only the short metric toggle hidden */
-    
-    .metric-toggle-btn { flex: 0 0 auto; white-space: nowrap !important; border: 1px solid var(--line); border-radius: 4px; margin-right: 0.5rem; padding: 0.65rem 1rem; background: transparent; }
+    .metric-toggles::-webkit-scrollbar { display: none; }
+
+    .metric-toggle-btn { flex: 0 0 auto; white-space: nowrap !important; border: 1px solid var(--line); border-radius: 4px; margin-right: var(--space-2); padding: var(--space-2-5) var(--space-4); background: transparent; }
     .on-dark .metric-toggles { background: transparent !important; }
     .on-dark .metric-toggle-btn { border-color: rgba(255, 255, 255, 0.25); background: transparent !important; }
     .on-dark .metric-toggle-btn.active { background: var(--paper) !important; color: var(--bg-deep) !important; }
 
-    /* Dashboard Methodology Elements */
-    .methodology-section { padding: 0 1.5rem; box-sizing: border-box; } /* Guarantees safe space on mobile */
-    .data-download-actions { flex-direction: column; gap: 0.75rem; display: flex !important; }
+    .methodology-section { padding: 0 var(--space-6); box-sizing: border-box; }
+    .data-download-actions { flex-direction: column; gap: var(--space-3); display: flex !important; }
     .btn-primary, .btn-secondary { width: 100%; }
-    
-    /* Removed block/flex overrides so it stays perfectly inline just like desktop */
-    .clean-source-list { padding-right: 1rem; }
 
-    /* FIX: Citation Box Layout */
-    .integrated-citation { padding: 2rem 0; border-left: none; border-right: none; margin-top: 2rem; background: transparent; border-radius: 0; }
-    .citation-header-row { flex-direction: column; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem; }
-    .cite-title { margin-bottom: 0; font-size: 1.1rem; }
-    .citation-tabs { width: 100%; display: flex; border-bottom: 1px solid var(--line); background: transparent; border-radius: 0; gap: 1rem; }
-    .citation-tab { padding: 0 0 0.5rem 0; font-size: 0.7rem; text-align: left; border-right: none; }
-    .citation-content { flex-direction: column; align-items: stretch; gap: 1rem; width: 100%; min-width: 0; }
-    #cite-text { padding: 1.25rem; font-size: 0.8rem; border-radius: 4px; }
-    .copy-cite-btn { width: 100%; margin-top: 0.5rem; }
+    .clean-source-list { padding-right: var(--space-4); }
 
-    /* Stack Gallery & Flashcards */
-    .media-gallery { grid-template-columns: 1fr; grid-auto-rows: 56vw; padding: 0 1.25rem; }
+    .integrated-citation { padding: var(--space-8) 0; border-left: none; border-right: none; margin-top: var(--space-8); background: transparent; border-radius: 0; }
+    .citation-header-row { flex-direction: column; align-items: flex-start; gap: var(--space-4); margin-bottom: var(--space-6); }
+    .cite-title { margin-bottom: 0; font-size: var(--text-md); }
+    .citation-tabs { width: 100%; display: flex; border-bottom: 1px solid var(--line); background: transparent; border-radius: 0; gap: var(--space-4); }
+    .citation-tab { padding: 0 0 var(--space-2) 0; font-size: var(--text-xs); text-align: left; border-right: none; }
+    .citation-content { flex-direction: column; align-items: stretch; gap: var(--space-4); width: 100%; min-width: 0; }
+    #cite-text { padding: var(--space-5); font-size: var(--text-sm); border-radius: 4px; }
+    .copy-cite-btn { width: 100%; margin-top: var(--space-2); }
+
+    .media-gallery { grid-template-columns: 1fr; grid-auto-rows: 56vw; padding: 0 var(--space-5); }
     .media-gallery .media-tile:nth-child(1), .media-gallery .media-tile:nth-child(2), .media-gallery .media-tile:nth-child(3), .media-gallery .media-tile:nth-child(4), .media-gallery .media-tile:nth-child(5) { grid-column: span 1; grid-row: span 1; }
-    .central-figure { padding: 4rem 0 5rem 0; }
-    .central-figure-head { padding: 0 1.5rem; }
-    .caption-wrapper { padding: 0 1.5rem; }
+    .central-figure { padding: var(--space-16) 0 var(--space-20) 0; }
+    .central-figure-head { padding: 0 var(--space-6); }
+    .caption-wrapper { padding: 0 var(--space-6); }
     .flip-card { flex: 0 0 88vw; min-height: 320px; height: auto !important; }
-    .flip-card-front, .flip-card-back { padding: 2.25rem 1.5rem; }
-    /* FIX: Keep content top-aligned so the text and buttons stay in the exact same place across all cards, preventing layout shifts. */
+    .flip-card-front, .flip-card-back { padding: var(--space-9) var(--space-6); }
+
     .flip-card-front { justify-content: flex-start; gap: 0; }
     .flip-card-front .quiz-options { margin-top: 0; }
-    .flip-card-back { justify-content: flex-start; gap: 1.25rem; }
-    .narrative-bridge { padding: 1.5rem; margin: 0.5rem 0; display: flex; align-items: center; justify-content: center; } /* Tighter mobile spacing */
-    .narrative-bridge p { font-size: 1.2rem; line-height: 1.4; margin: 0; text-align: center; }
-    .narrative-bridge::before { font-size: 10rem; transform: translate(-50%, -50%); }
+    .flip-card-back { justify-content: flex-start; gap: var(--space-5); }
+    .narrative-bridge { padding: var(--space-6); margin: var(--space-2) 0; display: flex; align-items: center; justify-content: center; }
+    .narrative-bridge p { font-size: var(--text-md-lg); line-height: 1.4; margin: 0; text-align: center; }
 
-    /* Enlarge tap targets */
-    .download-btn { padding: 0.7rem 0.9rem; }
-    .chart-filter-btn { padding: 0.65rem 1rem; }
-    
-    /* FIX: Mobile Footer (Restore icons, remove gaps) */
-    .terminal-footer { padding: 2.5rem 1.5rem; }
-    .footer-main-grid, .footer-main-grid.footer-grid--3col { gap: 2rem !important; margin-bottom: 2rem; display: flex; flex-direction: column; }
-    .footer-bottom-bar { flex-direction: column; gap: 1rem; align-items: flex-start; text-align: left; padding-top: 1.5rem; }
+    .download-btn { padding: var(--space-3) var(--space-3-5); }
+    .chart-filter-btn { padding: var(--space-2-5) var(--space-4); }
+
+    .terminal-footer { padding: var(--space-10) var(--space-6); }
+    .footer-main-grid, .footer-main-grid.footer-grid--3col { gap: var(--space-8) !important; margin-bottom: var(--space-8); display: flex; flex-direction: column; }
+    .footer-bottom-bar { flex-direction: column; gap: var(--space-4); align-items: flex-start; text-align: left; padding-top: var(--space-6); }
     .social-icon { display: flex !important; margin: 0; padding: 0; }
-    .footer-bottom-left span, .footer-bottom-right span { display: block; margin-bottom: 0.25rem; }
-    .footer-bottom-right { width: 100%; justify-content: flex-start; flex-wrap: wrap; gap: 0.8rem; flex-direction: row; align-items: center; }
+    .footer-bottom-left span, .footer-bottom-right span { display: block; margin-bottom: var(--space-1); }
+    .footer-bottom-right { width: 100%; justify-content: flex-start; flex-wrap: wrap; gap: var(--space-3); flex-direction: row; align-items: center; }
 }
