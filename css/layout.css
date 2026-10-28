@@ -925,3 +925,37 @@
         display: none !important;
     }
 }
+/* v2 navigation: light, always visible, original icon */
+.editorial-nav { transform: none; opacity: 1; pointer-events: auto; height: 56px; padding: 0 var(--space-8); background: rgba(241, 246, 247, 0.95); color: var(--ink); border-bottom: 1px solid var(--line); box-shadow: none; letter-spacing: 0; }
+.nav-brand { text-transform: none; letter-spacing: -0.01em; font-family: var(--font-display); font-size: var(--text-md); font-weight: 700; color: var(--ink); gap: var(--space-2-5); white-space: nowrap; }
+.nav-links { padding-right: 0; gap: var(--space-6); }
+.nav-links a { color: var(--ink-soft); font-weight: 500; }
+.nav-links a:hover, .nav-links a[aria-current] { color: var(--ink); opacity: 1; }
+.nav-brand span { color: inherit; }
+/* current page: colour only, no line, no dot */
+.nav-links a { color: #587480; }
+.nav-links a:hover, .nav-links a[aria-current] { color: var(--ink); }
+.global-lang-switch { position: static; height: auto; gap: var(--space-1); margin-left: var(--space-2); }
+.nav-links .global-lang-switch .lang-btn { width: auto; height: auto; display: inline-block; border: 0; border-radius: 2px; padding: var(--space-1) var(--space-2); color: var(--ink-soft); font-weight: 600; box-shadow: none; }
+.nav-links .global-lang-switch .lang-btn.active { background: var(--ink); color: var(--paper); }
+.nav-links .global-lang-switch .lang-btn:hover:not(.active) { color: var(--ink); }
+.mobile-toast { top: 56px; }
+@media (max-width: 1024px) {
+    .nav-links { top: 56px; height: calc(100vh - 56px); background: var(--bg-paper); }
+    .nav-links a { color: var(--ink); }
+}
+/* balanced footer */
+.footer-main-grid.footer-grid--3col { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-12); align-items: start; }
+.footer-col .footer-heading { margin-bottom: var(--space-4); }
+.brand-col { gap: var(--space-2); margin-top: 0; }
+.footer-social { display: flex; gap: var(--space-4); margin-top: var(--space-2); }
+.footer-bottom-bar { justify-content: space-between; flex-wrap: wrap; gap: var(--space-6); }
+.footer-links { display: flex; gap: var(--space-6); }
+.footer-links a { color: var(--paper-soft); }
+.footer-links a:hover { color: #fff; }
+
+/* laptop screens: let the story start higher and keep charts inside one screen */
+@media (max-height: 820px) {
+    .report-header { padding-top: var(--space-16); margin-top: 0; margin-bottom: var(--space-10); }
+}
+.chart-canvas svg { max-height: max(380px, calc(100vh - 200px)); }

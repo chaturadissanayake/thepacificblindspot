@@ -1,43 +1,44 @@
 :root {
-    --bg-paper: #F9F9F6;
-    --bg-paper-soft: #F0F0EB;
-    --bg-deep: #0D1117;
-    --bg-deep-soft: #161B22;
-    --ink: #111111;
-    --ink-soft: #4B5563;
-    --ink-faint: #9CA3AF;
+    --bg-paper: #F1F6F7;
+    --bg-paper-soft: #E3EDEF;
+    --bg-deep: #06202B;
+    --bg-deep-soft: #0C3342;
+    --ink: #0A2430;
+    --ink-soft: #3C5560;
+    --ink-faint: #587480;
     --paper: #FFFFFF;
     --paper-soft: rgba(255, 255, 255, 0.85);
 
-    --accent-danger: #D9381E;
-    --accent-danger-soft: rgba(217, 56, 30, 0.1);
-    --accent-ocean: #005C8A;
-    --accent-ocean-soft: rgba(0, 92, 138, 0.1);
-    --accent-ocean-dark: #003B5C;
-    --accent-ocean-wash: rgba(0, 92, 138, 0.05);
-    --accent-warning: #E9C46A;
-    --accent-success: #2A9D8F;
+    --accent-danger: #D62839;
+    --accent-danger-soft: rgba(214, 40, 57, 0.1);
+    --accent-ocean: #1F5FA8;
+    --accent-ocean-soft: rgba(31, 95, 168, 0.1);
+    --accent-ocean-dark: #164A84;
+    --accent-ocean-wash: rgba(31, 95, 168, 0.05);
+    --accent-warning: #8CC8EE;
+    --accent-success: #8CC8EE;
 
     --accent-coral: var(--accent-danger);
     --accent-coral-soft: var(--accent-danger-soft);
-    --accent-coral-light: #E8705F;
-    --accent-coral-dark: #A32915;
+    --accent-coral-light: #E8727D;
+    --accent-coral-dark: #9E1B28;
     --accent-teal: var(--accent-ocean);
     --accent-teal-soft: var(--accent-ocean-soft);
     --accent-teal-dark: var(--accent-ocean-dark);
     --accent-gold: var(--accent-warning);
-    --accent-gold-soft: rgba(233, 196, 106, 0.2);
+    --accent-gold-soft: rgba(140, 200, 238, 0.2);
 
-    --line: #E5E7EB;
+    --line: #D3E0E4;
     --line-on-dark: rgba(255, 255, 255, 0.1);
-    --font-display: 'Fraunces', serif;
-    --font-sans: 'IBM Plex Sans', sans-serif;
-    --font-mono: 'IBM Plex Sans', sans-serif;
+    --font-display: 'Archivo', system-ui, sans-serif;
+    --font-sans: 'Archivo', system-ui, sans-serif;
+    --font-body: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+    --font-mono: var(--font-sans);
     --ease-editorial: cubic-bezier(0.16, 1, 0.3, 1);
     --duration-fast: 0.15s;
     --duration-base: 0.25s;
     --duration-slow: 0.4s;
-    --hover-lift: -4px;
+    --hover-lift: -2px;
 
     --space-0-5: 0.125rem;
     --space-1: 0.25rem;
@@ -120,7 +121,7 @@ h1, h2, h3 {
     letter-spacing: -0.01em;
 }
 p {
-    font-variant-numeric: oldstyle-nums;
+    font-variant-numeric: lining-nums;
 }
 a {
     color: inherit;
@@ -216,3 +217,11 @@ button {
         scroll-behavior: auto !important;
     }
 }
+/* v2: fluid root size so laptops (1280-1440) are smaller than large monitors */
+html { font-size: clamp(15.5px, 12.4px + 0.28125vw, 18px); }
+body { padding-top: 56px; }
+h1, h2, h3 { font-weight: 700; letter-spacing: -0.015em; }
+.article-copy p, .report-standfirst { font-family: var(--font-body); }
+/* text blocks no longer fade-and-slide; charts carry the motion */
+.reveal { opacity: 1; transform: none; transition: none; will-change: auto; }
+.progress-bar { background: var(--accent-warning); }

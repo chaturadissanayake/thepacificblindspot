@@ -9,7 +9,7 @@ const Charts = {
         const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
         return v || fallback || '#111111';
     },
-    get teal() { return this.cssVar('--accent-ocean', '#0A6C90'); },
+    get teal() { return '#1F5FA8'; },
     get gold() { return this.cssVar('--accent-warning', '#E9C46A'); },
     get coral() { return this.cssVar('--accent-danger', '#C1443B'); },
     get coralDark() { return this.cssVar('--accent-coral-dark', '#A32915'); },
@@ -35,6 +35,50 @@ const Charts = {
                     this.textContent = format(i(t));
                 };
             });
+    },
+
+    scrubScene(scene, canvas) {
+        if (canvas._scrubbing) return;
+        const S = this.state, clamp = Utils.clamp, ease = d3.easeCubicOut, self = this;
+        const bp = (p, i, n) => ease(clamp(p * 1.6 - (i / Math.max(n, 1)) * 0.6, 0, 1));
+        const apply = {
+            compliance: p => { const s = S.compliance; if (!s) return;
+                s.row.select('.active-bar').attr('width', d => s.x(d.value * ease(p)) - s.x(0));
+                s.row.select('.value-text').attr('x', d => s.x(d.value * ease(p)) + 10).attr('text-anchor', 'start')
+                    .attr('fill', d => d.category.includes('Surface') ? self.coral : self.gold).attr('opacity', clamp((p - 0.75) / 0.25, 0, 1)); },
+            meteo: p => { const s = S.meteo; if (!s) return; const w = s.gridW * p, on = p > 0 && p < 1 ? 1 : 0;
+                s.clipRect.attr('width', w);
+                s.edge.attr('x1', s.left + w).attr('x2', s.left + w).attr('opacity', on);
+                s.edgeLabel.attr('x', s.left + w).attr('opacity', on).text(Math.round(s.y0 + (s.y1 - s.y0) * p)); },
+            flooding: p => { const s = S.flooding; if (!s) return; const n = s.bars.size();
+                s.bars.attr('y', (d, i) => s.y(d.days * bp(p, i, n)))
+                    .attr('height', (d, i) => s.height - s.margin.bottom - s.y(d.days * bp(p, i, n))); },
+            exposure: p => { const s = S.exposure; if (!s || s.touched || s.mode !== 'affected' || !s.bars) return; const n = s.bars.size();
+                s.bars.attr('y', (d, i) => s.y((d.affected || 0) * bp(p, i, n)))
+                    .attr('height', (d, i) => Math.max(0, s.height - s.margin.bottom - s.y((d.affected || 0) * bp(p, i, n))));
+                d3.select(canvas).selectAll('.affected-label')
+                    .attr('y', (d, i) => s.y((d.affected || 0) * bp(p, i, n)) - 8)
+                    .style('opacity', (d, i) => clamp((bp(p, i, n) - 0.8) / 0.2, 0, 1)); },
+            funding: p => { const s = S.funding; if (!s) return; const n = s.data.length;
+                [[s.readinessPanel, 'readiness'], [s.totalPanel, 'total']].forEach(([panel, key]) => {
+                    panel.rows.select('.funding-bar').attr('width', (d, i) => Math.max(0, panel.x(d[key] * bp(p, i, n)) - panel.margin.left));
+                    panel.rows.select('.funding-bar-label').attr('x', (d, i) => panel.x(d[key] * bp(p, i, n)) + 8)
+                        .style('opacity', (d, i) => clamp((bp(p, i, n) - 0.8) / 0.2, 0, 1)); }); },
+            projection: p => { if (p > 0.3 && !canvas._fired && S.projection) { canvas._fired = true; self.updateProjection(S.projection.activeScenario); } }
+        }[scene];
+        if (!apply) return;
+        canvas._scrubbing = true;
+        const reduced = Utils.prefersReducedMotion();
+        const measure = () => { const r = canvas.getBoundingClientRect(), vh = window.innerHeight;
+            if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 4) return 1;
+            const centre = r.top + r.height / 2;
+            return clamp((vh * 0.78 - centre) / (vh * 0.32), 0, 1); };
+        const run = () => { const p = reduced ? 1 : measure(); apply(p);
+            if (p >= 1) { window.removeEventListener('scroll', handler); window.removeEventListener('resize', handler); } };
+        const handler = Utils.onRaf(run);
+        window.addEventListener('scroll', handler, { passive: true });
+        window.addEventListener('resize', handler);
+        run();
     },
 
     initRadarGrid(selector) {
@@ -105,7 +149,7 @@ const Charts = {
 
         const color = d3.scaleLinear()
             .domain([0, 1, AppData.meteoMaxStations])
-            .range([this.cssVar('--bg-paper-soft', '#F0F0EB'), 'rgba(0, 92, 138, 0.35)', this.teal])
+            .range([this.cssVar('--bg-paper-soft', '#F0F0EB'), 'rgba(31, 95, 168, 0.4)', '#164A84'])
             .interpolate(d3.interpolateRgb);
 
         const rowLabels = svg.append('g').attr('class', 'd3-axis meteo-row-labels');
@@ -124,6 +168,14 @@ const Charts = {
         });
 
         const grid = svg.append('g').attr('class', 'meteo-grid').attr('transform', `translate(${margin.left}, ${margin.top})`);
+        const clipId = 'meteo-clip-' + Math.random().toString(36).slice(2, 7);
+        const defs = svg.append('defs');
+        const hatchId = 'hatch-gap-light';
+        defs.append('pattern').attr('id', hatchId).attr('patternUnits', 'userSpaceOnUse').attr('width', 6).attr('height', 6).attr('patternTransform', 'rotate(45)')
+            .append('line').attr('x1', 0).attr('y1', 0).attr('x2', 0).attr('y2', 6).attr('stroke', 'rgba(10,36,48,0.22)').attr('stroke-width', 1.4);
+        const clipRect = defs.append('clipPath').attr('id', clipId).append('rect')
+            .attr('x', margin.left).attr('y', margin.top - 4).attr('width', 0).attr('height', countries.length * (cellH + rowGap) + 8);
+        grid.attr('clip-path', `url(#${clipId})`);
         const cells = [];
         countries.forEach((country, rowIndex) => {
             const steps = (AppData.meteoStations[country] || []).slice().sort((a, b) => a.year - b.year);
@@ -144,8 +196,8 @@ const Charts = {
             .attr('y', d => d.rowIndex * (cellH + rowGap))
             .attr('width', cellW - 1)
             .attr('height', cellH)
-            .attr('fill', d => color(d.stations))
-            .attr('opacity', 0)
+            .attr('fill', d => d.stations === 0 ? `url(#${hatchId})` : color(d.stations))
+            .attr('opacity', 1)
             .on('mousemove', (event, d) => {
                 const label = (AppData.meteoCountryLabels && AppData.meteoCountryLabels[d.country]) || d.country;
                 const stationWord = d.stations === 1 ? 'station' : 'stations';
@@ -153,7 +205,7 @@ const Charts = {
             })
             .on('mouseleave', () => Utils.tooltip.hide());
 
-        cellSel.transition().duration(600).delay((d, i) => Math.min(i * 0.4, 500)).attr('opacity', 1);
+        
 
         const xAxisGroup = svg.append('g')
             .attr('class', 'd3-axis')
@@ -176,7 +228,7 @@ const Charts = {
         const legendWidth = legendSteps.length * legendItemW;
         const legend = svg.append('g').attr('transform', `translate(${width - margin.right - legendWidth + 20}, 16)`);
         legendSteps.forEach((v, i) => {
-            legend.append('rect').attr('x', i * legendItemW).attr('y', -12).attr('width', 16).attr('height', 16).attr('fill', color(v));
+            legend.append('rect').attr('x', i * legendItemW).attr('y', -12).attr('width', 16).attr('height', 16).attr('fill', v === 0 ? `url(#${hatchId})` : color(v));
             legend.append('text').attr('x', i * legendItemW + 24).attr('y', 2)
                 .style('font-family', 'var(--font-sans)')
                 .style('font-size', '14px')
@@ -184,11 +236,14 @@ const Charts = {
                 .text(v === 0 ? 'None' : v);
         });
 
-        this.state.meteo = { svg, initialized: true };
+        const edge = svg.append('line').attr('y1', margin.top - 4).attr('y2', margin.top + countries.length * (cellH + rowGap) + 4)
+            .attr('stroke', this.ink).attr('stroke-width', 1).attr('opacity', 0).style('pointer-events', 'none');
+        const edgeLabel = svg.append('text').attr('y', margin.top - 12).attr('text-anchor', 'middle').attr('opacity', 0)
+            .attr('fill', this.ink).style('font-size', '14px').style('font-weight', '700').style('pointer-events', 'none');
+        this.state.meteo = { svg, cellSel, clipRect, edge, edgeLabel, left: margin.left, gridW: years.length * cellW, y0: yearStart, y1: yearEnd, initialized: true };
     },
 
-    updateMeteo() {
-    },
+    updateMeteo() {},
 
     initCompliance() {
         const container = Utils.select('#compliance-canvas');
@@ -253,7 +308,7 @@ const Charts = {
             .attr('y', d => y(d.category))
             .attr('height', y.bandwidth())
             .attr('width', x(100) - x(0))
-            .attr('fill', this.cssVar('--bg-deep-soft', '#161B22'));
+            .attr('fill', 'url(#hatch-gap-dark)');
 
         row.append('rect')
             .attr('class', 'active-bar')
@@ -261,7 +316,7 @@ const Charts = {
             .attr('y', d => y(d.category))
             .attr('height', y.bandwidth())
             .attr('width', 0)
-            .attr('fill', this.gold);
+            .attr('fill', d => d.category.includes('Surface') ? this.coral : this.gold);
 
         row.append('text')
             .attr('class', 'value-text')
@@ -271,10 +326,13 @@ const Charts = {
             .style('font-size', '12px').style('font-weight', '700').style('font-family', 'var(--font-mono)')
             .attr('opacity', 0);
 
+        const defs = svg.append('defs');
+        defs.append('pattern').attr('id', 'hatch-gap-dark').attr('patternUnits', 'userSpaceOnUse').attr('width', 6).attr('height', 6).attr('patternTransform', 'rotate(45)')
+            .append('line').attr('x1', 0).attr('y1', 0).attr('x2', 0).attr('y2', 6).attr('stroke', 'rgba(255,255,255,0.28)').attr('stroke-width', 1.4);
         const legend = svg.append('g').attr('transform', `translate(${margin.left}, 10)`);
         legend.append('rect').attr('x', 0).attr('y', -5).attr('width', 10).attr('height', 10).attr('fill', this.gold);
         legend.append('text').attr('x', 18).attr('y', 4).text('Active Infrastructure').style('font-size', '11px').attr('fill', 'rgba(255,255,255,0.7)');
-        legend.append('rect').attr('x', 160).attr('y', -5).attr('width', 10).attr('height', 10).attr('fill', this.cssVar('--bg-deep-soft', '#161B22'));
+        legend.append('rect').attr('x', 160).attr('y', -5).attr('width', 10).attr('height', 10).attr('fill', 'url(#hatch-gap-dark)');
         legend.append('text').attr('x', 178).attr('y', 4).text('Missing Data Gap').style('font-size', '11px').attr('fill', 'rgba(255,255,255,0.7)');
 
         this.state.compliance = { row, x };
@@ -287,7 +345,7 @@ const Charts = {
         if (filterType) {
             if (filterType === 'sids') {
                 row.transition().duration(this.dur(400)).ease(d3.easeCubicOut)
-                    .style('opacity', d => (d.group === 'sids' || d.group === 'pacific') ? 1 : 0.25);
+                    .style('opacity', d => (d.group === 'sids' || d.group === 'pacific') ? 1 : 0.4);
             } else {
                 row.transition().duration(this.dur(400)).ease(d3.easeCubicOut).style('opacity', 1);
             }
@@ -316,6 +374,12 @@ const Charts = {
         this.renderExposureAffected(container, "Vanuatu", false);
     },
 
+    exposureRows(country) {
+        const years = [...new Set(Object.values(AppData.exposure).flat().map(r => r.year))].sort((p, q) => p - q);
+        const byYear = new Map((AppData.exposure[country] || []).map(r => [r.year, r.affected]));
+        return years.map(year => ({ year, affected: byYear.has(year) ? byYear.get(year) : null }));
+    },
+
     renderExposureAffected(container, country, animate = true) {
         container.innerHTML = '';
         const width = 960, height = 500;
@@ -324,7 +388,7 @@ const Charts = {
             .attr('viewBox', `0 0 ${width} ${height}`)
             .attr('preserveAspectRatio', 'xMidYMid meet');
 
-        const data = AppData.exposure[country] || [];
+        const data = this.exposureRows(country);
 
         const x = d3.scaleBand().domain(data.map(d => d.year)).range([margin.left, width - margin.right]).padding(0.2);
         const y = d3.scaleLinear().domain([0, (d3.max(data, d => d.affected) || 0) * 1.15]).range([height - margin.bottom, margin.top]);
@@ -367,8 +431,7 @@ const Charts = {
                 .attr('y', d => y(d.affected || 0))
                 .attr('height', d => Math.max(0, height - margin.bottom - y(d.affected || 0)));
         } else {
-            bars.attr('y', d => y(d.affected || 0))
-                .attr('height', d => Math.max(0, height - margin.bottom - y(d.affected || 0)));
+            bars.attr('y', height - margin.bottom).attr('height', 0);
         }
 
         const labels = svg.selectAll('.affected-label').data(data).enter().append('text')
@@ -389,7 +452,7 @@ const Charts = {
                 .attr('y', d => y(d.affected || 0) - 8)
                 .style('opacity', 1);
         } else {
-            labels.attr('y', d => y(d.affected || 0) - 8).style('opacity', 1);
+            labels.attr('y', height - margin.bottom).style('opacity', 0);
         }
 
         const stakesSection = document.getElementById('stakes');
@@ -454,7 +517,7 @@ const Charts = {
             .attr('y', d => y(d.country))
             .attr('height', y.bandwidth())
             .attr('width', 0)
-            .attr('fill', d => colorScale(d.usd))
+            .attr('fill', this.coral)
             .style('cursor', 'pointer')
             .on('mouseenter', (event, d) => Utils.tooltip.show(
                 event,
@@ -497,7 +560,7 @@ const Charts = {
         const colorScale = d3.scaleLinear().domain([0, d3.max(data, d => d.usd)]).range([this.cssVar('--accent-coral-light', '#E8705F'), this.coralDark]);
 
         avgBars.transition('highlight').duration(300)
-            .attr('fill', d => colorScale(d.usd))
+            .attr('fill', this.coral)
             .attr('opacity', d => (d.country.trim().toLowerCase() === country.trim().toLowerCase()) ? 1 : 0.25);
     },
 
@@ -507,6 +570,7 @@ const Charts = {
         const container = Utils.select('#exposure-canvas');
         if (!container) return;
 
+        if (country || metric) state.touched = true;
         if (country) state.currentCountry = country;
         if (metric) state.currentMetric = metric;
 
@@ -529,7 +593,7 @@ const Charts = {
             return;
         }
 
-        const data = AppData.exposure[state.currentCountry] || [];
+        const data = this.exposureRows(state.currentCountry);
         const stakesSection = document.getElementById('stakes');
         if (stakesSection) {
             stakesSection.style.setProperty('--exposure-color', this.coral);
@@ -552,7 +616,7 @@ const Charts = {
 
         const barsJoin = d3.select(container).select('svg').selectAll('.bar').data(data);
 
-        barsJoin.transition('grow').duration(this.dur(800)).ease(d3.easeCubicOut)
+        barsJoin.transition('grow').duration(this.dur(800)).ease(d3.easeCubicOut).delay((d, i) => this.dur(i * 70))
             .attr('y', d => state.y(d.affected || 0))
             .attr('height', d => Math.max(0, state.height - state.margin.bottom - state.y(d.affected || 0)))
             .attr('fill', this.coral);
@@ -564,7 +628,8 @@ const Charts = {
         ));
 
         const labelsJoin = d3.select(container).select('svg').selectAll('.affected-label').data(data);
-        labelsJoin.transition('grow').duration(this.dur(800)).ease(d3.easeCubicOut)
+        labelsJoin.transition('grow').duration(this.dur(800)).ease(d3.easeCubicOut).delay((d, i) => this.dur(i * 70))
+            .style('opacity', 1)
             .attr('y', d => state.y(d.affected || 0) - 8)
             .text(d => d.affected !== null && d.affected !== undefined ? Utils.formatNumber(d.affected, 0) : '');
     },
@@ -589,7 +654,7 @@ const Charts = {
 
         const xAxisGroup = svg.append('g').attr('class', 'd3-axis')
             .attr('transform', `translate(0,${height - margin.bottom})`)
-            .call(d3.axisBottom(x).tickValues([1980, 1990, 2000, 2010, lastDataYear, todayYear]).tickSize(0));
+            .call(d3.axisBottom(x).tickValues([...new Set([1980, 1990, 2000, 2010, lastDataYear, todayYear])]).tickSize(0));
         xAxisGroup.select('.domain').remove();
         xAxisGroup.selectAll('text').attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '12px').style('font-weight', '500').attr('dy', '1.2em');
 
@@ -611,7 +676,7 @@ const Charts = {
             .attr('y', height - margin.bottom)
             .attr('width', x.bandwidth())
             .attr('height', 0)
-            .attr('fill', d => d.year >= 2005 ? this.coral : this.teal)
+            .attr('fill', d => d.year >= 2005 ? this.teal : '#8FB4E3')
             .style('cursor', 'pointer')
             .on('mouseenter', (event, d) => Utils.tooltip.show(event, `Year: ${d.year}`, `Floods: ${d.days} days`))
             .on('mousemove', event => Utils.tooltip.move(event))
@@ -672,7 +737,7 @@ const Charts = {
         const areaGen = d3.area().x(d => xA(d.year)).y0(yA(0)).y1(d => yA(d.val)).curve(d3.curveMonotoneX);
         const lineGen = d3.line().x(d => xA(d.year)).y(d => yA(d.val)).curve(d3.curveMonotoneX);
 
-        svg.append('path').datum(histData).attr('fill', 'rgba(10, 108, 144, 0.16)').attr('d', areaGen);
+        svg.append('path').datum(histData).attr('fill', 'rgba(31, 95, 168, 0.16)').attr('d', areaGen);
         svg.append('path').datum(histData).attr('fill', 'none').attr('stroke', this.teal).attr('stroke-width', 2.25).attr('d', lineGen);
 
         const lastDot = svg.append('circle').attr('cx', xA(lastObserved.year)).attr('cy', yA(lastObserved.val)).attr('r', 5)
@@ -744,7 +809,7 @@ const Charts = {
             .attr('width', panelB.x1 - panelB.x0)
             .attr('y', plotBottom)
             .attr('height', 0)
-            .attr('fill', 'rgba(10, 108, 144, 0.12)')
+            .attr('fill', 'rgba(31, 95, 168, 0.12)')
             .attr('opacity', 1);
 
         const scenarioNodes = {};
@@ -883,7 +948,7 @@ const Charts = {
 
             const yAxisGroup = svg.append('g').attr('class', 'd3-axis')
                 .attr('transform', `translate(${margin.left}, 0)`)
-                .call(d3.axisLeft(y).tickSize(0));
+                .call(d3.axisLeft(y).tickSize(0).tickFormat(c => c.replace(' (Federated States of)', '')));
             yAxisGroup.select('.domain').remove();
             yAxisGroup.selectAll('text').attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '10px').style('font-weight', '600').attr('dx', '-6px');
 
@@ -906,13 +971,17 @@ const Charts = {
                 .attr('height', y.bandwidth())
                 .attr('fill', 'transparent');
 
+            const fdefs = svg.append('defs');
+            const fid = `hatch-fund-${valueKey}`;
+            fdefs.append('pattern').attr('id', fid).attr('patternUnits', 'userSpaceOnUse').attr('width', 6).attr('height', 6).attr('patternTransform', 'rotate(45)')
+                .append('line').attr('x1', 0).attr('y1', 0).attr('x2', 0).attr('y2', 6).attr('stroke', color).attr('stroke-width', 2);
             rows.append('rect')
                 .attr('class', 'funding-bar')
                 .attr('x', margin.left)
                 .attr('y', d => y(d.country))
                 .attr('height', y.bandwidth())
                 .attr('width', 0)
-                .attr('fill', color);
+                .attr('fill', d => (valueKey === 'total' && !(d.investment > 0)) ? `url(#${fid})` : color);
 
             rows.append('text')
                 .attr('class', 'funding-bar-label')
@@ -928,8 +997,8 @@ const Charts = {
             return { svg, rows, x, y, margin, width, height };
         };
 
-        const readinessPanel = buildPanel(readinessContainer, 'readiness', this.gold);
-        const totalPanel = buildPanel(totalContainer, 'total', this.teal);
+        const readinessPanel = buildPanel(readinessContainer, 'readiness', '#7FB2E0');
+        const totalPanel = buildPanel(totalContainer, 'total', '#1F5FA8');
 
         this.state.funding = { readinessPanel, totalPanel, data, filter: 'all' };
     },
@@ -1123,6 +1192,8 @@ document.addEventListener('DOMContentLoaded', () => {
     Utils.wireImageFallbacks();
     syncDynamicStats();
     renderAccessibleTables();
+    initChapterRail();
+    initReadMore();
     const chartInits = [
         () => Charts.initCompliance(),
         () => Charts.initMeteo(),
@@ -1153,12 +1224,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
     renderCharts();
-    let resizeTimer;
-    window.addEventListener('resize', () => {
-        calculateNavTrigger();
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(renderCharts, 250);
-    });
+    window.addEventListener('resize', calculateNavTrigger);
     initScrollytellingObserver();
     initNavObserver();
     initRevealObserver();
@@ -1339,13 +1405,7 @@ function initToastObserver() {
 }
 
 function triggerChartUpdate(canvas) {
-    const scene = canvas.getAttribute('data-scene');
-    if (scene === 'compliance') Charts.updateCompliance();
-    if (scene === 'meteo') Charts.updateMeteo();
-    if (scene === 'exposure') Charts.updateExposure();
-    if (scene === 'flooding') Charts.updateFlooding();
-    if (scene === 'projection') Charts.updateProjection('typical');
-    if (scene === 'funding') Charts.updateFunding();
+    Charts.scrubScene(canvas.getAttribute('data-scene'), canvas);
 }
 
 let navTriggerPoint = 0;
@@ -1354,6 +1414,7 @@ function calculateNavTrigger() {
 }
 
 function updateNavVisibility() {
+    return; // nav is always visible in v2
     const nav = Utils.select('.editorial-nav');
     const langSwitch = Utils.select('.global-lang-switch');
     if (!nav) return;
@@ -1722,4 +1783,77 @@ function initUIElements() {
             }
         });
     }
+}
+
+function initChapterRail() {
+    const chapters = ['central-figure', 'meteo-timeline', 'stakes', 'human-cost', 'projections', 'funding', 'conclusion']
+        .map(id => document.getElementById(id)).filter(Boolean);
+    if (!chapters.length) return;
+    const rail = document.createElement('nav');
+    rail.className = 'chapter-rail';
+    rail.setAttribute('aria-label', 'Chapters');
+    const segs = chapters.map((sec, i) => {
+        const title = (sec.querySelector('.editorial-subhead') || {}).textContent || `Chapter ${i + 1}`;
+        const a = document.createElement('a');
+        a.href = `#${sec.id}`;
+        a.className = 'chapter-seg';
+        a.title = `${i + 1}. ${title}`;
+        a.innerHTML = '<span class="chapter-fill"></span>';
+        rail.appendChild(a);
+        return { sec, title, fill: a.firstChild, a };
+    });
+    const label = document.createElement('span');
+    label.className = 'chapter-label';
+    label.setAttribute('aria-live', 'polite');
+    rail.appendChild(label);
+    document.body.appendChild(rail);
+    const update = () => {
+        const y = window.scrollY, vh = window.innerHeight;
+        let current = -1;
+        segs.forEach((s, i) => {
+            const top = s.sec.offsetTop, h = s.sec.offsetHeight;
+            s.fill.style.transform = `scaleX(${Utils.clamp((y + vh * 0.4 - top) / h, 0, 1)})`;
+            if (y + vh * 0.4 >= top) current = i;
+            s.a.classList.toggle('is-current', i === current);
+        });
+        rail.classList.toggle('is-visible', current >= 0);
+        const text = current >= 0 ? `${current + 1} of ${segs.length}  ${segs[current].title}` : '';
+        if (label.textContent !== text) label.textContent = text;
+    };
+    window.addEventListener('scroll', Utils.onRaf(update), { passive: true });
+    window.addEventListener('resize', Utils.onRaf(update));
+    update();
+}
+
+
+function initReadMore() {
+    if (!document.getElementById('central-figure')) return;
+    Utils.selectAll('.article-copy').forEach(copy => {
+        const first = Array.from(copy.children).find(el => el.tagName === 'P');
+        if (!first) return;
+        const rest = [];
+        let n = first.nextElementSibling;
+        while (n && n.tagName === 'P') { rest.push(n); n = n.nextElementSibling; }
+        if (!rest.length) return;
+        const wrap = document.createElement('div');
+        const inner = document.createElement('div');
+        wrap.className = 'more-text';
+        inner.className = 'more-inner';
+        wrap.id = 'more-' + Math.random().toString(36).slice(2, 7);
+        wrap.appendChild(inner);
+        first.after(wrap);
+        rest.forEach(p => inner.appendChild(p));
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'read-more';
+        btn.textContent = 'Read more';
+        btn.setAttribute('aria-expanded', 'false');
+        btn.setAttribute('aria-controls', wrap.id);
+        wrap.after(btn);
+        btn.addEventListener('click', () => {
+            const open = wrap.classList.toggle('is-open');
+            btn.setAttribute('aria-expanded', String(open));
+            btn.textContent = open ? 'Show less' : 'Read more';
+        });
+    });
 }
