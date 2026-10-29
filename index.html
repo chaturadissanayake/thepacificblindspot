@@ -25,7 +25,7 @@
 <meta name="theme-color" content="#06181d">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/main.css">
 <link rel="stylesheet" href="css/layout.css">
 <link rel="stylesheet" href="css/components.css">
@@ -197,7 +197,7 @@
 </div>
 
 <nav class="editorial-nav" aria-label="Main">
-    <a href="index.html" class="nav-brand"><img src="assets/pacific_icon.png" alt="" class="brand-icon" width="24" height="24"><span class="brand-name">The Pacific Blind Spot</span></a>
+    <a href="index.html" class="nav-brand"><span class="brand-name">The Pacific Blind Spot</span></a>
     <button class="mobile-menu-toggle" aria-label="Toggle menu"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line class="hbg-line hbg-top" x1="3" y1="6" x2="21" y2="6"></line><line class="hbg-line hbg-mid" x1="3" y1="12" x2="21" y2="12"></line><line class="hbg-line hbg-bottom" x1="3" y1="18" x2="21" y2="18"></line></svg></button>
     <div class="nav-links">
         <a href="#overview" class="nav-link-secondary" aria-current="true">Story</a>
@@ -205,17 +205,14 @@
         <a href="methodology.html" class="nav-link-secondary">Methodology</a>
         <a href="privacy.html" class="nav-link-secondary">Privacy</a>
         <a href="https://github.com/chaturadissanayake/theunfairclimateprice" target="_blank" rel="noopener" class="nav-link-secondary">Process</a>
-        <div class="global-lang-switch"><a href="index.html" class="lang-btn active" aria-label="English">EN</a><a href="index-fr.html" class="lang-btn" aria-label="Français">FR</a></div>
     </div>
 </nav>
 <main class="immersive-canvas">
     <header class="report-header" id="overview">
         <span class="report-eyebrow">A data story, infrastructure & warning</span>
         <h1 class="report-main-title">The Pacific Blind Spot</h1>
-
-    <div class="regional-locator-map" style="position: relative;">
+        <div class="regional-locator-map" style="position: relative;">
     <div class="editorial-img-container aspect-wide" style="margin: 0; background: transparent; border: none; overflow: visible;">  
-
 <?xml version="1.0" encoding="UTF-8"?>
 <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1640 692.39">
   <defs>
@@ -491,7 +488,7 @@
   </g>
   <!-- Bottom right inset world map -->
   <image xlink:href="assets/maps/worldmap.webp" x="1040" y="460" width="430" height="230" preserveAspectRatio="xMidYMid meet" />
-</svg>  
+</svg>          
 </div>
 
     <div id="map-hover-tooltip" class="map-tooltip">
@@ -547,7 +544,7 @@
         <div class="caption-wrapper on-dark">
             <figcaption class="source-caption">
                 <span class="caption-desc">Current monitoring coverage against the WMO's own baseline for a fully-instrumented network, by income tier. A gap in the data is just a percentage on a chart, until a real storm makes landfall. That's where the story goes next.</span>
-                <span class="source-details"><a href="https://un-soff.org/" target="_blank" rel="noopener" class="source-link">WMO & UN SOFF</a>. INF 6.2 GBON Global Baseline Diagnostic Aggregates (2023).</span>
+                
             </figcaption>
             <div class="caption-actions">
                 <button type="button" class="download-btn" data-download="compliance">
@@ -580,7 +577,7 @@
             <div class="caption-wrapper">
                 <figcaption class="source-caption">
                     <span class="caption-desc">Active land weather stations per country, 1889–2026. Rows are ranked by 2026 station count; the three flat rows at the bottom have never recorded one.</span>
-                    <span class="source-details"><a href="https://pacificdata.org/data/dataset/meteorological-monitoring-network-df-meteo-monitor-net" target="_blank" rel="noopener" class="source-link">Pacific Data Hub</a>.</span>
+                    
                 </figcaption>
                 <div class="caption-actions">
                     <button type="button" class="download-btn" data-download="meteo">
@@ -654,8 +651,8 @@
         </div>
             <div class="caption-wrapper">
                 <figcaption class="source-caption">
-                    <span class="caption-desc">Disaster-affected persons per year, plotted against each country's average annual economic loss from disasters.</span>
-                    <span class="source-details">Pacific Data Hub <a href="https://stats.pacificdata.org/vis?lc=en&df[ds]=ds%3ASPC2&df[id]=DF_SDG_11&df[ag]=SPC&df[vs]=3.0&dq=A.VC_DSR_AFFCT.........&pd=,&to[TIME_PERIOD]=false&lb=bt" target="_blank" rel="noopener" class="source-link">(SDG 11.5.1)</a> / <a href="https://stats.pacificdata.org/vis?lc=en&df[ds]=ds%3ASPC2&df[id]=DF_SDG_11&df[ag]=SPC&df[vs]=3.0&dq=A.VC_DSR_AALT...._T.....&pd=,&to[TIME_PERIOD]=false" target="_blank" rel="noopener" class="source-link">(SDG 11.5.2)</a>. "Affected Persons" is a year-by-year series (2018-2023) from the official Pacific Community (SPC) SDG 11.5.1 indicator. "Average Annual Economic Loss" is a single figure per country from SPC's SDG 11.5.2 indicator, reported at that country's own reference year, not a yearly series.</span>
+                    <span class="caption-desc">Disaster-affected persons per year, plotted against each country's average annual economic loss from disasters. Affected persons is a yearly series (2018–2023); economic loss is a single figure per country, not a yearly series.</span>
+                    
                 </figcaption>
                 <div class="caption-actions">
                     <button type="button" class="download-btn" data-download="exposure">
@@ -863,8 +860,8 @@
         </div>
         <div class="caption-wrapper">
             <figcaption class="source-caption">
-                    <span class="caption-desc">Days per year with high-tide flooding at the Pago Pago, American Samoa gauge, 1979–2026.</span>
-                    <span class="source-details"><a href="https://tidesandcurrents.noaa.gov/inundationdb/inundation.html?id=1770000#flooddays" target="_blank" rel="noopener" class="source-link">NOAA</a>. 1979-2026 Annual Flood Days at 1770000, Pago Pago, American Samoa Threshold: 0.99 feet above MHHW.</span>
+                    <span class="caption-desc">Days per year with high-tide flooding at the Pago Pago, American Samoa gauge, 1979–2026. Flooding threshold: 0.99 feet above mean higher high water.</span>
+                    
                 </figcaption>
         </div>
 
@@ -909,8 +906,8 @@
 
 <div class="caption-wrapper">
                 <figcaption class="source-caption">
-                    <span class="caption-desc">Observed sea-level rise since 1993, and projected year 2100 anomaly under three emissions pathways.</span>
-                    <span class="source-details"><strong>Source:</strong> <a href="https://climateknowledgeportal.worldbank.org/country-profiles" target="_blank" rel="noopener" class="source-link">World Bank CCKP</a> & <a href="https://earth.gov/sealevel/sea-level-explorer/?country=WSM&scope=section_1" target="_blank" rel="noopener" class="source-link">Earth.gov</a>. Historical sea-level observations and projected year-2100 anomaly under three emissions pathways. CMIP5 sea-level rise projections relative to the 1986–2005 reference period.</span>
+                    <span class="caption-desc">Observed sea-level rise since 1993, and projected year 2100 anomaly under three emissions pathways. Projections use CMIP5 models relative to 1986–2005.</span>
+                    
                 </figcaption>
                 <div class="caption-actions">
                     <button type="button" class="download-btn" data-download="projections">
@@ -973,7 +970,7 @@
             <div class="caption-wrapper">
                 <figcaption class="source-caption">
                     <span class="caption-desc">SOFF pipeline commitments per country: Readiness budget vs. Investment Phase Peer Advisory Fee, by implementing entity and partner. This Peer Advisory Fee is a small administrative line item, not the full hardware Investment, total approved Investment funding runs far higher (e.g. Kiribati's full Investment approval is USD 11.16M, about 20x its advisory fee shown here).</span>
-                    <span class="source-details"><a href="https://un-soff.org/" target="_blank" rel="noopener" class="source-link">UN SOFF Partner Portal</a>.</span>
+                    
                 </figcaption>
                 <div class="caption-actions">
                     <button type="button" class="download-btn" data-download="funding">
@@ -994,8 +991,6 @@
             <p>That shortage is a real barrier to building resilient infrastructure and taking meaningful climate action, the two goals the United Nations set for every country under <strong>SDG 9</strong> and <strong>SDG 13</strong>.</p>
             <p>Pacific nations are on the front line of a crisis they didn't cause. Giving them the basic tools to see a storm coming is not too much to ask, it's the least the rest of the world owes them.</p>
 
-            <p class="source-pointer">Every figure comes from open data. <a href="methodology.html" class="source-link">See the methodology and sources</a>.</p>
-
             <div class="sdg-container">
                 <span class="sdg-label">Impacted Global Goals</span>
                 <div class="sdg-icons">
@@ -1008,15 +1003,44 @@
 
     
 
+        <section class="article-section sources-section" id="sources">
+        <div class="article-copy">
+            <h2 class="sources-title">Sources</h2>
+            <p>All figures come from open data. The full reading list and downloads are on the <a href="methodology.html" class="source-link">methodology page</a>.</p>
+            <ul class="sources-simple">
+                <li><a href="https://www.un-soff.org/" target="_blank" rel="noopener" class="source-link">WMO and UN SOFF</a>: GBON Global Baseline Diagnostic Aggregates (2023)</li>
+                <li><a href="https://pacificdata.org/data/dataset/meteorological-monitoring-network-df-meteo-monitor-net" target="_blank" rel="noopener" class="source-link">Pacific Data Hub</a>: land weather stations</li>
+                <li>Pacific Data Hub: SDG <a href="https://stats.pacificdata.org/vis?lc=en&df[ds]=ds%3ASPC2&df[id]=DF_SDG_11&df[ag]=SPC&df[vs]=3.0&dq=A.VC_DSR_AFFCT.........&pd=,&to[TIME_PERIOD]=false&lb=bt" target="_blank" rel="noopener" class="source-link">11.5.1</a> and <a href="https://stats.pacificdata.org/vis?lc=en&df[ds]=ds%3ASPC2&df[id]=DF_SDG_11&df[ag]=SPC&df[vs]=3.0&dq=A.VC_DSR_AALT...._T.....&pd=,&to[TIME_PERIOD]=false" target="_blank" rel="noopener" class="source-link">11.5.2</a></li>
+                <li><a href="https://tidesandcurrents.noaa.gov/inundationdb/inundation.html?id=1770000#flooddays" target="_blank" rel="noopener" class="source-link">NOAA</a>: annual flood days, Pago Pago</li>
+                <li><a href="https://climateknowledgeportal.worldbank.org/country-profiles" target="_blank" rel="noopener" class="source-link">World Bank CCKP</a> and <a href="https://earth.gov/sealevel/sea-level-explorer/?country=WSM&scope=section_1" target="_blank" rel="noopener" class="source-link">Earth.gov</a>: sea level</li>
+                <li>UN SOFF Partner Portal: country funding</li>
+            </ul>
+            <div class="integrated-citation">
+                <div class="citation-header-row">
+                    <span class="cite-title">Cite This Work</span>
+                    <div class="citation-tabs" role="tablist">
+                        <button class="citation-tab active" role="tab" aria-selected="true" data-cite="APA">APA</button>
+                        <button class="citation-tab" role="tab" aria-selected="false" data-cite="Journalistic">Journalistic</button>
+                        <button class="citation-tab" role="tab" aria-selected="false" data-cite="BibTeX">BibTeX</button>
+                    </div>
+                </div>
+                <div class="citation-content">
+                    <p id="cite-text"></p>
+                    <button class="copy-cite-btn">Copy Citation</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <footer class="terminal-footer">
         <svg class="footer-contours" viewBox="0 0 1440 420" preserveAspectRatio="none" aria-hidden="true">
             <g class="contour-set" id="footer-contours"></g>
         </svg>
         <div class="footer-main-grid footer-grid--3col">
             <div class="footer-col brand-col">
-                <h4 class="footer-heading">The project</h4>
-                <span class="footer-logo">Pacific <span>Dataviz</span></span>
-                <span class="footer-sublogo">Pacific Dataviz Challenge 2026</span>
+                <h4 class="footer-heading">The story</h4>
+                <span class="footer-logo">The Pacific Blind Spot</span>
+                <span class="footer-sublogo">A data story for the Pacific Dataviz Challenge 2026</span>
                 <p class="footer-text">Built by <a href="https://chaturadissanayake.com" target="_blank" rel="noopener" class="footer-creator-link">Chatura Dissanayake</a></p>
                 <div class="footer-social"><a href="https://github.com/chaturadissanayake" target="_blank" rel="noopener" aria-label="GitHub" class="social-icon">
                     <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
@@ -1035,13 +1059,8 @@
                 <p class="footer-text"><a class="footer-link" href="https://github.com/chaturadissanayake/theunfairclimateprice" target="_blank" rel="noopener">How it was made</a><br><a class="footer-link" href="mailto:consultchatura@gmail.com">consultchatura@gmail.com</a></p>
             </div>
             <div class="footer-col">
-                <h4 class="footer-heading">Tech and tools used</h4>
-                <ul class="tools-list">
-                    <li><strong>Data</strong>Python (Pandas)</li>
-                    <li><strong>Visualisation and front end</strong>D3.js v7, Vanilla JavaScript, HTML5/CSS3</li>
-                    <li><strong>Graphics</strong>Adobe Creative Suite (Illustrator, Photoshop)</li>
-                    <li><strong>AI assistants</strong>Claude Sonnet 5, Gemini 3.1 Pro, ChatGPT. Used across the project, not only for code.</li>
-                </ul>
+                <h4 class="footer-heading">Tech and tools</h4>
+                <p class="footer-text">Python (Pandas), D3.js v7, Vanilla JavaScript, HTML5/CSS3 and Adobe Creative Suite (Illustrator, Photoshop). AI assistants were used across the project, not only for code: Claude Sonnet 5, Gemini 3.1 Pro and ChatGPT.</p>
             </div>
         </div>
         <div class="footer-bottom-bar">

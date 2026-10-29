@@ -68,17 +68,16 @@ const Charts = {
         }[scene];
         if (!apply) return;
         canvas._scrubbing = true;
-        const reduced = Utils.prefersReducedMotion();
-        const measure = () => { const r = canvas.getBoundingClientRect(), vh = window.innerHeight;
-            if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 4) return 1;
-            const centre = r.top + r.height / 2;
-            return clamp((vh * 0.78 - centre) / (vh * 0.32), 0, 1); };
-        const run = () => { const p = reduced ? 1 : measure(); apply(p);
-            if (p >= 1) { window.removeEventListener('scroll', handler); window.removeEventListener('resize', handler); } };
-        const handler = Utils.onRaf(run);
-        window.addEventListener('scroll', handler, { passive: true });
-        window.addEventListener('resize', handler);
-        run();
+        const dur = scene === 'meteo' ? 2600 : 1400;
+        const play = () => {
+            if (Utils.prefersReducedMotion()) { apply(1); return; }
+            const t = d3.timer(el => { const p = clamp(el / dur, 0, 1); apply(p); if (p >= 1) t.stop(); });
+        };
+        const ratio = clamp((window.innerHeight * 0.6) / Math.max(canvas.getBoundingClientRect().height, 1), 0.2, 0.6);
+        const io = new IntersectionObserver(entries => {
+            if (entries.some(e => e.isIntersecting)) { io.disconnect(); play(); }
+        }, { threshold: ratio });
+        io.observe(canvas);
     },
 
     initRadarGrid(selector) {
@@ -239,7 +238,7 @@ const Charts = {
         const edge = svg.append('line').attr('y1', margin.top - 4).attr('y2', margin.top + countries.length * (cellH + rowGap) + 4)
             .attr('stroke', this.ink).attr('stroke-width', 1).attr('opacity', 0).style('pointer-events', 'none');
         const edgeLabel = svg.append('text').attr('y', margin.top - 12).attr('text-anchor', 'middle').attr('opacity', 0)
-            .attr('fill', this.ink).style('font-size', '14px').style('font-weight', '700').style('pointer-events', 'none');
+            .attr('fill', this.ink).style('font-size', '14px').style('font-weight', '600').style('pointer-events', 'none');
         this.state.meteo = { svg, cellSel, clipRect, edge, edgeLabel, left: margin.left, gridW: years.length * cellW, y0: yearStart, y1: yearEnd, initialized: true };
     },
 
@@ -274,7 +273,7 @@ const Charts = {
         yAxis.selectAll('text')
             .style('fill', '#ffffff')
             .style('font-size', '14px')
-            .style('font-weight', '600')
+            .style('font-weight', '500')
             .attr('dx', '-1.5em')
             .style('cursor', d => (d.includes('SIDS') || d.includes('LDCs') || d.includes('UMICs') || d.includes('LMICs')) ? 'help' : 'default')
             .each(function(d) {
@@ -323,7 +322,7 @@ const Charts = {
             .attr('y', d => y(d.category) + y.bandwidth() / 2)
             .attr('dy', '0.35em')
             .text(d => d.label)
-            .style('font-size', '12px').style('font-weight', '700').style('font-family', 'var(--font-mono)')
+            .style('font-size', '12px').style('font-weight', '600').style('font-family', 'var(--font-mono)')
             .attr('opacity', 0);
 
         const defs = svg.append('defs');
@@ -402,7 +401,7 @@ const Charts = {
         svg.append('text').text('Total People Affected')
             .attr('x', width / 2).attr('y', 24)
             .attr('text-anchor', 'middle')
-            .attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '14px').style('font-weight', '600');
+            .attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '14px').style('font-weight', '500');
 
         svg.append('g').attr('class', 'd3-axis x-axis')
             .attr('transform', `translate(0,${height - margin.bottom})`)
@@ -442,7 +441,7 @@ const Charts = {
             .attr('fill', this.ink)
             .style('font-family', 'var(--font-mono)')
             .style('font-size', '11px')
-            .style('font-weight', '600')
+            .style('font-weight', '500')
             .style('opacity', 0)
             .style('pointer-events', 'none')
             .text(d => d.affected !== null && d.affected !== undefined ? Utils.formatNumber(d.affected, 0) : '');
@@ -503,7 +502,7 @@ const Charts = {
         svg.append('text').text('Average Annual Economic Loss (USD)')
             .attr('x', width / 2).attr('y', 24)
             .attr('text-anchor', 'middle')
-            .attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '14px').style('font-weight', '600');
+            .attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '14px').style('font-weight', '500');
 
         const yAxisGroup = svg.append('g').attr('class', 'd3-axis')
             .attr('transform', `translate(${margin.left},0)`)
@@ -665,7 +664,7 @@ const Charts = {
         yAxisGroup.selectAll('line').attr('stroke', '#e2e8f0');
         yAxisGroup.selectAll('text').attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '12px').attr('x', -15);
 
-        svg.append('text').attr('x', margin.left - 15).attr('y', margin.top - 15).text('High Tide Floods (Days per Yr)').attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '14px').style('font-weight', '600');
+        svg.append('text').attr('x', margin.left - 15).attr('y', margin.top - 15).text('High Tide Floods (Days per Yr)').attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '14px').style('font-weight', '500');
 
         const gapStartX = (x(lastDataYear) ?? 0) + x.bandwidth() + (x.step() * 0.25);
         const gapEndX = width - margin.right;
@@ -727,12 +726,12 @@ const Charts = {
             .call(d3.axisLeft(yA).tickValues([0, 20, 40, 60, 80, 100]).tickSize(-(panelA.x1 - panelA.x0)));
 
         svg.append('text').attr('x', panelA.x0).attr('y', plotTop - 20).text('Observed sea level (cm since 1993)')
-            .attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '14px').style('font-weight', '600');
+            .attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '14px').style('font-weight', '500');
 
         const xAxisA = svg.append('g').attr('class', 'd3-axis').attr('transform', `translate(0,${plotBottom})`)
             .call(d3.axisBottom(xA).tickValues([1993, 2000, 2010, 2020, lastObserved.year]).tickFormat(d3.format('d')).tickSize(0));
         xAxisA.select('.domain').remove();
-        xAxisA.selectAll('text').attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '11.5px').style('font-weight', 600).attr('dy', '1.4em');
+        xAxisA.selectAll('text').attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '11.5px').style('font-weight', '500').attr('dy', '1.4em');
 
         const areaGen = d3.area().x(d => xA(d.year)).y0(yA(0)).y1(d => yA(d.val)).curve(d3.curveMonotoneX);
         const lineGen = d3.line().x(d => xA(d.year)).y(d => yA(d.val)).curve(d3.curveMonotoneX);
@@ -743,7 +742,7 @@ const Charts = {
         const lastDot = svg.append('circle').attr('cx', xA(lastObserved.year)).attr('cy', yA(lastObserved.val)).attr('r', 5)
             .attr('fill', 'var(--bg-paper)').attr('stroke', this.teal).attr('stroke-width', 2.5);
         const lastText = svg.append('text').attr('x', xA(lastObserved.year)).attr('y', yA(lastObserved.val) - 24).attr('text-anchor', 'end')
-            .style('font-family', 'var(--font-mono)').style('font-size', '15px').style('font-weight', 700)
+            .style('font-family', 'var(--font-mono)').style('font-size', '15px').style('font-weight', '600')
             .attr('fill', this.teal).text(`+${lastObserved.val.toFixed(1)}cm`);
 
         const bisectYear = d3.bisector(d => d.year).left;
@@ -784,7 +783,7 @@ const Charts = {
             .attr('stroke', 'var(--line)').attr('stroke-width', 1.5);
 
         svg.append('text').attr('x', breakX).attr('y', plotTop - 20).attr('text-anchor', 'middle')
-            .style('font-family', 'var(--font-mono)').style('font-size', '10px').style('font-weight', '600')
+            .style('font-family', 'var(--font-mono)').style('font-size', '10px').style('font-weight', '500')
             .style('letter-spacing', '0.05em')
             .attr('fill', this.inkFaint).text('PROJECTION');
 
@@ -802,7 +801,7 @@ const Charts = {
 
         svg.append('text').attr('x', panelB.x1).attr('y', plotTop - 20).attr('text-anchor', 'end')
             .text('Year 2100 projection, by pathway (cm)').attr('fill', this.ink)
-            .style('font-family', 'var(--font-sans)').style('font-size', '14px').style('font-weight', '600');
+            .style('font-family', 'var(--font-sans)').style('font-size', '14px').style('font-weight', '500');
 
         const waterLevel = svg.append('rect')
             .attr('x', panelB.x0)
@@ -827,7 +826,7 @@ const Charts = {
                 });
 
         const nameLabel = g.append('text').attr('x', cx).attr('y', cy + 24).attr('text-anchor', 'middle')
-                .style('font-family', 'var(--font-sans)').style('font-size', '10.5px').style('font-weight', 600)
+                .style('font-family', 'var(--font-sans)').style('font-size', '10.5px').style('font-weight', '500')
                 .attr('fill', this.inkSoft).text(meta.label).attr('opacity', 0.65);
             g.append('circle').attr('cx', cx).attr('cy', cy).attr('r', 20).attr('fill', 'transparent');
 
@@ -863,7 +862,7 @@ const Charts = {
             .attr('cx', initTarget.cx).attr('cy', plotBottom).attr('stroke', initMeta.color);
 
         const activeValueLabel = activeGroup.append('text').attr('text-anchor', 'middle')
-            .style('font-family', 'var(--font-mono)').style('font-weight', 700).style('font-size', '15px')
+            .style('font-family', 'var(--font-mono)').style('font-weight', '600').style('font-size', '15px')
             .attr('x', initTarget.cx).attr('y', plotBottom - 16)
             .attr('fill', initMeta.color)
             .text('+0.0');
@@ -950,7 +949,7 @@ const Charts = {
                 .attr('transform', `translate(${margin.left}, 0)`)
                 .call(d3.axisLeft(y).tickSize(0).tickFormat(c => c.replace(' (Federated States of)', '')));
             yAxisGroup.select('.domain').remove();
-            yAxisGroup.selectAll('text').attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '10px').style('font-weight', '600').attr('dx', '-6px');
+            yAxisGroup.selectAll('text').attr('fill', this.ink).style('font-family', 'var(--font-sans)').style('font-size', '10px').style('font-weight', '500').attr('dx', '-6px');
 
             const rows = svg.selectAll('.funding-bar-row')
                 .data(data, d => d.country).enter().append('g')
@@ -1192,7 +1191,6 @@ document.addEventListener('DOMContentLoaded', () => {
     Utils.wireImageFallbacks();
     syncDynamicStats();
     renderAccessibleTables();
-    initChapterRail();
     initReadMore();
     const chartInits = [
         () => Charts.initCompliance(),
@@ -1784,47 +1782,6 @@ function initUIElements() {
         });
     }
 }
-
-function initChapterRail() {
-    const chapters = ['central-figure', 'meteo-timeline', 'stakes', 'human-cost', 'projections', 'funding', 'conclusion']
-        .map(id => document.getElementById(id)).filter(Boolean);
-    if (!chapters.length) return;
-    const rail = document.createElement('nav');
-    rail.className = 'chapter-rail';
-    rail.setAttribute('aria-label', 'Chapters');
-    const segs = chapters.map((sec, i) => {
-        const title = (sec.querySelector('.editorial-subhead') || {}).textContent || `Chapter ${i + 1}`;
-        const a = document.createElement('a');
-        a.href = `#${sec.id}`;
-        a.className = 'chapter-seg';
-        a.title = `${i + 1}. ${title}`;
-        a.innerHTML = '<span class="chapter-fill"></span>';
-        rail.appendChild(a);
-        return { sec, title, fill: a.firstChild, a };
-    });
-    const label = document.createElement('span');
-    label.className = 'chapter-label';
-    label.setAttribute('aria-live', 'polite');
-    rail.appendChild(label);
-    document.body.appendChild(rail);
-    const update = () => {
-        const y = window.scrollY, vh = window.innerHeight;
-        let current = -1;
-        segs.forEach((s, i) => {
-            const top = s.sec.offsetTop, h = s.sec.offsetHeight;
-            s.fill.style.transform = `scaleX(${Utils.clamp((y + vh * 0.4 - top) / h, 0, 1)})`;
-            if (y + vh * 0.4 >= top) current = i;
-            s.a.classList.toggle('is-current', i === current);
-        });
-        rail.classList.toggle('is-visible', current >= 0);
-        const text = current >= 0 ? `${current + 1} of ${segs.length}  ${segs[current].title}` : '';
-        if (label.textContent !== text) label.textContent = text;
-    };
-    window.addEventListener('scroll', Utils.onRaf(update), { passive: true });
-    window.addEventListener('resize', Utils.onRaf(update));
-    update();
-}
-
 
 function initReadMore() {
     if (!document.getElementById('central-figure')) return;
